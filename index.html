@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yellow Card Accountability Dashboard</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom styles from the design system */
+        :root {
+            --color-primary-main: #4299e1;
+            --color-primary-light: #63b3ed;
+            --color-primary-dark: #3182ce;
+            --color-success-main: #38a169;
+            --color-warning-main: #ed8936;
+            --color-error-main: #d32f2f;
+            --color-text-primary: #2d3748;
+            --color-text-secondary: #718096;
+            --border-color: #e0e0e0;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f7fafc;
+            color: var(--color-text-primary);
+        }
+        .focus-ring {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+        }
+        .focus-ring:focus-visible {
+            outline-color: var(--color-primary-main);
+        }
+        .tooltip { position: relative; display: inline-block; }
+        .tooltip .tooltip-text {
+            visibility: hidden; width: 240px; background-color: #2d3748; color: #fff; text-align: left;
+            border-radius: 8px; padding: 12px; position: absolute; z-index: 10; bottom: 125%; left: 50%;
+            margin-left: -120px; opacity: 0; transition: opacity 0.3s; white-space: pre-wrap; font-size: 0.8rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.19);
+        }
+        .tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+        .stat-sublabel { font-size: 0.9em; color: var(--color-text-secondary); margin-top: 2px; }
+        .tab-btn { background-color: white; color: var(--color-primary-main); border: 1px solid var(--color-primary-main); }
+        .tab-btn:hover { background-color: rgba(66, 153, 225, 0.08); }
+        .tab-btn.active { background-color: var(--color-primary-main); color: white; border-color: var(--color-primary-main); font-weight: 600; }
+    </style>
+    <style>
+        /* Detailed Breakdown cards styles */
+        .detailed-stat-card-v2 { position: relative; overflow: hidden; display: flex; justify-content: flex-start; align-items: center; min-height: 170px; border-radius: 16px; padding: 24px; }
+        .detailed-stat-card-v2 .stat-number { font-size: 4.5rem; font-weight: 500; line-height: 1; z-index: 10; }
+        .detailed-stat-card-v2 .card-stack-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .detailed-stat-card-v2 .stack-shape { border-radius: 12px; position: absolute; width: 108px; height: 165.29px; }
+        .detailed-stat-card-v2 .stack-dark { right: -59.021px; bottom: -49.388px; transform: rotate(16.736deg); z-index: 3; }
+        .detailed-stat-card-v2 .stack-medium { right: -11.46px; bottom: -51.539px; transform: rotate(4.07deg); z-index: 2; }
+        .detailed-stat-card-v2 .stack-light { right: 20.151px; bottom: -89.165px; transform: rotate(-3.848deg); z-index: 1; }
+        .card-green { background-color: #F0FDF4; color: #15803D; }
+        .card-yellow { background-color: #FEFCE8; color: #B45309; }
+        .card-orange { background-color: #FFF7ED; color: #D97706; }
+        .card-red { background-color: #FEF2F2; color: #B91C1C; }
+        .card-yellow .stack-medium { background-color: #FCD34D; }
+        .card-orange .stack-medium { background-color: #FB923C; }
+        .card-orange .stack-dark { background-color: #F97316; }
+        .card-red .stack-dark { background-color: #EF4444; }
+        .card-red .stack-medium { background-color: #F87171; }
+        .card-red .stack-light { background-color: #FCA5A5; }
+
+        /* NEW Custom Dropdown Styles */
+        .custom-dropdown { position: relative; min-width: 220px; }
+        .custom-dropdown-toggle {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px;
+            font-size: 1em; background-color: white; cursor: pointer; transition: border-color 0.2s; text-align: left;
+        }
+        .custom-dropdown-toggle:focus { border-color: var(--color-primary-main); outline: none; box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2); }
+        .custom-dropdown-toggle .chevron-icon { color: #9ca3af; transition: transform 0.2s; }
+        .custom-dropdown.open .custom-dropdown-toggle .chevron-icon { transform: rotate(180deg); }
+        .custom-dropdown-menu {
+            position: absolute; top: calc(100% + 8px); left: 0; width: 100%;
+            background-color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 100; list-style: none; padding: 8px; margin: 0;
+            max-height: 250px; overflow-y: auto;
+            visibility: hidden; opacity: 0; transform: translateY(-10px); transition: all 0.2s ease-out;
+        }
+        .custom-dropdown.open .custom-dropdown-menu { visibility: visible; opacity: 1; transform: translateY(0); }
+        .custom-dropdown-menu li {
+            padding: 10px 12px; border-radius: 6px; cursor: pointer;
+            transition: background-color 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .custom-dropdown-menu li:hover { background-color: #f3f4f6; /* light grey hover */ }
+        .custom-dropdown-menu li.selected { font-weight: 600; color: var(--color-primary-dark); }
+        .custom-dropdown-toggle .selected-value { color: var(--color-text-primary); }
+        .custom-dropdown-toggle .placeholder { color: var(--color-text-secondary); }
+
+
+        /* Custom Search Input for Leaderboard */
+        .search-input-container { position: relative; flex-grow: 1; }
+        .search-input-container input {
+            width: 100%; padding: 12px 16px 12px 48px; border-radius: 8px; border: 1px solid var(--border-color);
+            font-size: 1em; transition: all 0.2s;
+        }
+        .search-input-container input:focus { border-color: var(--color-primary-main); outline: none; box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2); }
+        .search-input-container .search-icon {
+            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+            color: #9ca3af; transition: color 0.2s;
+        }
+        .search-input-container input:focus + .search-icon { color: var(--color-primary-main); }
+        
+        .close-btn { position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer; color: #aaa; padding: 4px; border-radius: 50%; transition: all 0.2s; }
+        .close-btn:hover { color: #333; background-color: #f0f0f0; }
+    </style>
+</head>
+<body class="p-4 lg:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="bg-white p-6 lg:p-8 rounded-2xl shadow-lg mb-8">
+            <div class="flex items-center gap-4">
+                <i data-lucide="alert-triangle" class="w-10 h-10 text-orange-500"></i>
+                <h1 class="text-3xl lg:text-4xl font-bold text-gray-800">Yellow Card Accountability Dashboard</h1>
+            </div>
+            <div class="flex flex-wrap gap-x-6 gap-y-2 mt-4 text-gray-600">
+                <span id="team-size-stat"></span>
+                <span id="card-ratio-stat"></span>
+            </div>
+        </header>
+
+        <div class="mb-6">
+            <div class="nav-tabs flex flex-wrap gap-3">
+                <button class="tab-btn active px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="overview" onclick="switchTab(this)">
+                    <i data-lucide="layout-dashboard" class="inline w-4 h-4 mr-2"></i>Overview
+                </button>
+                <button class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="yellowcard" onclick="switchTab(this)">
+                    <i data-lucide="alert-circle" class="inline w-4 h-4 mr-2"></i>Yellow Cards
+                </button>
+                <button class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="team" onclick="switchTab(this)">
+                     <i data-lucide="users" class="inline w-4 h-4 mr-2"></i>Team
+                </button>
+                <button class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="leaderboard" onclick="switchTab(this)">
+                     <i data-lucide="trophy" class="inline w-4 h-4 mr-2"></i>Leaderboard
+                </button>
+            </div>
+        </div>
+        
+        <main>
+            <div id="overview" class="tab-content active space-y-8">
+                <section class="bg-white p-6 lg:p-8 rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 pb-3 border-b border-gray-200">Dashboard Overview</h2>
+                    <div id="overview-stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+                </section>
+                <section class="bg-white p-6 lg:p-8 rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 pb-3 border-b border-gray-200">Detailed Breakdown</h2>
+                    <div id="detailed-stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+                </section>
+                <section class="bg-white p-6 lg:p-8 rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 pb-3 border-b border-gray-200">Violation Categories</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="rule-card bg-gray-50 p-6 rounded-lg">
+                            <h4 class="font-bold text-lg mb-4 flex items-center gap-2" style="color: var(--color-primary-main);"><i data-lucide="file-text" class="w-5 h-5"></i>Documentation</h4>
+                            <ul class="space-y-2">
+                                <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">No Daily file for working day</li>
+                                <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">Insufficient detail (&lt;3 sentences)</li>
+                                <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">No links to work outputs</li>
+                                <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">Wrong folder structure</li>
+                            </ul>
+                        </div>
+                        <div class="rule-card bg-gray-50 p-6 rounded-lg">
+                            <h4 class="font-bold text-lg mb-4 flex items-center gap-2" style="color: var(--color-warning-main);"><i data-lucide="git-pull-request" class="w-5 h-5"></i>Workflow</h4>
+                            <ul class="space-y-2">
+                                <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-warning-main);">Call without Whisper recording</li>
+                                <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-warning-main);">No Plans from Daily</li>
+                                <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-warning-main);">No Tasks for complex work</li>
+                                <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-warning-main);">Missing deep research</li>
+                            </ul>
+                        </div>
+                        <div class="rule-card bg-gray-50 p-6 rounded-lg">
+                            <h4 class="font-bold text-lg mb-4 flex items-center gap-2" style="color: var(--color-error-main);"><i data-lucide="message-square" class="w-5 h-5"></i>Communication</h4>
+                            <ul class="space-y-2">
+                                <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-error-main);">Not responding to Calls</li>
+                                <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-error-main);">Not reading pinned rules</li>
+                                <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-error-main);">Not confirming task assignments</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div id="yellowcard" class="tab-content hidden space-y-8">
+                <section class="bg-white p-6 lg:p-8 rounded-xl shadow-lg">
+                    <div class="calendar-nav flex justify-between items-center mb-6">
+                        <button onclick="changeMonth(-1)" class="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+                        <h3 id="calendar-month-year" class="text-xl font-bold text-gray-800"></h3>
+                        <button onclick="changeMonth(1)" class="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+                    </div>
+                    <div id="calendar-container"></div>
+                </section>
+                <section class="bg-white p-6 lg:p-8 rounded-xl shadow-lg">
+                    <div class="flex flex-wrap justify-between items-center gap-4 mb-6 pb-3 border-b border-gray-200">
+                        <h2 class="text-2xl font-bold text-gray-800">Current Month Status</h2>
+                        <button class="action-button" onclick="openGiveCardModal()">
+                            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                            <span>Give Yellow Card</span>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="table w-full">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th><th>Department</th><th>Cards</th><th>Violation Types</th><th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="yellow-card-table-body"></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <div id="team" class="tab-content hidden">
+                <section class="bg-white p-6 lg:p-8 rounded-xl shadow-lg">
+                    <div class="flex flex-wrap justify-between items-center gap-4 mb-6 pb-3 border-b border-gray-200">
+                        <h2 id="team-structure-heading" class="text-2xl font-bold text-gray-800">Team Structure</h2>
+                        <div class="flex gap-3">
+                            <button class="action-button-success" onclick="openAddEmployeeModal()">
+                                <i data-lucide="user-plus" class="w-4 h-4"></i>
+                                <span>Add Employee</span>
+                            </button>
+                            <button class="action-button-delete" onclick="openRemoveEmployeeModal()">
+                                <i data-lucide="user-minus" class="w-4 h-4"></i>
+                                <span>Remove Employee</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="team-grids-container" class="space-y-8"></div>
+                </section>
+            </div>
+
+            <div id="leaderboard" class="tab-content hidden">
+                <section class="bg-white p-6 lg:p-8 rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Positive Leaderboard</h2>
+                    <p class="text-gray-600 mb-6">The leaderboard shows employees who have gone the longest without receiving yellow cards.</p>
+                    
+                    <div class="leaderboard-filters flex flex-wrap items-center gap-4 mb-6">
+                        <div class="search-input-container">
+                            <input type="text" id="leaderboard-search" oninput="renderLeaderboard()" placeholder="Search by name...">
+                            <i data-lucide="search" class="search-icon w-5 h-5"></i>
+                        </div>
+                        <div id="leaderboard-dept-filter-container" class="custom-dropdown" style="flex-grow: 0;"></div>
+
+                        <div id="leaderboard-period-filter" class="flex items-center gap-2">
+                            <button class="period-btn active" data-period="all" onclick="setPeriodFilter(this)">All Time</button>
+                            <button class="period-btn" data-period="60" onclick="setPeriodFilter(this)">&ge; 60 days</button>
+                            <button class="period-btn" data-period="90" onclick="setPeriodFilter(this)">&ge; 90 days</button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="table w-full">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th><th>Department</th><th>Last Card Date</th><th>Days Without Cards</th><th>Notes/Badges</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-table-body"></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div id="employeeModal" class="modal"> <div class="modal-content" id="employeeModalContent"></div> </div>
+    <div id="dayDetailsModal" class="modal"> <div class="modal-content" id="dayDetailsModalContent"></div> </div>
+    <div id="giveCardModal" class="modal"> <div class="modal-content" id="giveCardModalContent"></div> </div>
+    <div id="addEmployeeModal" class="modal"> <div class="modal-content" id="addEmployeeModalContent"></div> </div>
+    <div id="editEmployeeModal" class="modal"> <div class="modal-content" id="editEmployeeModalContent"></div> </div>
+    <div id="removeEmployeeModal" class="modal"> <div class="modal-content" id="removeEmployeeModalContent"></div> </div>
+
+    <script>
+        // Data and State
+        let currentDate = new Date();
+        let employees = [
+             { name: 'Hanan Zaheur', role: 'lead generator', dept: 'Lead Generation', email: 'hanane.zaheur@gmail.com', discordId: '', violations: [], joinDate: '2025-01-15' }, { name: 'Alakbarova Ulviyya Javid', role: 'lead generator', dept: 'Lead Generation', email: 'ulviyyelekberova@gmail.com', discordId: '', violations: [], joinDate: '2025-02-20' }, { name: 'Rybak Nataliia', role: 'lead generator', dept: 'Lead Generation', email: 'rybaknatalia91@gmail.com', discordId: '', violations: [], joinDate: '2025-03-10' }, { name: 'Pasichna Anastasiia', role: 'lead generator', dept: 'Lead Generation', email: 'anastasiya.pasichnaya@gmail.com', discordId: '', violations: [], joinDate: '2025-08-01' }, { name: 'Kovalska Anastasiya', role: 'sales manager', dept: 'Sales', email: 'avkovalska23@gmail.com', discordId: '', violations: [], joinDate: '2025-04-05' }, { name: 'Artemchuk Nikolay', role: 'project manager', dept: 'Project Management', email: 'artemchuknn@gmail.com', discordId: '', violations: [], joinDate: '2025-01-10' }, { name: 'Iskandarova Anush', role: 'sales manager', dept: 'Sales', email: 'nushnushok@icloud.com', discordId: '', violations: [], joinDate: '2025-05-12' }, { name: 'Skrypkar Vilhelm', role: 'illustrator', dept: 'Design', email: 'ntwilson666@gmail.com', discordId: '', violations: [], joinDate: '2025-02-01' }, { name: 'Nealova Evgeniya', role: 'recruiter', dept: 'Recruiting', email: 'zp4058203@gmail.com', discordId: '', violations: [], joinDate: '2025-06-30' }, { name: 'Kucherenko Iuliia', role: 'graphic designer', dept: 'Design', email: 'ulia.k.rhs@gmail.com', discordId: '', violations: [], joinDate: '2025-03-18' }, { name: 'Vereteno Marta', role: 'graphic designer', dept: 'Design', email: 'sd.designsmart@gmail.com', discordId: '', violations: [], joinDate: '2025-09-25' }, { name: 'Davlatmamadova Firuza', role: 'lead generator', dept: 'Lead Generation', email: 'davlatmamadova.firuza@bk.ru', discordId: '', violations: [], joinDate: '2025-10-01' }, { name: 'Azanova Darʼya', role: 'video editor', dept: 'Video Production', email: 'azanova1997@gmail.com', discordId: '', violations: [], joinDate: '2025-07-07' }, { name: 'Burda Anna', role: 'lead generator', dept: 'Lead Generation', email: 'burdaanna8@gmail.com', discordId: '', violations: [], joinDate: '2025-08-15' }, { name: 'Danylenko Liliia', role: 'full stack developer', dept: 'Development', email: 'liliia.danylenko.dev@gmail.com', discordId: '', violations: [], joinDate: '2025-01-25' }, { name: 'Podolskyi Sviatoslav', role: 'video editor', dept: 'Video Production', email: 'neozoy.x@gmail.com', discordId: '', violations: [], joinDate: '2025-09-01' }, { name: 'Ponomarova Kateryna', role: 'financial manager', dept: 'Finance', email: 'katrinp.usa@gmail.com', discordId: '', violations: [], joinDate: '2025-02-11' }, { name: 'Yelisieieva Daria', role: 'financial manager', dept: 'Finance', email: 'zt.dasha@gmail.com', discordId: '', violations: [], joinDate: '2025-03-03' }, { name: 'Kizilova Olha', role: 'back end developer', dept: 'Development', email: 'olgascorpions26@gmail.com', discordId: '', violations: [], joinDate: '2025-04-19' }, { name: 'Rekonvald Viktoriya', role: 'recruiter', dept: 'Recruiting', email: 'viktoriiarekonvald@gmail.com', discordId: '', violations: [], joinDate: '2025-06-21' }, { name: 'Perederii Vladislav', role: 'prompt engineer', dept: 'AI Team', email: 'vladyslav.perederii@nure.ua', discordId: '', violations: [], joinDate: '2025-05-02' }, { name: 'Archibong Isaac', role: 'lead generator', dept: 'Lead Generation', email: 'archibong222@gmail.com', discordId: '', violations: [], joinDate: '2025-09-15' }, { name: 'Shelep Olha', role: 'ui ux designer', dept: 'Design', email: 'shelep.olya@gmail.com', discordId: '', violations: [], joinDate: '2025-01-05' }, { name: 'Peneva Plamena', role: 'lead generator', dept: 'Lead Generation', email: 'plamenapeneva1206@gmail.com', discordId: '', violations: [], joinDate: '2025-07-11' }, { name: 'Zasiadko Matvii', role: 'prompt engineer', dept: 'AI Team', email: 'matvey.z.2004@icloud.com', discordId: '', violations: [], joinDate: '2025-08-22' }, { name: 'Shkinder Kseniia', role: 'lead generator', dept: 'Lead Generation', email: 'k49209700@gmail.com', discordId: '', violations: [], joinDate: '2025-10-05' }, { name: 'Klimenko Yaroslav', role: 'front end developer', dept: 'Development', email: 'klimyarik13@gmail.com', discordId: '', violations: [], joinDate: '2025-06-08' }, { name: 'Panchenko Diana', role: 'video editor', dept: 'Video Production', email: 'panchenko.di@yahoo.com', discordId: '', violations: [], joinDate: '2025-09-12' }, { name: 'Bogun Polina', role: 'designer', dept: 'Design', email: '', discordId: '', violations: [], joinDate: '2025-04-28' }, { name: 'Bindiak Dana', role: 'lead generator', dept: 'Lead Generation', email: '', discordId: '', violations: [], joinDate: '2025-08-08' }, { name: 'Chobotar Yuliia', role: 'designer', dept: 'Design', email: '', discordId: '', violations: [], joinDate: '2025-09-28' }
+        ];
+
+        // NEW: Custom Dropdown Creation Function
+        function createDropdown(containerId, options, placeholder, onchangeCallback) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            container.innerHTML = `
+                <button type="button" class="custom-dropdown-toggle">
+                    <span class="selected-value placeholder">${placeholder}</span>
+                    <i data-lucide="chevron-down" class="chevron-icon w-5 h-5"></i>
+                </button>
+                <ul class="custom-dropdown-menu">
+                    ${options.map(opt => `<li data-value="${opt.value}">${opt.text}</li>`).join('')}
+                </ul>
+            `;
+            lucide.createIcons();
+
+            const toggle = container.querySelector('.custom-dropdown-toggle');
+            const menu = container.querySelector('.custom-dropdown-menu');
+            const selectedValueSpan = container.querySelector('.selected-value');
+
+            menu.querySelectorAll('li').forEach(item => {
+                item.addEventListener('click', () => {
+                    selectedValueSpan.textContent = item.textContent;
+                    selectedValueSpan.classList.remove('placeholder');
+                    toggle.dataset.value = item.dataset.value;
+
+                    menu.querySelectorAll('li').forEach(i => i.classList.remove('selected'));
+                    item.classList.add('selected');
+
+                    container.classList.remove('open');
+                    if (onchangeCallback) onchangeCallback();
+                });
+            });
+        }
+        
+        // --- Main Render Functions ---
+        function renderAll() {
+            employees.sort((a, b) => a.name.localeCompare(b.name));
+            renderStats();
+            renderCalendar();
+            renderYellowCardTable();
+            renderTeamGrids();
+            populateDeptFilter(); // must be before renderLeaderboard
+            renderLeaderboard(); 
+            renderModals();
+            lucide.createIcons();
+        }
+
+        function renderStats() {
+            const totalEmployees = employees.length;
+            const totalCards = employees.reduce((s, e) => s + e.violations.length, 0);
+            const compliantEmployees = employees.filter(e => e.violations.length === 0).length;
+            const complianceRate = totalEmployees > 0 ? ((compliantEmployees / totalEmployees) * 100).toFixed(1) : "100.0";
+            const atRiskCount = employees.filter(e => e.violations.length >= 2).length;
+            
+            let deptCards = {};
+            employees.forEach(e => {
+                deptCards[e.dept] = (deptCards[e.dept] || 0) + e.violations.length;
+            });
+            let maxDept = 'None', maxCount = 0;
+            for (const d in deptCards) {
+                if (deptCards[d] > maxCount) {
+                    maxCount = deptCards[d];
+                    maxDept = d;
+                }
+            }
+
+            document.getElementById('team-size-stat').innerHTML = `<strong>Team Size:</strong> ${totalEmployees} employees`;
+            document.getElementById('card-ratio-stat').innerHTML = `<strong>Total Cards:</strong> ${totalCards}`;
+            
+            document.getElementById('overview-stats').innerHTML = `
+                <div class="stat-card"><div class="stat-icon bg-blue-100 text-blue-600"><i data-lucide="users"></i></div><div class="stat-info"><div class="stat-number">${totalEmployees}</div><div class="stat-label">Total Employees</div></div></div>
+                <div class="stat-card"><div class="stat-icon bg-green-100 text-green-600"><i data-lucide="shield-check"></i></div><div class="stat-info"><div class="stat-number">${complianceRate}%</div><div class="stat-label">Compliance</div></div></div>
+                <div class="stat-card"><div class="stat-icon bg-orange-100 text-orange-600"><i data-lucide="alert-triangle"></i></div><div class="stat-info"><div class="stat-number">${atRiskCount}</div><div class="stat-label">At Risk</div><div class="stat-sublabel">(2+ cards)</div></div></div>
+                <div class="stat-card"><div class="stat-icon bg-red-100 text-red-600"><i data-lucide="siren"></i></div><div class="stat-info"><div class="stat-number">${maxCount}</div><div class="stat-label">Most Violations</div><div class="stat-sublabel">${maxDept}</div></div></div>
+            `;
+            
+            const cardCounts = {
+                0: compliantEmployees,
+                1: employees.filter(e => e.violations.length === 1).length,
+                2: employees.filter(e => e.violations.length === 2).length,
+                3: employees.filter(e => e.violations.length >= 3).length
+            };
+            
+            document.getElementById('detailed-stats').innerHTML = `
+                <div class="detailed-stat-card-v2 card-green"><div class="stat-number">${cardCounts[0]}</div></div>
+                <div class="detailed-stat-card-v2 card-yellow"><div class="stat-number">${cardCounts[1]}</div><div class="card-stack-wrapper"><div class="stack-shape stack-medium"></div></div></div>
+                <div class="detailed-stat-card-v2 card-orange"><div class="stat-number">${cardCounts[2]}</div><div class="card-stack-wrapper"><div class="stack-shape stack-dark"></div><div class="stack-shape stack-medium"></div></div></div>
+                <div class="detailed-stat-card-v2 card-red"><div class="stat-number">${cardCounts[3]}</div><div class="card-stack-wrapper"><div class="stack-shape stack-dark"></div><div class="stack-shape stack-medium"></div><div class="stack-shape stack-light"></div></div></div>
+            `;
+        }
+        
+        function renderCalendar() { /* ... No changes here ... */
+            const container = document.getElementById('calendar-container');
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            document.getElementById('calendar-month-year').textContent = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const dayOffset = (firstDayIndex === 0) ? 6 : firstDayIndex - 1; 
+            
+            let dailyViolations = {};
+            employees.forEach(e => e.violations.forEach(v => {
+                const d = new Date(v.date);
+                if (d.getFullYear() === year && d.getMonth() === month) {
+                    dailyViolations[d.getDate()] = (dailyViolations[d.getDate()] || 0) + 1;
+                }
+            }));
+            
+            let html = '<div class="grid grid-cols-7 gap-2"><div class="calendar-header">Mon</div><div class="calendar-header">Tue</div><div class="calendar-header">Wed</div><div class="calendar-header">Thu</div><div class="calendar-header">Fri</div><div class="calendar-header">Sat</div><div class="calendar-header">Sun</div>';
+            
+            for (let i = 0; i < dayOffset; i++) {
+                html += '<div></div>';
+            }
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const loopDate = new Date(year, month, day);
+                let dayClasses = 'calendar-day';
+                let dayInfo = '';
+                let clickHandler = '';
+                let dayNumberClass = 'day-number';
+
+                if (loopDate.getTime() === today.getTime()) {
+                   dayNumberClass += ' today-highlight';
+                }
+
+                if (loopDate > today) {
+                    dayClasses += ' border border-gray-200 bg-white'; // Future days
+                } else {
+                    const violationsCount = dailyViolations[day] || 0;
+                    dayClasses += ' border-2'; // Thicker border for past/present days
+                    
+                    if (violationsCount > 0) {
+                        const violationBorders = ['border-yellow-400', 'border-orange-400', 'border-red-500'];
+                        const violationBgs = ['bg-yellow-50', 'bg-orange-50', 'bg-red-50'];
+                        const violationTexts = ['text-yellow-600', 'text-orange-600', 'text-red-600'];
+                        
+                        const level = Math.min(violationsCount - 1, 2);
+                        dayClasses += ` ${violationBorders[level]} ${violationBgs[level]}`;
+                        dayInfo = `<span class="font-bold ${violationTexts[level]}">${violationsCount} card(s)</span>`;
+                        dayClasses += ' cursor-pointer hover:scale-105 hover:shadow-lg';
+                        clickHandler = `onclick="showDayDetailsModal(${year},${month},${day})"`;
+                    } else {
+                        dayClasses += ' border-green-500 bg-green-50'; // Past safe days
+                        dayInfo = '<span class="text-green-700">✓ Safe</span>';
+                    }
+                }
+                
+                html += `<div class="${dayClasses}" ${clickHandler}><div class="${dayNumberClass}">${day}</div><div class="day-info">${dayInfo}</div></div>`;
+            }
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function renderYellowCardTable() { /* ... No changes here ... */
+             const tableBody = document.getElementById('yellow-card-table-body');
+            let content = '';
+            employees.forEach(emp => {
+                const cards = emp.violations.length;
+                let status, cardIndicatorHtml;
+                
+                if (cards === 0) {
+                    status = '<span class="text-xs font-semibold px-2 py-1 rounded-md bg-green-100 text-green-700">✓ Safe</span>';
+                    cardIndicatorHtml = '<span class="text-sm font-semibold px-3 py-1 rounded-full bg-green-100 text-green-700">0</span>';
+                } else {
+                    const tooltipText = emp.violations.map(v => `• ${v.date}: [${v.type}] - ${v.comment || 'No comment'}`).join('\n');
+                    let indicatorClass, statusClass, statusText, statusIcon;
+
+                    if (cards === 1) {
+                        indicatorClass = 'bg-yellow-100 text-yellow-700';
+                        statusClass = 'bg-yellow-100 text-yellow-700';
+                        statusText = 'Warning';
+                        statusIcon = '⚠';
+                    } else if (cards === 2) {
+                        indicatorClass = 'bg-orange-100 text-orange-700';
+                        statusClass = 'bg-orange-100 text-orange-700';
+                        statusText = 'At Risk';
+                        statusIcon = '⚠';
+                    } else { // 3+ cards
+                        indicatorClass = 'bg-red-100 text-red-700';
+                        statusClass = 'bg-red-100 text-red-700';
+                        statusText = 'High Risk';
+                        statusIcon = '<i data-lucide="siren" class="inline w-3 h-3 mr-1"></i>';
+                    }
+                    
+                    cardIndicatorHtml = `<div class="tooltip"><span class="text-sm font-semibold px-3 py-1 rounded-full ${indicatorClass}">${cards}</span><span class="tooltip-text">${tooltipText}</span></div>`;
+                    status = `<span class="text-xs font-semibold px-2 py-1 rounded-md ${statusClass}">${statusIcon} ${statusText}</span>`;
+                }
+
+                const violationTypes = emp.violations.map(v => v.type).join(', ');
+                
+                content += `<tr><td>${emp.name}</td><td>${emp.dept}</td><td>${cardIndicatorHtml}</td><td>${violationTypes || '—'}</td><td>${status}</td></tr>`;
+            });
+            tableBody.innerHTML = content;
+            lucide.createIcons();
+        }
+
+        function renderTeamGrids() { /* ... No changes here ... */
+            const container = document.getElementById('team-grids-container');
+            container.innerHTML = '';
+            document.getElementById('team-structure-heading').innerText = `Team Structure (${employees.length} Members)`;
+            
+            const departmentColors = {
+                'Design': '#6D28D9', 'Development': '#147857', 'AI Team': '#147857', 'Project Management': '#DC2626',
+                'Lead Generation': '#EC4899', 'Sales': '#EC4899', 'Video Production': '#F97316', 'Recruiting': '#4299e1',
+                'Finance': '#4299e1', 'default': '#4B5563'
+            };
+
+            const departments = [...new Set(employees.map(e => e.dept))].sort();
+            
+            departments.forEach(dept => {
+                const deptEmployees = employees.filter(e => e.dept === dept);
+                const deptColor = departmentColors[dept] || departmentColors['default'];
+                
+                let gridHTML = `<h3 class="text-xl font-semibold" style="color: ${deptColor};">${dept} (${deptEmployees.length})</h3><div class="team-grid">`;
+                
+                deptEmployees.forEach(emp => {
+                    gridHTML += `
+                        <div class="team-member" data-name="${emp.name}" data-role="${emp.role}" data-dept="${emp.dept}" 
+                             data-cards="${emp.violations.length}" data-email="${emp.email}" data-discord-id="${emp.discordId}">
+                            <h4 class="font-bold text-gray-800">${emp.name}</h4>
+                            <div class="text-sm text-gray-600">${emp.role}</div>
+                        </div>`;
+                });
+                gridHTML += `</div>`;
+                container.innerHTML += gridHTML;
+            });
+            document.querySelectorAll('.team-member').forEach(member => member.addEventListener('click', () => showEmployeeModal(member.dataset)));
+        }
+        
+        // --- Modal Rendering & Logic ---
+        function renderModals() {
+            const employeeOptions = employees.map(emp => ({ value: emp.name, text: `${emp.name} (${emp.dept})` }));
+            
+            // Give Card Modal
+            const giveCardModalContent = document.getElementById('giveCardModalContent');
+            giveCardModalContent.innerHTML = `<button class="close-btn" onclick="closeModal('giveCardModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Give Yellow Card</h2><label for="cardEmployeeDropdown">Employee:</label><div id="cardEmployeeDropdown" class="custom-dropdown"></div><label for="cardViolationTypeDropdown">Violation Type:</label><div id="cardViolationTypeDropdown" class="custom-dropdown"></div><label for="cardComment">Details:</label><textarea id="cardComment" rows="3" placeholder="Add specific details..." required></textarea><button class="action-button mt-2" onclick="submitYellowCard()"><i data-lucide="send" class="w-4 h-4"></i><span>Issue Yellow Card</span></button>`;
+            createDropdown('cardEmployeeDropdown', employeeOptions, 'Select an employee...');
+            createDropdown('cardViolationTypeDropdown', [
+                { value: 'Documentation', text: 'Documentation' },
+                { value: 'Workflow', text: 'Workflow' },
+                { value: 'Communication', text: 'Communication' }
+            ], 'Select a type...');
+            
+            // Add Employee Modal
+            document.getElementById('addEmployeeModalContent').innerHTML = `<button class="close-btn" onclick="closeModal('addEmployeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Add New Employee</h2><label>Full Name: <span class="text-red-500">*</span></label><input type="text" id="newEmpName" placeholder="e.g., John Doe"><label>Profession/Role: <span class="text-red-500">*</span></label><input type="text" id="newEmpRole" placeholder="e.g., lead generator"><label>Department: <span class="text-red-500">*</span></label><input type="text" id="newEmpDept" placeholder="e.g., Lead Generation"><label>Email:</label><input type="email" id="newEmpEmail" placeholder="e.g., john.doe@example.com"><label>Discord:</label><input type="text" id="newEmpDiscord" placeholder="e.g., username#1234"><button class="action-button-success mt-2" onclick="addEmployee()"><i data-lucide="save" class="w-4 h-4"></i><span>Save Employee</span></button>`;
+            
+            // Remove Employee Modal
+            const removeEmpModalContent = document.getElementById('removeEmployeeModalContent');
+            removeEmpModalContent.innerHTML = `<button class="close-btn" onclick="closeModal('removeEmployeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Remove Employee</h2><label for="removeEmpDropdown">Select Employee:</label><div id="removeEmpDropdown" class="custom-dropdown"></div><p class="my-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-md">Warning: This action is permanent and cannot be undone.</p><button class="action-button-delete" onclick="removeEmployee()">Confirm Removal</button>`;
+            createDropdown('removeEmpDropdown', employeeOptions, 'Select an employee to remove...');
+        }
+
+        function addEmployee() { /* ... No changes here ... */
+            const name = document.getElementById('newEmpName').value.trim();
+            const role = document.getElementById('newEmpRole').value.trim();
+            const dept = document.getElementById('newEmpDept').value.trim();
+            const email = document.getElementById('newEmpEmail').value.trim();
+            const discordId = document.getElementById('newEmpDiscord').value.trim();
+            const joinDate = new Date().toISOString().split('T')[0];
+            if (!name || !role || !dept) { alert('Please fill in all required fields.'); return; }
+            if (employees.some(e => e.name.toLowerCase() === name.toLowerCase())) { alert('An employee with this name already exists.'); return; }
+            employees.push({ name, role, dept, email, discordId, violations: [], joinDate });
+            renderAll();
+            closeModal('addEmployeeModal');
+        }
+        
+        function removeEmployee() {
+            const name = document.querySelector('#removeEmpDropdown .custom-dropdown-toggle').dataset.value;
+            if (!name) { alert('Please select an employee to remove.'); return; }
+            if (confirm(`Are you sure you want to remove ${name}? This action is permanent.`)) {
+                employees = employees.filter(e => e.name !== name);
+                renderAll();
+                closeModal('removeEmployeeModal');
+            }
+        }
+
+        function submitYellowCard() {
+            const name = document.querySelector('#cardEmployeeDropdown .custom-dropdown-toggle').dataset.value;
+            const type = document.querySelector('#cardViolationTypeDropdown .custom-dropdown-toggle').dataset.value;
+            const comment = document.getElementById('cardComment').value.trim();
+
+            if (!name || !type) { alert('Please select an employee and a violation type.'); return; }
+            if (!comment) { alert('Please fill in the details field.'); return; }
+            
+            giveCard(name, type, comment);
+            closeModal('giveCardModal');
+        }
+        
+        function giveCard(name, type, comment) {
+            const emp = employees.find(e => e.name === name);
+            if (emp) {
+                const today = new Date();
+                const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+                emp.violations.push({ date: dateStr, type, comment });
+                renderAll();
+                alert(`Yellow card (${type}) given to ${name}. They now have ${emp.violations.length} card(s).`);
+            }
+        }
+        
+        // --- Other Functions (Employee Modals, Tabs, Calendar Nav) ---
+        function showEmployeeModal(data) { /* ... No changes here ... */
+            const employee = employees.find(e => e.name === data.name);
+            const cards = parseInt(data.cards, 10);
+            
+            const cardColors = ['text-green-600', 'text-yellow-600', 'text-orange-600', 'text-red-600'];
+            const cardColorClass = cardColors[Math.min(cards, 3)];
+
+            const violationsList = employee.violations.length > 0
+                ? `<div class="mt-4 pt-4 border-t border-gray-200"><h4 class="font-semibold mb-2">Violations:</h4><ul class="space-y-2 text-sm text-gray-600">${
+                    employee.violations.map(v => {
+                        let colorClass;
+                        if (cards === 1) colorClass = 'bg-yellow-500';
+                        else if (cards === 2) colorClass = 'bg-orange-500';
+                        else if (cards >= 3) colorClass = 'bg-red-600';
+                        else colorClass = 'bg-green-500';
+
+                        return `<li class="flex items-start gap-3">
+                                    <div class="w-3 h-3 mt-1 rounded-sm ${colorClass} flex-shrink-0"></div>
+                                    <div class="flex-1"><strong>${v.date} [${v.type}]</strong>: ${v.comment || 'No comment'}</div>
+                                </li>`;
+                    }).join('')
+                }</ul></div>`
+                : '';
+
+            document.getElementById('employeeModalContent').innerHTML = `
+                <button class="close-btn" onclick="closeModal('employeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button>
+                <h2 class="text-2xl font-bold text-gray-800 mb-1">${data.name}</h2>
+                <p class="text-gray-500 mb-4">${data.role} • ${data.dept}</p>
+                <div class="space-y-2 text-gray-700">
+                    <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
+                    <p><strong>Discord:</strong> ${data.discordId || 'N/A'}</p>
+                    <p class="flex items-center gap-2"><strong>Yellow Cards:</strong> <span class="font-bold text-2xl ${cardColorClass}">${cards}</span></p>
+                </div>
+                ${violationsList}
+                <div class="flex flex-wrap gap-3 mt-6 pt-6 border-t border-gray-200">
+                    <button class="action-button-secondary" onclick="openEditEmployeeModal('${data.name}')"><i data-lucide="edit" class="w-4 h-4"></i><span>Edit</span></button>
+                    <button class="action-button" onclick="openGiveCardModalForEmployee('${data.name}')"><i data-lucide="alert-triangle" class="w-4 h-4"></i><span>Give Card</span></button>
+                </div>`;
+            document.getElementById('employeeModal').style.display = 'flex';
+            lucide.createIcons();
+        }
+
+        function showDayDetailsModal(year, month, day) { /* ... No changes here ... */
+            const clickedDate = new Date(year, month, day);
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const violationsOnDay = employees.flatMap(e => 
+                e.violations.filter(v => v.date === dateStr).map(v => ({ name: e.name, type: v.type, comment: v.comment }))
+            );
+            
+            let content = `<button class="close-btn" onclick="closeModal('dayDetailsModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-4">Violations on ${clickedDate.toLocaleDateString()}</h2>`;
+            if (violationsOnDay.length > 0) {
+                content += '<div class="space-y-3">';
+                violationsOnDay.forEach(v => {
+                    const employee = employees.find(e => e.name === v.name);
+                    const totalCards = employee ? employee.violations.length : 0;
+                    
+                    let colorClass = 'bg-gray-400';
+                    if (totalCards === 0) colorClass = 'bg-green-500';
+                    else if (totalCards === 1) colorClass = 'bg-yellow-500';
+                    else if (totalCards === 2) colorClass = 'bg-orange-500';
+                    else if (totalCards >= 3) colorClass = 'bg-red-600';
+
+                    content += `
+                        <div class="flex items-start gap-3">
+                            <div class="w-3 h-3 mt-1.5 rounded-sm ${colorClass} flex-shrink-0"></div>
+                            <div class="text-gray-700">
+                                <strong>${v.name} (${v.type}):</strong> ${v.comment || 'No comment'}
+                            </div>
+                        </div>
+                    `;
+                });
+                content += '</div>';
+            } else {
+                content += '<p>No violations recorded for this day.</p>';
+            }
+            
+            document.getElementById('dayDetailsModalContent').innerHTML = content;
+            document.getElementById('dayDetailsModal').style.display = 'flex';
+            lucide.createIcons();
+        }
+        
+        function openEditEmployeeModal(name) { /* ... No changes here ... */
+            const emp = employees.find(e => e.name === name);
+            if (!emp) return;
+
+            document.getElementById('editEmployeeModalContent').innerHTML = `
+                <button class="close-btn" onclick="closeModal('editEmployeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button>
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Employee</h2>
+                <input type="hidden" id="originalEmpName" value="${emp.name}">
+                <label>Full Name: <span class="text-red-500">*</span></label><input type="text" id="editEmpName" value="${emp.name}">
+                <label>Profession/Role: <span class="text-red-500">*</span></label><input type="text" id="editEmpRole" value="${emp.role}">
+                <label>Department: <span class="text-red-500">*</span></label><input type="text" id="editEmpDept" value="${emp.dept}">
+                <label>Email:</label><input type="email" id="editEmpEmail" value="${emp.email}">
+                <label>Discord:</label><input type="text" id="editEmpDiscord" value="${emp.discordId || ''}">
+                <button class="action-button-success mt-2" onclick="saveEmployeeChanges()"><i data-lucide="save" class="w-4 h-4"></i><span>Save Changes</span></button>`;
+            closeModal('employeeModal');
+            document.getElementById('editEmployeeModal').style.display = 'flex';
+            lucide.createIcons();
+        }
+
+        function saveEmployeeChanges() { /* ... No changes here ... */
+            const originalName = document.getElementById('originalEmpName').value;
+            const newName = document.getElementById('editEmpName').value.trim();
+            const newRole = document.getElementById('editEmpRole').value.trim();
+            const newDept = document.getElementById('editEmpDept').value.trim();
+            const newEmail = document.getElementById('editEmpEmail').value.trim();
+            const newDiscordId = document.getElementById('editEmpDiscord').value.trim();
+
+            if (!newName || !newRole || !newDept) { alert('Please fill in all required fields.'); return; }
+            
+            const emp = employees.find(e => e.name === originalName);
+            if (emp) {
+                emp.name = newName; emp.role = newRole; emp.dept = newDept;
+                emp.email = newEmail; emp.discordId = newDiscordId;
+            }
+            renderAll();
+            closeModal('editEmployeeModal');
+        }
+
+        function switchTab(buttonElement) { /* ... No changes here ... */
+            const tabId = buttonElement.dataset.tab;
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.remove('hidden');
+            buttonElement.classList.add('active');
+            lucide.createIcons();
+            if (tabId === 'leaderboard') {
+                renderLeaderboard();
+            }
+        }
+        
+        function changeMonth(direction) { /* ... No changes here ... */
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            renderCalendar();
+        }
+        
+        // --- Modal Opening / Closing ---
+        function openGiveCardModalForEmployee(name) {
+            closeModal('employeeModal');
+            openGiveCardModal(name);
+        }
+        function openAddEmployeeModal() {
+            document.getElementById('addEmployeeModal').style.display = 'flex';
+            lucide.createIcons();
+        }
+        function openRemoveEmployeeModal() {
+            renderModals(); // Re-render to ensure dropdown is up-to-date
+            document.getElementById('removeEmployeeModal').style.display = 'flex';
+            lucide.createIcons();
+        }
+        function openGiveCardModal(name = null) {
+            renderModals(); // Re-render to populate dropdowns
+            if (name) {
+                const dropdown = document.querySelector('#cardEmployeeDropdown');
+                const toggle = dropdown.querySelector('.custom-dropdown-toggle');
+                const item = dropdown.querySelector(`li[data-value="${name}"]`);
+                if (item) {
+                    toggle.dataset.value = name;
+                    toggle.querySelector('.selected-value').textContent = item.textContent;
+                    toggle.querySelector('.selected-value').classList.remove('placeholder');
+                }
+            }
+            document.getElementById('giveCardModal').style.display = 'flex';
+            lucide.createIcons();
+        }
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+        
+        // --- Leaderboard Functions ---
+        function populateDeptFilter() {
+            const depts = [...new Set(employees.map(e => e.dept))].sort();
+            const options = [
+                { value: '', text: 'All Departments' },
+                ...depts.map(d => ({ value: d, text: d }))
+            ];
+            createDropdown('leaderboard-dept-filter-container', options, 'All Departments', renderLeaderboard);
+        }
+
+        function setPeriodFilter(buttonElement) {
+            document.querySelectorAll('#leaderboard-period-filter .period-btn').forEach(btn => btn.classList.remove('active'));
+            buttonElement.classList.add('active');
+            renderLeaderboard();
+        }
+
+        function renderLeaderboard() {
+            const tableBody = document.getElementById('leaderboard-table-body');
+            const searchTerm = document.getElementById('leaderboard-search').value.toLowerCase();
+            const deptDropdown = document.querySelector('#leaderboard-dept-filter-container .custom-dropdown-toggle');
+            const selectedDept = deptDropdown ? deptDropdown.dataset.value : '';
+            const selectedPeriod = document.querySelector('#leaderboard-period-filter .period-btn.active').dataset.period;
+            
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            const leaderboardData = employees.map(emp => {
+                const lastViolation = emp.violations.length > 0 ? emp.violations.reduce((latest, v) => new Date(v.date) > new Date(latest.date) ? v : latest) : null;
+                const dateForCalc = lastViolation ? new Date(lastViolation.date) : new Date(emp.joinDate);
+                const displayDate = lastViolation ? lastViolation.date : emp.joinDate;
+                const daysWithoutCards = Math.floor((today - dateForCalc) / (1000 * 60 * 60 * 24));
+                const daysInSystem = Math.floor((today - new Date(emp.joinDate)) / (1000 * 60 * 60 * 24));
+                
+                let badges = [];
+                if (daysInSystem < 14) badges.push({type: 'new', text: 'New'});
+                if (daysWithoutCards >= 180) badges.push({type: 'streak', text: '🔥 180+ days'});
+                else if (daysWithoutCards >= 90) badges.push({type: 'streak', text: '🔥 90+ days'});
+                else if (daysWithoutCards >= 60) badges.push({type: 'streak', text: '🔥 60+ days'});
+
+                return { ...emp, lastCardDate: displayDate, daysWithoutCards, badges };
+            });
+
+            const filteredData = leaderboardData.filter(emp => {
+                const nameMatch = emp.name.toLowerCase().includes(searchTerm);
+                const deptMatch = !selectedDept || emp.dept === selectedDept;
+                const periodMatch = selectedPeriod === 'all' || emp.daysWithoutCards >= parseInt(selectedPeriod, 10);
+                return nameMatch && deptMatch && periodMatch;
+            });
+            
+            filteredData.sort((a, b) => {
+                if (b.daysWithoutCards !== a.daysWithoutCards) return b.daysWithoutCards - a.daysWithoutCards;
+                const dateA = new Date(a.lastCardDate);
+                const dateB = new Date(b.lastCardDate);
+                if (dateA !== dateB) return dateA - dateB;
+                return a.name.localeCompare(b.name);
+            });
+
+            if (filteredData.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-8">No employees match the selected filters.</td></tr>`;
+            } else {
+                tableBody.innerHTML = filteredData.map(emp => `
+                    <tr>
+                        <td>${emp.name}</td>
+                        <td>${emp.dept}</td>
+                        <td>${emp.lastCardDate}</td>
+                        <td class="font-bold text-lg">${emp.daysWithoutCards}</td>
+                        <td>${emp.badges.map(b => `<span class="badge badge-${b.type}">${b.text}</span>`).join(' ')}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // --- Event Listeners ---
+        document.addEventListener('DOMContentLoaded', renderAll);
+        
+        // Global click listener for dropdowns and modals
+        window.addEventListener('click', (event) => {
+            // Close open dropdowns if clicking outside
+            document.querySelectorAll('.custom-dropdown.open').forEach(dropdown => {
+                if (!dropdown.contains(event.target)) {
+                    dropdown.classList.remove('open');
+                }
+            });
+
+            // Toggle dropdown on click
+            const dropdownToggle = event.target.closest('.custom-dropdown-toggle');
+            if (dropdownToggle) {
+                dropdownToggle.parentElement.classList.toggle('open');
+            }
+
+            // Close modals if clicking on the background
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        });
+    </script>
+    <style>
+        /* General Styles (Keep as is) */
+        .table { text-align: left; border-collapse: collapse; }
+        .table th, .table td { padding: 12px 16px; border-bottom: 1px solid #e5e7eb; }
+        .table th { background: #f9fafb; font-weight: 600; color: #4b5563; }
+        .table tr:last-child td { border-bottom: none; }
+        .table tr:hover { background-color: #f9fafb; }
+        .stat-card { background-color: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: all 0.3s ease; display: flex; align-items: center; gap: 16px; }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .stat-icon { font-size: 1.5em; padding: 16px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+        .stat-info .stat-number { font-size: 2.25em; font-weight: bold; line-height: 1; color: var(--color-text-primary); }
+        .stat-info .stat-label { color: var(--color-text-primary); font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;}
+        .calendar-header { text-align: center; font-weight: bold; color: var(--color-primary-dark); padding: 10px; background: #f3f4f6; border-radius: 5px; }
+        .calendar-day { padding: 8px; border-radius: 8px; min-height: 90px; transition: all 0.2s; }
+        .day-number { font-weight: bold; font-size: 1.1em; }
+        .day-number.today-highlight { background-color: var(--color-primary-main); color: white; border-radius: 50%; display: inline-flex; width: 28px; height: 28px; line-height: 28px; align-items: center; justify-content: center; }
+        .day-info { font-size: 0.75rem; margin-top: 5px; text-align: center; font-weight: 500; }
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+        .team-member { background-color: #ffffff; border: 1px solid var(--border-color); padding: 16px; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .team-member:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--color-primary-main); }
+        .action-button, .action-button-delete, .action-button-success, .action-button-secondary { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 0.9em; font-weight: 600; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+        .action-button { background-color: var(--color-primary-main); color: white; }
+        .action-button:hover { background-color: var(--color-primary-dark); }
+        .action-button-delete { background-color: var(--color-error-main); color: white; }
+        .action-button-delete:hover { background-color: #c62828; }
+        .action-button-success { background-color: var(--color-success-main); color: white; }
+        .action-button-success:hover { background-color: #2f855a; }
+        .action-button-secondary { background-color: white; color: var(--color-primary-main); border-color: var(--color-primary-main); }
+        .action-button-secondary:hover { background-color: rgba(66, 153, 225, 0.08); }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
+        .modal-content { background-color: #fefefe; padding: 24px 32px; width: 90%; max-width: 550px; border-radius: 16px; box-shadow: 0 10px 20px rgba(0,0,0,0.19); position: relative; }
+        .modal-content label { display: block; margin-bottom: 6px; font-weight: 500; color: #4b5563; font-size: 0.9rem; margin-top: 16px; }
+        .modal-content label:first-of-type { margin-top: 0; }
+        .modal-content input, .modal-content textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1em; margin-bottom: 16px; }
+        .modal-content input:focus, .modal-content textarea:focus { border-color: var(--color-primary-main); outline: 2px solid transparent; }
+        .leaderboard-filters { align-items: center; }
+        .period-btn { 
+            padding: 12px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s;
+            background-color: white; color: var(--color-primary-main); border: 1px solid var(--color-primary-main);
+            font-weight: 600; font-size: 0.9em;
+        }
+        .period-btn:hover { background-color: rgba(66, 153, 225, 0.08); }
+        .period-btn.active { background-color: var(--color-primary-main); color: white; border-color: var(--color-primary-main); }
+        .badge { padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; display: inline-block; margin: 2px 0;}
+        .badge-new { background-color: #e0e7ff; color: #4338ca; }
+        .badge-streak { background-color: #dcfce7; color: #166534; }
+    </style>
+</body>
+</html>
