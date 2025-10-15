@@ -28,6 +28,7 @@
             font-family: 'Roboto', sans-serif;
             background-color: #f7fafc;
             color: var(--color-text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         .focus-ring {
             outline: 2px solid transparent;
@@ -48,6 +49,136 @@
         .tab-btn { background-color: white; color: var(--color-primary-main); border: 1px solid var(--color-primary-main); }
         .tab-btn:hover { background-color: rgba(66, 153, 225, 0.08); }
         .tab-btn.active { background-color: var(--color-primary-main); color: white; border-color: var(--color-primary-main); font-weight: 600; }
+        
+        /* Dark Theme Styles */
+        body.dark-theme { background-color: #1a202c; color: #f7fafc; }
+        body.dark-theme .max-w-7xl { background-color: #1a202c; }
+        body.dark-theme header { background-color: #1f2937; color: #f7fafc; }
+        
+        /* Logo switching for light/dark theme */
+        .logo-light { display: block; }
+        .logo-dark { display: none; }
+        body.dark-theme .logo-light { display: none; }
+        body.dark-theme .logo-dark { display: block; }
+        body.dark-theme .text-gray-800 { color: #f7fafc !important; }
+        body.dark-theme .text-gray-600 { color: #cbd5e0 !important; }
+        body.dark-theme .text-gray-700 { color: #e5e7eb !important; }
+        body.dark-theme .text-gray-500 { color: #9ca3af !important; }
+        body.dark-theme .bg-white { background-color: #1f2937 !important; }
+        body.dark-theme .bg-gray-50 { background-color: #374151 !important; }
+        body.dark-theme .bg-gray-100 { background-color: #4b5563 !important; }
+        body.dark-theme .bg-gray-200 { background-color: #6b7280 !important; }
+        body.dark-theme .border-gray-200 { border-color: #374151 !important; }
+        body.dark-theme .border-gray-300 { border-color: #4b5563 !important; }
+        body.dark-theme .tab-btn { background-color: #1f2937; color: var(--color-primary-light); border-color: var(--color-primary-light); }
+        body.dark-theme .tab-btn:hover { background-color: rgba(99, 179, 237, 0.15); }
+        body.dark-theme .tab-btn.active { background-color: var(--color-primary-main); color: white; }
+        body.dark-theme .calendar-header { background-color: #374151; color: var(--color-primary-light); }
+        body.dark-theme .team-member { background-color: #1f2937; border-color: #374151; }
+        body.dark-theme .team-member:hover { border-color: var(--color-primary-light); }
+        body.dark-theme .stat-card { background-color: #1f2937; }
+        body.dark-theme .rule-card { background-color: #374151; }
+        body.dark-theme .table th { background-color: #374151; color: #e5e7eb; }
+        body.dark-theme .table tr:hover { background-color: #374151; }
+        body.dark-theme .custom-dropdown-toggle { background-color: #1f2937; border-color: #4b5563; color: #f7fafc; }
+        body.dark-theme .custom-dropdown-menu { background-color: #1f2937; border-color: #4b5563; }
+        body.dark-theme .custom-dropdown-menu li:hover { background-color: #374151; }
+        body.dark-theme .custom-dropdown-menu li.selected { color: var(--color-primary-light); background-color: rgba(99, 179, 237, 0.2); }
+        body.dark-theme .custom-dropdown-toggle .selected-value { color: #f7fafc; }
+        body.dark-theme .custom-dropdown-toggle .placeholder { color: #9ca3af; }
+        body.dark-theme .custom-dropdown-toggle .chevron-icon { color: #9ca3af; }
+        body.dark-theme .custom-dropdown-toggle:focus { border-color: var(--color-primary-light); box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.2); }
+        
+        /* Dropdown scrollbar styling for dark theme */
+        body.dark-theme .custom-dropdown-menu::-webkit-scrollbar { width: 8px; }
+        body.dark-theme .custom-dropdown-menu::-webkit-scrollbar-track { background: #1f2937; }
+        body.dark-theme .custom-dropdown-menu::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+        body.dark-theme .custom-dropdown-menu::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+        body.dark-theme .custom-dropdown.open .custom-dropdown-toggle { border-color: var(--color-primary-light); }
+        body.dark-theme .custom-dropdown-menu { box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        body.dark-theme .custom-dropdown-menu li { color: #e5e7eb; }
+        body.dark-theme .custom-dropdown-menu { border: 1px solid #4b5563 !important; }
+        body.dark-theme .search-input-container input { background-color: #1f2937; border-color: #4b5563; color: #f7fafc; }
+        body.dark-theme .search-input-container input::placeholder { color: #9ca3af; }
+        body.dark-theme .modal-content { background-color: #1f2937; color: #f7fafc; }
+        body.dark-theme .modal-content input, body.dark-theme .modal-content textarea { background-color: #374151; border-color: #4b5563; color: #f7fafc; }
+        body.dark-theme .modal-content label { color: #e5e7eb; }
+        body.dark-theme .close-btn { color: #9ca3af; }
+        body.dark-theme .close-btn:hover { color: #f7fafc; background-color: #374151; }
+        body.dark-theme .period-btn { background-color: #1f2937; color: var(--color-primary-light); border-color: var(--color-primary-light); }
+        body.dark-theme .period-btn:hover { background-color: rgba(99, 179, 237, 0.15); }
+        body.dark-theme .period-btn.active { background-color: var(--color-primary-main); color: white; }
+        body.dark-theme .detailed-stat-card-v2.card-green { background-color: rgba(34, 197, 94, 0.2); }
+        body.dark-theme .detailed-stat-card-v2.card-yellow { background-color: rgba(234, 179, 8, 0.2); }
+        body.dark-theme .detailed-stat-card-v2.card-orange { background-color: rgba(249, 115, 22, 0.2); }
+        body.dark-theme .detailed-stat-card-v2.card-red { background-color: rgba(239, 68, 68, 0.2); }
+        body.dark-theme .calendar-day { border-color: #4b5563; }
+        body.dark-theme .calendar-day.border-gray-200 { background-color: #374151; }
+        body.dark-theme .stat-icon { color: inherit; }
+        body.dark-theme .stat-info .stat-number { color: #f7fafc; }
+        body.dark-theme .stat-info .stat-label { color: #e5e7eb; }
+        body.dark-theme .stat-sublabel { color: #9ca3af; }
+        body.dark-theme .action-button-secondary { background-color: #1f2937; color: var(--color-primary-light); border-color: var(--color-primary-light); }
+        body.dark-theme .action-button-secondary:hover { background-color: rgba(99, 179, 237, 0.15); }
+        
+        /* Dashboard Overview stat cards - темна тема з яскравими кольорами */
+        body.dark-theme .bg-blue-100 { background-color: rgba(59, 130, 246, 0.2) !important; }
+        body.dark-theme .text-blue-600 { color: #60a5fa !important; }
+        body.dark-theme .bg-green-100 { background-color: rgba(34, 197, 94, 0.2) !important; }
+        body.dark-theme .text-green-600 { color: #4ade80 !important; }
+        body.dark-theme .bg-orange-100 { background-color: rgba(249, 115, 22, 0.2) !important; }
+        body.dark-theme .text-orange-600 { color: #fb923c !important; }
+        body.dark-theme .bg-red-100 { background-color: rgba(239, 68, 68, 0.2) !important; }
+        body.dark-theme .text-red-600 { color: #f87171 !important; }
+        
+        /* Calendar - яскраві кольори для днів з порушеннями */
+        body.dark-theme .border-yellow-400 { border-color: #facc15 !important; }
+        body.dark-theme .bg-yellow-50 { background-color: rgba(234, 179, 8, 0.15) !important; }
+        body.dark-theme .text-yellow-600 { color: #fbbf24 !important; }
+        body.dark-theme .border-orange-400 { border-color: #fb923c !important; }
+        body.dark-theme .bg-orange-50 { background-color: rgba(249, 115, 22, 0.15) !important; }
+        body.dark-theme .text-orange-600 { color: #fb923c !important; }
+        body.dark-theme .border-red-500 { border-color: #ef4444 !important; }
+        body.dark-theme .bg-red-50 { background-color: rgba(239, 68, 68, 0.15) !important; }
+        body.dark-theme .text-red-600 { color: #f87171 !important; }
+        body.dark-theme .border-green-500 { border-color: #22c55e !important; }
+        body.dark-theme .bg-green-50 { background-color: rgba(34, 197, 94, 0.15) !important; }
+        body.dark-theme .text-green-700 { color: #4ade80 !important; }
+        
+        /* Yellow Card Table - яскраві індикатори та статуси */
+        body.dark-theme .bg-yellow-100 { background-color: rgba(234, 179, 8, 0.2) !important; }
+        body.dark-theme .text-yellow-700 { color: #fbbf24 !important; }
+        body.dark-theme .bg-orange-100 { background-color: rgba(249, 115, 22, 0.2) !important; }
+        body.dark-theme .text-orange-700 { color: #fb923c !important; }
+        body.dark-theme .bg-red-100 { background-color: rgba(239, 68, 68, 0.2) !important; }
+        body.dark-theme .text-red-700 { color: #f87171 !important; }
+        body.dark-theme .bg-green-100 { background-color: rgba(34, 197, 94, 0.2) !important; }
+        body.dark-theme .text-green-700 { color: #4ade80 !important; }
+        
+        /* Violation Categories Cards */
+        body.dark-theme .rule-card .bg-white { background-color: #1f2937 !important; }
+        body.dark-theme .rule-card li { background-color: #1f2937 !important; color: #e5e7eb !important; }
+        
+        /* Leaderboard Badges */
+        body.dark-theme .badge-new { background-color: rgba(99, 102, 241, 0.2); color: #a5b4fc; }
+        body.dark-theme .badge-streak { background-color: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        
+        /* Modal violation indicators */
+        body.dark-theme .bg-yellow-500 { background-color: #eab308 !important; }
+        body.dark-theme .bg-orange-500 { background-color: #f97316 !important; }
+        body.dark-theme .bg-red-600 { background-color: #dc2626 !important; }
+        body.dark-theme .bg-green-500 { background-color: #22c55e !important; }
+        
+        /* Alert backgrounds in modals */
+        body.dark-theme .bg-red-50 { background-color: rgba(239, 68, 68, 0.15) !important; }
+        body.dark-theme .border-red-500 { border-color: #ef4444 !important; }
+        body.dark-theme .text-red-700 { color: #f87171 !important; }
+        
+        /* Text colors for card counts in modals */
+        body.dark-theme .text-green-600 { color: #4ade80 !important; }
+        body.dark-theme .text-yellow-600 { color: #fbbf24 !important; }
+        body.dark-theme .text-orange-600 { color: #fb923c !important; }
+        body.dark-theme .text-red-600 { color: #f87171 !important; }
     </style>
     <style>
         /* Detailed Breakdown cards styles */
@@ -69,7 +200,7 @@
         .card-red .stack-medium { background-color: #F87171; }
         .card-red .stack-light { background-color: #FCA5A5; }
 
-        /* NEW Custom Dropdown Styles */
+        /* Custom Dropdown Styles */
         .custom-dropdown { position: relative; min-width: 220px; }
         .custom-dropdown-toggle {
             display: flex; justify-content: space-between; align-items: center;
@@ -77,6 +208,7 @@
             font-size: 1em; background-color: white; cursor: pointer; transition: border-color 0.2s; text-align: left;
         }
         .custom-dropdown-toggle:focus { border-color: var(--color-primary-main); outline: none; box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2); }
+        .custom-dropdown.open .custom-dropdown-toggle { border-color: var(--color-primary-main); }
         .custom-dropdown-toggle .chevron-icon { color: #9ca3af; transition: transform 0.2s; }
         .custom-dropdown.open .custom-dropdown-toggle .chevron-icon { transform: rotate(180deg); }
         .custom-dropdown-menu {
@@ -85,17 +217,23 @@
             z-index: 100; list-style: none; padding: 8px; margin: 0;
             max-height: 250px; overflow-y: auto;
             visibility: hidden; opacity: 0; transform: translateY(-10px); transition: all 0.2s ease-out;
+            border: 1px solid #e5e7eb;
         }
         .custom-dropdown.open .custom-dropdown-menu { visibility: visible; opacity: 1; transform: translateY(0); }
         .custom-dropdown-menu li {
             padding: 10px 12px; border-radius: 6px; cursor: pointer;
             transition: background-color 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
-        .custom-dropdown-menu li:hover { background-color: #f3f4f6; /* light grey hover */ }
-        .custom-dropdown-menu li.selected { font-weight: 600; color: var(--color-primary-dark); }
+        .custom-dropdown-menu li:hover { background-color: #f3f4f6; }
+        .custom-dropdown-menu li.selected { font-weight: 600; color: var(--color-primary-dark); background-color: rgba(66, 153, 225, 0.1); }
         .custom-dropdown-toggle .selected-value { color: var(--color-text-primary); }
         .custom-dropdown-toggle .placeholder { color: var(--color-text-secondary); }
-
+        
+        /* Dropdown scrollbar styling */
+        .custom-dropdown-menu::-webkit-scrollbar { width: 8px; }
+        .custom-dropdown-menu::-webkit-scrollbar-track { background: #f9fafb; }
+        .custom-dropdown-menu::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        .custom-dropdown-menu::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
 
         /* Custom Search Input for Leaderboard */
         .search-input-container { position: relative; flex-grow: 1; }
@@ -118,29 +256,42 @@
 
     <div class="max-w-7xl mx-auto">
         <header class="bg-white p-6 lg:p-8 rounded-2xl shadow-lg mb-8">
-            <div class="flex items-center gap-4">
-                <i data-lucide="alert-triangle" class="w-10 h-10 text-orange-500"></i>
-                <h1 class="text-3xl lg:text-4xl font-bold text-gray-800">Yellow Card Accountability Dashboard</h1>
-            </div>
-            <div class="flex flex-wrap gap-x-6 gap-y-2 mt-4 text-gray-600">
-                <span id="team-size-stat"></span>
-                <span id="card-ratio-stat"></span>
+            <div class="flex items-center gap-6">
+                <div class="logo-container w-20 h-20 flex-shrink-0 relative">
+                    <img src="Logo.svg" alt="Company Logo" class="logo-light w-full h-full object-contain">
+                    <img src="Logo_dark.svg" alt="Company Logo" class="logo-dark w-full h-full object-contain hidden">
+                </div>
+                <div class="flex-grow text-center">
+                    <div class="flex items-center justify-center gap-4 mb-3">
+                        <i data-lucide="alert-triangle" class="w-10 h-10 text-orange-500"></i>
+                        <h1 class="text-3xl lg:text-4xl font-bold text-gray-800">Yellow Card Accountability Dashboard</h1>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-gray-600">
+                        <span id="team-size-stat"></span>
+                        <span id="card-ratio-stat"></span>
+                    </div>
+                </div>
             </div>
         </header>
 
         <div class="mb-6">
-            <div class="nav-tabs flex flex-wrap gap-3">
-                <button class="tab-btn active px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="overview" onclick="switchTab(this)">
-                    <i data-lucide="layout-dashboard" class="inline w-4 h-4 mr-2"></i>Overview
-                </button>
-                <button class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="yellowcard" onclick="switchTab(this)">
-                    <i data-lucide="alert-circle" class="inline w-4 h-4 mr-2"></i>Yellow Cards
-                </button>
-                <button class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="team" onclick="switchTab(this)">
-                     <i data-lucide="users" class="inline w-4 h-4 mr-2"></i>Team
-                </button>
-                <button class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="leaderboard" onclick="switchTab(this)">
-                     <i data-lucide="trophy" class="inline w-4 h-4 mr-2"></i>Leaderboard
+            <div class="nav-tabs flex flex-wrap justify-between items-center gap-3">
+                <div class="flex flex-wrap gap-3">
+                    <button class="tab-btn active px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="overview" onclick="switchTab(this)">
+                        <i data-lucide="layout-dashboard" class="inline w-4 h-4 mr-2"></i>Overview
+                    </button>
+                    <button class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="yellowcard" onclick="switchTab(this)">
+                        <i data-lucide="alert-circle" class="inline w-4 h-4 mr-2"></i>Yellow Cards
+                    </button>
+                    <button class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="team" onclick="switchTab(this)">
+                         <i data-lucide="users" class="inline w-4 h-4 mr-2"></i>Team
+                    </button>
+                    <button class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="leaderboard" onclick="switchTab(this)">
+                         <i data-lucide="trophy" class="inline w-4 h-4 mr-2"></i>Leaderboard
+                    </button>
+                </div>
+                <button id="theme-toggle-btn" class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" onclick="toggleTheme()">
+                    <i data-lucide="moon" class="inline w-4 h-4 mr-2"></i><span id="theme-toggle-text">Dark Mode</span>
                 </button>
             </div>
         </div>
@@ -162,7 +313,7 @@
                             <h4 class="font-bold text-lg mb-4 flex items-center gap-2" style="color: var(--color-primary-main);"><i data-lucide="file-text" class="w-5 h-5"></i>Documentation</h4>
                             <ul class="space-y-2">
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">No Daily file for working day</li>
-                                <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">Insufficient detail (&lt;3 sentences)</li>
+                                <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">Insufficient detail (<3 sentences)</li>
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">No links to work outputs</li>
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">Wrong folder structure</li>
                             </ul>
@@ -251,8 +402,8 @@
 
                         <div id="leaderboard-period-filter" class="flex items-center gap-2">
                             <button class="period-btn active" data-period="all" onclick="setPeriodFilter(this)">All Time</button>
-                            <button class="period-btn" data-period="60" onclick="setPeriodFilter(this)">&ge; 60 days</button>
-                            <button class="period-btn" data-period="90" onclick="setPeriodFilter(this)">&ge; 90 days</button>
+                            <button class="period-btn" data-period="60" onclick="setPeriodFilter(this)">≥ 60 days</button>
+                            <button class="period-btn" data-period="90" onclick="setPeriodFilter(this)">≥ 90 days</button>
                         </div>
                     </div>
 
@@ -282,10 +433,10 @@
         // Data and State
         let currentDate = new Date();
         let employees = [
-             { name: 'Hanan Zaheur', role: 'lead generator', dept: 'Lead Generation', email: 'hanane.zaheur@gmail.com', discordId: '', violations: [], joinDate: '2025-01-15' }, { name: 'Alakbarova Ulviyya Javid', role: 'lead generator', dept: 'Lead Generation', email: 'ulviyyelekberova@gmail.com', discordId: '', violations: [], joinDate: '2025-02-20' }, { name: 'Rybak Nataliia', role: 'lead generator', dept: 'Lead Generation', email: 'rybaknatalia91@gmail.com', discordId: '', violations: [], joinDate: '2025-03-10' }, { name: 'Pasichna Anastasiia', role: 'lead generator', dept: 'Lead Generation', email: 'anastasiya.pasichnaya@gmail.com', discordId: '', violations: [], joinDate: '2025-08-01' }, { name: 'Kovalska Anastasiya', role: 'sales manager', dept: 'Sales', email: 'avkovalska23@gmail.com', discordId: '', violations: [], joinDate: '2025-04-05' }, { name: 'Artemchuk Nikolay', role: 'project manager', dept: 'Project Management', email: 'artemchuknn@gmail.com', discordId: '', violations: [], joinDate: '2025-01-10' }, { name: 'Iskandarova Anush', role: 'sales manager', dept: 'Sales', email: 'nushnushok@icloud.com', discordId: '', violations: [], joinDate: '2025-05-12' }, { name: 'Skrypkar Vilhelm', role: 'illustrator', dept: 'Design', email: 'ntwilson666@gmail.com', discordId: '', violations: [], joinDate: '2025-02-01' }, { name: 'Nealova Evgeniya', role: 'recruiter', dept: 'Recruiting', email: 'zp4058203@gmail.com', discordId: '', violations: [], joinDate: '2025-06-30' }, { name: 'Kucherenko Iuliia', role: 'graphic designer', dept: 'Design', email: 'ulia.k.rhs@gmail.com', discordId: '', violations: [], joinDate: '2025-03-18' }, { name: 'Vereteno Marta', role: 'graphic designer', dept: 'Design', email: 'sd.designsmart@gmail.com', discordId: '', violations: [], joinDate: '2025-09-25' }, { name: 'Davlatmamadova Firuza', role: 'lead generator', dept: 'Lead Generation', email: 'davlatmamadova.firuza@bk.ru', discordId: '', violations: [], joinDate: '2025-10-01' }, { name: 'Azanova Darʼya', role: 'video editor', dept: 'Video Production', email: 'azanova1997@gmail.com', discordId: '', violations: [], joinDate: '2025-07-07' }, { name: 'Burda Anna', role: 'lead generator', dept: 'Lead Generation', email: 'burdaanna8@gmail.com', discordId: '', violations: [], joinDate: '2025-08-15' }, { name: 'Danylenko Liliia', role: 'full stack developer', dept: 'Development', email: 'liliia.danylenko.dev@gmail.com', discordId: '', violations: [], joinDate: '2025-01-25' }, { name: 'Podolskyi Sviatoslav', role: 'video editor', dept: 'Video Production', email: 'neozoy.x@gmail.com', discordId: '', violations: [], joinDate: '2025-09-01' }, { name: 'Ponomarova Kateryna', role: 'financial manager', dept: 'Finance', email: 'katrinp.usa@gmail.com', discordId: '', violations: [], joinDate: '2025-02-11' }, { name: 'Yelisieieva Daria', role: 'financial manager', dept: 'Finance', email: 'zt.dasha@gmail.com', discordId: '', violations: [], joinDate: '2025-03-03' }, { name: 'Kizilova Olha', role: 'back end developer', dept: 'Development', email: 'olgascorpions26@gmail.com', discordId: '', violations: [], joinDate: '2025-04-19' }, { name: 'Rekonvald Viktoriya', role: 'recruiter', dept: 'Recruiting', email: 'viktoriiarekonvald@gmail.com', discordId: '', violations: [], joinDate: '2025-06-21' }, { name: 'Perederii Vladislav', role: 'prompt engineer', dept: 'AI Team', email: 'vladyslav.perederii@nure.ua', discordId: '', violations: [], joinDate: '2025-05-02' }, { name: 'Archibong Isaac', role: 'lead generator', dept: 'Lead Generation', email: 'archibong222@gmail.com', discordId: '', violations: [], joinDate: '2025-09-15' }, { name: 'Shelep Olha', role: 'ui ux designer', dept: 'Design', email: 'shelep.olya@gmail.com', discordId: '', violations: [], joinDate: '2025-01-05' }, { name: 'Peneva Plamena', role: 'lead generator', dept: 'Lead Generation', email: 'plamenapeneva1206@gmail.com', discordId: '', violations: [], joinDate: '2025-07-11' }, { name: 'Zasiadko Matvii', role: 'prompt engineer', dept: 'AI Team', email: 'matvey.z.2004@icloud.com', discordId: '', violations: [], joinDate: '2025-08-22' }, { name: 'Shkinder Kseniia', role: 'lead generator', dept: 'Lead Generation', email: 'k49209700@gmail.com', discordId: '', violations: [], joinDate: '2025-10-05' }, { name: 'Klimenko Yaroslav', role: 'front end developer', dept: 'Development', email: 'klimyarik13@gmail.com', discordId: '', violations: [], joinDate: '2025-06-08' }, { name: 'Panchenko Diana', role: 'video editor', dept: 'Video Production', email: 'panchenko.di@yahoo.com', discordId: '', violations: [], joinDate: '2025-09-12' }, { name: 'Bogun Polina', role: 'designer', dept: 'Design', email: '', discordId: '', violations: [], joinDate: '2025-04-28' }, { name: 'Bindiak Dana', role: 'lead generator', dept: 'Lead Generation', email: '', discordId: '', violations: [], joinDate: '2025-08-08' }, { name: 'Chobotar Yuliia', role: 'designer', dept: 'Design', email: '', discordId: '', violations: [], joinDate: '2025-09-28' }
+             { name: 'Hanan Zaheur', role: 'lead generator', dept: 'Lead Generation', email: 'hanane.zaheur@gmail.com', discordId: '', violations: [], joinDate: '2025-01-15' }, { name: 'Alakbarova Ulviyya Javid', role: 'lead generator', dept: 'Lead Generation', email: 'ulviyyelekberova@gmail.com', discordId: '', violations: [], joinDate: '2025-02-20' }, { name: 'Rybak Nataliia', role: 'lead generator', dept: 'Lead Generation', email: 'rybaknatalia91@gmail.com', discordId: '', violations: [], joinDate: '2025-03-10' }, { name: 'Pasichna Anastasiia', role: 'lead generator', dept: 'Lead Generation', email: 'anastasiya.pasichnaya@gmail.com', discordId: '', violations: [], joinDate: '2025-08-01' }, { name: 'Kovalska Anastasiya', role: 'sales manager', dept: 'Sales', email: 'avkovalska23@gmail.com', discordId: '', violations: [], joinDate: '2025-04-05' }, { name: 'Artemchuk Nikolay', role: 'project manager', dept: 'Project Management', email: 'artemchuknn@gmail.com', discordId: '', violations: [], joinDate: '2025-01-10' }, { name: 'Iskandarova Anush', role: 'sales manager', dept: 'Sales', email: 'nushnushok@icloud.com', discordId: '', violations: [], joinDate: '2025-05-12' }, { name: 'Skrypkar Vilhelm', role: 'illustrator', dept: 'Design', email: 'ntwilson666@gmail.com', discordId: '', violations: [], joinDate: '2025-02-01' }, { name: 'Nealova Evgeniya', role: 'recruiter', dept: 'Recruiting', email: 'zp4058203@gmail.com', discordId: '', violations: [], joinDate: '2025-06-30' }, { name: 'Kucherenko Iuliia', role: 'graphic designer', dept: 'Design', email: 'ulia.k.rhs@gmail.com', discordId: '', violations: [], joinDate: '2025-03-18' }, { name: 'Vereteno Marta', role: 'graphic designer', dept: 'Design', email: 'sd.designsmart@gmail.com', discordId: '', violations: [], joinDate: '2025-09-25' }, { name: 'Davlatmamadova Firuza', role: 'lead generator', dept: 'Lead Generation', email: 'davlatmamadova.firuza@bk.ru', discordId: '', violations: [], joinDate: '2025-10-01' }, { name: 'Azanova DarÊ¼ya', role: 'video editor', dept: 'Video Production', email: 'azanova1997@gmail.com', discordId: '', violations: [], joinDate: '2025-07-07' }, { name: 'Burda Anna', role: 'lead generator', dept: 'Lead Generation', email: 'burdaanna8@gmail.com', discordId: '', violations: [], joinDate: '2025-08-15' }, { name: 'Danylenko Liliia', role: 'full stack developer', dept: 'Development', email: 'liliia.danylenko.dev@gmail.com', discordId: '', violations: [], joinDate: '2025-01-25' }, { name: 'Podolskyi Sviatoslav', role: 'video editor', dept: 'Video Production', email: 'neozoy.x@gmail.com', discordId: '', violations: [], joinDate: '2025-09-01' }, { name: 'Ponomarova Kateryna', role: 'financial manager', dept: 'Finance', email: 'katrinp.usa@gmail.com', discordId: '', violations: [], joinDate: '2025-02-11' }, { name: 'Yelisieieva Daria', role: 'financial manager', dept: 'Finance', email: 'zt.dasha@gmail.com', discordId: '', violations: [], joinDate: '2025-03-03' }, { name: 'Kizilova Olha', role: 'back end developer', dept: 'Development', email: 'olgascorpions26@gmail.com', discordId: '', violations: [], joinDate: '2025-04-19' }, { name: 'Rekonvald Viktoriya', role: 'recruiter', dept: 'Recruiting', email: 'viktoriiarekonvald@gmail.com', discordId: '', violations: [], joinDate: '2025-06-21' }, { name: 'Perederii Vladislav', role: 'prompt engineer', dept: 'AI Team', email: 'vladyslav.perederii@nure.ua', discordId: '', violations: [], joinDate: '2025-05-02' }, { name: 'Archibong Isaac', role: 'lead generator', dept: 'Lead Generation', email: 'archibong222@gmail.com', discordId: '', violations: [], joinDate: '2025-09-15' }, { name: 'Shelep Olha', role: 'ui ux designer', dept: 'Design', email: 'shelep.olya@gmail.com', discordId: '', violations: [], joinDate: '2025-01-05' }, { name: 'Peneva Plamena', role: 'lead generator', dept: 'Lead Generation', email: 'plamenapeneva1206@gmail.com', discordId: '', violations: [], joinDate: '2025-07-11' }, { name: 'Zasiadko Matvii', role: 'prompt engineer', dept: 'AI Team', email: 'matvey.z.2004@icloud.com', discordId: '', violations: [], joinDate: '2025-08-22' }, { name: 'Shkinder Kseniia', role: 'lead generator', dept: 'Lead Generation', email: 'k49209700@gmail.com', discordId: '', violations: [], joinDate: '2025-10-05' }, { name: 'Klimenko Yaroslav', role: 'front end developer', dept: 'Development', email: 'klimyarik13@gmail.com', discordId: '', violations: [], joinDate: '2025-06-08' }, { name: 'Panchenko Diana', role: 'video editor', dept: 'Video Production', email: 'panchenko.di@yahoo.com', discordId: '', violations: [], joinDate: '2025-09-12' }, { name: 'Bogun Polina', role: 'designer', dept: 'Design', email: '', discordId: '', violations: [], joinDate: '2025-04-28' }, { name: 'Bindiak Dana', role: 'lead generator', dept: 'Lead Generation', email: '', discordId: '', violations: [], joinDate: '2025-08-08' }, { name: 'Chobotar Yuliia', role: 'designer', dept: 'Design', email: '', discordId: '', violations: [], joinDate: '2025-09-28' }
         ];
 
-        // NEW: Custom Dropdown Creation Function
+        // Custom Dropdown Creation Function
         function createDropdown(containerId, options, placeholder, onchangeCallback) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -327,7 +478,7 @@
             renderCalendar();
             renderYellowCardTable();
             renderTeamGrids();
-            populateDeptFilter(); // must be before renderLeaderboard
+            populateDeptFilter();
             renderLeaderboard(); 
             renderModals();
             lucide.createIcons();
@@ -377,7 +528,7 @@
             `;
         }
         
-        function renderCalendar() { /* ... No changes here ... */
+        function renderCalendar() {
             const container = document.getElementById('calendar-container');
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth();
@@ -416,10 +567,10 @@
                 }
 
                 if (loopDate > today) {
-                    dayClasses += ' border border-gray-200 bg-white'; // Future days
+                    dayClasses += ' border border-gray-200 bg-white';
                 } else {
                     const violationsCount = dailyViolations[day] || 0;
-                    dayClasses += ' border-2'; // Thicker border for past/present days
+                    dayClasses += ' border-2';
                     
                     if (violationsCount > 0) {
                         const violationBorders = ['border-yellow-400', 'border-orange-400', 'border-red-500'];
@@ -432,7 +583,7 @@
                         dayClasses += ' cursor-pointer hover:scale-105 hover:shadow-lg';
                         clickHandler = `onclick="showDayDetailsModal(${year},${month},${day})"`;
                     } else {
-                        dayClasses += ' border-green-500 bg-green-50'; // Past safe days
+                        dayClasses += ' border-green-500 bg-green-50';
                         dayInfo = '<span class="text-green-700">✓ Safe</span>';
                     }
                 }
@@ -444,7 +595,7 @@
             container.innerHTML = html;
         }
 
-        function renderYellowCardTable() { /* ... No changes here ... */
+        function renderYellowCardTable() {
              const tableBody = document.getElementById('yellow-card-table-body');
             let content = '';
             employees.forEach(emp => {
@@ -462,13 +613,13 @@
                         indicatorClass = 'bg-yellow-100 text-yellow-700';
                         statusClass = 'bg-yellow-100 text-yellow-700';
                         statusText = 'Warning';
-                        statusIcon = '⚠';
+                        statusIcon = '⚠ ';
                     } else if (cards === 2) {
                         indicatorClass = 'bg-orange-100 text-orange-700';
                         statusClass = 'bg-orange-100 text-orange-700';
                         statusText = 'At Risk';
-                        statusIcon = '⚠';
-                    } else { // 3+ cards
+                        statusIcon = '⚠ ';
+                    } else {
                         indicatorClass = 'bg-red-100 text-red-700';
                         statusClass = 'bg-red-100 text-red-700';
                         statusText = 'High Risk';
@@ -487,7 +638,7 @@
             lucide.createIcons();
         }
 
-        function renderTeamGrids() { /* ... No changes here ... */
+        function renderTeamGrids() {
             const container = document.getElementById('team-grids-container');
             container.innerHTML = '';
             document.getElementById('team-structure-heading').innerText = `Team Structure (${employees.length} Members)`;
@@ -543,7 +694,7 @@
             createDropdown('removeEmpDropdown', employeeOptions, 'Select an employee to remove...');
         }
 
-        function addEmployee() { /* ... No changes here ... */
+        function addEmployee() {
             const name = document.getElementById('newEmpName').value.trim();
             const role = document.getElementById('newEmpRole').value.trim();
             const dept = document.getElementById('newEmpDept').value.trim();
@@ -590,8 +741,8 @@
             }
         }
         
-        // --- Other Functions (Employee Modals, Tabs, Calendar Nav) ---
-        function showEmployeeModal(data) { /* ... No changes here ... */
+        // --- Other Functions ---
+        function showEmployeeModal(data) {
             const employee = employees.find(e => e.name === data.name);
             const cards = parseInt(data.cards, 10);
             
@@ -633,7 +784,7 @@
             lucide.createIcons();
         }
 
-        function showDayDetailsModal(year, month, day) { /* ... No changes here ... */
+        function showDayDetailsModal(year, month, day) {
             const clickedDate = new Date(year, month, day);
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
             const violationsOnDay = employees.flatMap(e => 
@@ -672,7 +823,7 @@
             lucide.createIcons();
         }
         
-        function openEditEmployeeModal(name) { /* ... No changes here ... */
+        function openEditEmployeeModal(name) {
             const emp = employees.find(e => e.name === name);
             if (!emp) return;
 
@@ -691,7 +842,7 @@
             lucide.createIcons();
         }
 
-        function saveEmployeeChanges() { /* ... No changes here ... */
+        function saveEmployeeChanges() {
             const originalName = document.getElementById('originalEmpName').value;
             const newName = document.getElementById('editEmpName').value.trim();
             const newRole = document.getElementById('editEmpRole').value.trim();
@@ -710,7 +861,7 @@
             closeModal('editEmployeeModal');
         }
 
-        function switchTab(buttonElement) { /* ... No changes here ... */
+        function switchTab(buttonElement) {
             const tabId = buttonElement.dataset.tab;
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -722,7 +873,7 @@
             }
         }
         
-        function changeMonth(direction) { /* ... No changes here ... */
+        function changeMonth(direction) {
             currentDate.setMonth(currentDate.getMonth() + direction);
             renderCalendar();
         }
@@ -737,12 +888,12 @@
             lucide.createIcons();
         }
         function openRemoveEmployeeModal() {
-            renderModals(); // Re-render to ensure dropdown is up-to-date
+            renderModals();
             document.getElementById('removeEmployeeModal').style.display = 'flex';
             lucide.createIcons();
         }
         function openGiveCardModal(name = null) {
-            renderModals(); // Re-render to populate dropdowns
+            renderModals();
             if (name) {
                 const dropdown = document.querySelector('#cardEmployeeDropdown');
                 const toggle = dropdown.querySelector('.custom-dropdown-toggle');
@@ -832,32 +983,62 @@
             }
         }
 
-        // --- Event Listeners ---
-        document.addEventListener('DOMContentLoaded', renderAll);
+        // --- Theme Toggle Functions ---
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                updateThemeButton(true);
+            }
+        }
         
-        // Global click listener for dropdowns and modals
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-theme');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeButton(isDark);
+            lucide.createIcons();
+        }
+        
+        function updateThemeButton(isDark) {
+            const themeBtn = document.getElementById('theme-toggle-btn');
+            const icon = themeBtn.querySelector('i');
+            const text = document.getElementById('theme-toggle-text');
+            
+            if (isDark) {
+                icon.setAttribute('data-lucide', 'sun');
+                text.textContent = 'Light Mode';
+            } else {
+                icon.setAttribute('data-lucide', 'moon');
+                text.textContent = 'Dark Mode';
+            }
+            lucide.createIcons();
+        }
+
+        // --- Event Listeners ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeTheme();
+            renderAll();
+        });
+        
         window.addEventListener('click', (event) => {
-            // Close open dropdowns if clicking outside
             document.querySelectorAll('.custom-dropdown.open').forEach(dropdown => {
                 if (!dropdown.contains(event.target)) {
                     dropdown.classList.remove('open');
                 }
             });
 
-            // Toggle dropdown on click
             const dropdownToggle = event.target.closest('.custom-dropdown-toggle');
             if (dropdownToggle) {
                 dropdownToggle.parentElement.classList.toggle('open');
             }
 
-            // Close modals if clicking on the background
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
         });
     </script>
     <style>
-        /* General Styles (Keep as is) */
+        /* General Styles */
         .table { text-align: left; border-collapse: collapse; }
         .table th, .table td { padding: 12px 16px; border-bottom: 1px solid #e5e7eb; }
         .table th { background: #f9fafb; font-weight: 600; color: #4b5563; }
