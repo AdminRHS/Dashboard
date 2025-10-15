@@ -179,6 +179,7 @@
         body.dark-theme .text-yellow-600 { color: #fbbf24 !important; }
         body.dark-theme .text-orange-600 { color: #fb923c !important; }
         body.dark-theme .text-red-600 { color: #f87171 !important; }
+        body.dark-theme .rule-card h4[style*="--color-error-main"] { color: #f87171 !important; }
     </style>
     <style>
         /* Detailed Breakdown cards styles */
@@ -250,6 +251,76 @@
         
         .close-btn { position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer; color: #aaa; padding: 4px; border-radius: 50%; transition: all 0.2s; }
         .close-btn:hover { color: #333; background-color: #f0f0f0; }
+        
+        /* Leaderboard Pedestal */
+        .pedestal-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 150px;
+        }
+        .pedestal-base {
+            width: 100%;
+            border-radius: 8px 8px 0 0;
+            color: white;
+            padding: 16px 8px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .pedestal-1 { height: 160px; background: linear-gradient(to top, #ffd700, #f9e79f); order: 2; }
+        .pedestal-2 { height: 120px; background: linear-gradient(to top, #c0c0c0, #e5e7eb); order: 1; }
+        .pedestal-3 { height: 90px; background: linear-gradient(to top, #cd7f32, #e59866); order: 3; }
+        .pedestal-item .name { font-weight: bold; color: #1f2937; margin-top: 8px; font-size: 0.9em; }
+        .pedestal-item .days { font-size: 1.5rem; font-weight: bold; color: #1f2937; }
+        body.dark-theme .pedestal-item .name, body.dark-theme .pedestal-item .days { color: #111827; }
+
+        /* Modal Info Blocks */
+        .info-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .info-block:hover {
+             background-color: #f3f4f6;
+             border-color: var(--color-primary-main);
+        }
+        .info-block.static-block {
+            cursor: default;
+        }
+        .info-block.static-block:hover {
+            background-color: transparent;
+            border-color: var(--border-color);
+        }
+        .info-block .info-label {
+            font-size: 0.9em;
+            color: var(--color-text-secondary);
+        }
+         .info-block .info-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        body.dark-theme .info-block {
+            border-color: #4b5563;
+        }
+        body.dark-theme .info-block:hover {
+            background-color: #374151;
+            border-color: var(--color-primary-light);
+        }
+         body.dark-theme .info-block.static-block:hover {
+            background-color: transparent;
+            border-color: #4b5563;
+        }
     </style>
 </head>
 <body class="p-4 lg:p-8">
@@ -393,6 +464,8 @@
                     <h2 class="text-2xl font-bold text-gray-800 mb-2">Positive Leaderboard</h2>
                     <p class="text-gray-600 mb-6">The leaderboard shows employees who have gone the longest without receiving yellow cards.</p>
                     
+                    <div id="leaderboard-pedestal" class="flex justify-center items-end gap-4 my-8"></div>
+
                     <div class="leaderboard-filters flex flex-wrap items-center gap-4 mb-6">
                         <div class="search-input-container">
                             <input type="text" id="leaderboard-search" oninput="renderLeaderboard()" placeholder="Search by name...">
@@ -401,9 +474,10 @@
                         <div id="leaderboard-dept-filter-container" class="custom-dropdown" style="flex-grow: 0;"></div>
 
                         <div id="leaderboard-period-filter" class="flex items-center gap-2">
-                            <button class="period-btn active" data-period="all" onclick="setPeriodFilter(this)">All Time</button>
-                            <button class="period-btn" data-period="60" onclick="setPeriodFilter(this)">≥ 60 days</button>
-                            <button class="period-btn" data-period="90" onclick="setPeriodFilter(this)">≥ 90 days</button>
+                             <button class="period-btn" data-period="7" onclick="setPeriodFilter(this)">Week</button>
+                             <button class="period-btn" data-period="30" onclick="setPeriodFilter(this)">Month</button>
+                             <button class="period-btn" data-period="new" onclick="setPeriodFilter(this)">New</button>
+                             <button class="period-btn active" data-period="all" onclick="setPeriodFilter(this)">All Time</button>
                         </div>
                     </div>
 
@@ -433,8 +507,14 @@
         // Data and State
         let currentDate = new Date();
         let employees = [
-             { name: 'Hanan Zaheur', role: 'lead generator', dept: 'Lead Generation', email: 'hanane.zaheur@gmail.com', discordId: '', violations: [], joinDate: '2025-01-15' }, { name: 'Alakbarova Ulviyya Javid', role: 'lead generator', dept: 'Lead Generation', email: 'ulviyyelekberova@gmail.com', discordId: '', violations: [], joinDate: '2025-02-20' }, { name: 'Rybak Nataliia', role: 'lead generator', dept: 'Lead Generation', email: 'rybaknatalia91@gmail.com', discordId: '', violations: [], joinDate: '2025-03-10' }, { name: 'Pasichna Anastasiia', role: 'lead generator', dept: 'Lead Generation', email: 'anastasiya.pasichnaya@gmail.com', discordId: '', violations: [], joinDate: '2025-08-01' }, { name: 'Kovalska Anastasiya', role: 'sales manager', dept: 'Sales', email: 'avkovalska23@gmail.com', discordId: '', violations: [], joinDate: '2025-04-05' }, { name: 'Artemchuk Nikolay', role: 'project manager', dept: 'Project Management', email: 'artemchuknn@gmail.com', discordId: '', violations: [], joinDate: '2025-01-10' }, { name: 'Iskandarova Anush', role: 'sales manager', dept: 'Sales', email: 'nushnushok@icloud.com', discordId: '', violations: [], joinDate: '2025-05-12' }, { name: 'Skrypkar Vilhelm', role: 'illustrator', dept: 'Design', email: 'ntwilson666@gmail.com', discordId: '', violations: [], joinDate: '2025-02-01' }, { name: 'Nealova Evgeniya', role: 'recruiter', dept: 'Recruiting', email: 'zp4058203@gmail.com', discordId: '', violations: [], joinDate: '2025-06-30' }, { name: 'Kucherenko Iuliia', role: 'graphic designer', dept: 'Design', email: 'ulia.k.rhs@gmail.com', discordId: '', violations: [], joinDate: '2025-03-18' }, { name: 'Vereteno Marta', role: 'graphic designer', dept: 'Design', email: 'sd.designsmart@gmail.com', discordId: '', violations: [], joinDate: '2025-09-25' }, { name: 'Davlatmamadova Firuza', role: 'lead generator', dept: 'Lead Generation', email: 'davlatmamadova.firuza@bk.ru', discordId: '', violations: [], joinDate: '2025-10-01' }, { name: 'Azanova DarÊ¼ya', role: 'video editor', dept: 'Video Production', email: 'azanova1997@gmail.com', discordId: '', violations: [], joinDate: '2025-07-07' }, { name: 'Burda Anna', role: 'lead generator', dept: 'Lead Generation', email: 'burdaanna8@gmail.com', discordId: '', violations: [], joinDate: '2025-08-15' }, { name: 'Danylenko Liliia', role: 'full stack developer', dept: 'Development', email: 'liliia.danylenko.dev@gmail.com', discordId: '', violations: [], joinDate: '2025-01-25' }, { name: 'Podolskyi Sviatoslav', role: 'video editor', dept: 'Video Production', email: 'neozoy.x@gmail.com', discordId: '', violations: [], joinDate: '2025-09-01' }, { name: 'Ponomarova Kateryna', role: 'financial manager', dept: 'Finance', email: 'katrinp.usa@gmail.com', discordId: '', violations: [], joinDate: '2025-02-11' }, { name: 'Yelisieieva Daria', role: 'financial manager', dept: 'Finance', email: 'zt.dasha@gmail.com', discordId: '', violations: [], joinDate: '2025-03-03' }, { name: 'Kizilova Olha', role: 'back end developer', dept: 'Development', email: 'olgascorpions26@gmail.com', discordId: '', violations: [], joinDate: '2025-04-19' }, { name: 'Rekonvald Viktoriya', role: 'recruiter', dept: 'Recruiting', email: 'viktoriiarekonvald@gmail.com', discordId: '', violations: [], joinDate: '2025-06-21' }, { name: 'Perederii Vladislav', role: 'prompt engineer', dept: 'AI Team', email: 'vladyslav.perederii@nure.ua', discordId: '', violations: [], joinDate: '2025-05-02' }, { name: 'Archibong Isaac', role: 'lead generator', dept: 'Lead Generation', email: 'archibong222@gmail.com', discordId: '', violations: [], joinDate: '2025-09-15' }, { name: 'Shelep Olha', role: 'ui ux designer', dept: 'Design', email: 'shelep.olya@gmail.com', discordId: '', violations: [], joinDate: '2025-01-05' }, { name: 'Peneva Plamena', role: 'lead generator', dept: 'Lead Generation', email: 'plamenapeneva1206@gmail.com', discordId: '', violations: [], joinDate: '2025-07-11' }, { name: 'Zasiadko Matvii', role: 'prompt engineer', dept: 'AI Team', email: 'matvey.z.2004@icloud.com', discordId: '', violations: [], joinDate: '2025-08-22' }, { name: 'Shkinder Kseniia', role: 'lead generator', dept: 'Lead Generation', email: 'k49209700@gmail.com', discordId: '', violations: [], joinDate: '2025-10-05' }, { name: 'Klimenko Yaroslav', role: 'front end developer', dept: 'Development', email: 'klimyarik13@gmail.com', discordId: '', violations: [], joinDate: '2025-06-08' }, { name: 'Panchenko Diana', role: 'video editor', dept: 'Video Production', email: 'panchenko.di@yahoo.com', discordId: '', violations: [], joinDate: '2025-09-12' }, { name: 'Bogun Polina', role: 'designer', dept: 'Design', email: '', discordId: '', violations: [], joinDate: '2025-04-28' }, { name: 'Bindiak Dana', role: 'lead generator', dept: 'Lead Generation', email: '', discordId: '', violations: [], joinDate: '2025-08-08' }, { name: 'Chobotar Yuliia', role: 'designer', dept: 'Design', email: '', discordId: '', violations: [], joinDate: '2025-09-28' }
+             { name: 'Hanan Zaheur', role: 'lead generator', dept: 'Lead Generation', email: 'hanane.zaheur@gmail.com', discordId: 'hanan_z', violations: [], joinDate: '2025-01-15' }, { name: 'Alakbarova Ulviyya Javid', role: 'lead generator', dept: 'Lead Generation', email: 'ulviyyelekberova@gmail.com', discordId: 'ulviyya_j', violations: [], joinDate: '2025-02-20' }, { name: 'Rybak Nataliia', role: 'lead generator', dept: 'Lead Generation', email: 'rybaknatalia91@gmail.com', discordId: 'nataliia_r', violations: [], joinDate: '2025-03-10' }, { name: 'Pasichna Anastasiia', role: 'lead generator', dept: 'Lead Generation', email: 'anastasiya.pasichnaya@gmail.com', discordId: 'anastasiia_p', violations: [], joinDate: '2025-08-01' }, { name: 'Kovalska Anastasiya', role: 'sales manager', dept: 'Sales', email: 'avkovalska23@gmail.com', discordId: 'anastasiya_k', violations: [], joinDate: '2025-04-05' }, { name: 'Artemchuk Nikolay', role: 'project manager', dept: 'Project Management', email: 'artemchuknn@gmail.com', discordId: 'nikolay_a', violations: [], joinDate: '2025-01-10' }, { name: 'Iskandarova Anush', role: 'sales manager', dept: 'Sales', email: 'nushnushok@icloud.com', discordId: 'anush_i', violations: [], joinDate: '2025-05-12' }, { name: 'Skrypkar Vilhelm', role: 'illustrator', dept: 'Design', email: 'ntwilson666@gmail.com', discordId: 'vilhelm_s', violations: [], joinDate: '2025-02-01' }, { name: 'Nealova Evgeniya', role: 'recruiter', dept: 'Recruiting', email: 'zp4058203@gmail.com', discordId: 'evgeniya_n', violations: [], joinDate: '2025-06-30' }, { name: 'Kucherenko Iuliia', role: 'graphic designer', dept: 'Design', email: 'ulia.k.rhs@gmail.com', discordId: 'iuliia_k', violations: [], joinDate: '2025-03-18' }, { name: 'Vereteno Marta', role: 'graphic designer', dept: 'Design', email: 'sd.designsmart@gmail.com', discordId: 'marta_v', violations: [], joinDate: '2025-09-25' }, { name: 'Davlatmamadova Firuza', role: 'lead generator', dept: 'Lead Generation', email: 'davlatmamadova.firuza@bk.ru', discordId: 'firuza_d', violations: [], joinDate: '2025-10-01' }, { name: 'Azanova DarÊ¼ya', role: 'video editor', dept: 'Video Production', email: 'azanova1997@gmail.com', discordId: 'darya_a', violations: [], joinDate: '2025-07-07' }, { name: 'Burda Anna', role: 'lead generator', dept: 'Lead Generation', email: 'burdaanna8@gmail.com', discordId: 'anna_b', violations: [], joinDate: '2025-08-15' }, { name: 'Danylenko Liliia', role: 'full stack developer', dept: 'Development', email: 'liliia.danylenko.dev@gmail.com', discordId: 'liliia_d', violations: [], joinDate: '2025-01-25' }, { name: 'Podolskyi Sviatoslav', role: 'video editor', dept: 'Video Production', email: 'neozoy.x@gmail.com', discordId: 'sviatoslav_p', violations: [], joinDate: '2025-09-01' }, { name: 'Ponomarova Kateryna', role: 'financial manager', dept: 'Finance', email: 'katrinp.usa@gmail.com', discordId: 'kateryna_p', violations: [], joinDate: '2025-02-11' }, { name: 'Yelisieieva Daria', role: 'financial manager', dept: 'Finance', email: 'zt.dasha@gmail.com', discordId: 'daria_y', violations: [], joinDate: '2025-03-03' }, { name: 'Kizilova Olha', role: 'back end developer', dept: 'Development', email: 'olgascorpions26@gmail.com', discordId: 'olha_k', violations: [], joinDate: '2025-04-19' }, { name: 'Rekonvald Viktoriya', role: 'recruiter', dept: 'Recruiting', email: 'viktoriiarekonvald@gmail.com', discordId: 'viktoriya_r', violations: [], joinDate: '2025-06-21' }, { name: 'Perederii Vladislav', role: 'prompt engineer', dept: 'AI Team', email: 'vladyslav.perederii@nure.ua', discordId: 'vladislav_p', violations: [], joinDate: '2025-05-02' }, { name: 'Archibong Isaac', role: 'lead generator', dept: 'Lead Generation', email: 'archibong222@gmail.com', discordId: 'isaac_a', violations: [], joinDate: '2025-09-15' }, { name: 'Shelep Olha', role: 'ui ux designer', dept: 'Design', email: 'shelep.olya@gmail.com', discordId: 'olha_s', violations: [], joinDate: '2025-01-05' }, { name: 'Peneva Plamena', role: 'lead generator', dept: 'Lead Generation', email: 'plamenapeneva1206@gmail.com', discordId: 'plamena_p', violations: [], joinDate: '2025-07-11' }, { name: 'Zasiadko Matvii', role: 'prompt engineer', dept: 'AI Team', email: 'matvey.z.2004@icloud.com', discordId: 'matvii_z', violations: [], joinDate: '2025-08-22' }, { name: 'Shkinder Kseniia', role: 'lead generator', dept: 'Lead Generation', email: 'k49209700@gmail.com', discordId: 'kseniia_s', violations: [], joinDate: '2025-10-05' }, { name: 'Klimenko Yaroslav', role: 'front end developer', dept: 'Development', email: 'klimyarik13@gmail.com', discordId: 'yaroslav_k', violations: [], joinDate: '2025-06-08' }, { name: 'Panchenko Diana', role: 'video editor', dept: 'Video Production', email: 'panchenko.di@yahoo.com', discordId: 'diana_p', violations: [], joinDate: '2025-09-12' }, { name: 'Bogun Polina', role: 'designer', dept: 'Design', email: '', discordId: 'polina_b', violations: [], joinDate: '2025-04-28' }, { name: 'Bindiak Dana', role: 'lead generator', dept: 'Lead Generation', email: '', discordId: 'dana_b', violations: [], joinDate: '2025-08-08' }, { name: 'Chobotar Yuliia', role: 'designer', dept: 'Design', email: '', discordId: 'yuliia_c', violations: [], joinDate: '2025-09-28' }
         ];
+
+        const departmentColors = {
+            'Design': '#6D28D9', 'Development': '#147857', 'AI Team': '#147857', 'Project Management': '#DC2626',
+            'Lead Generation': '#EC4899', 'Sales': '#EC4899', 'Video Production': '#F97316', 'Recruiting': '#4299e1',
+            'Finance': '#4299e1', 'default': '#4B5563'
+        };
 
         // Custom Dropdown Creation Function
         function createDropdown(containerId, options, placeholder, onchangeCallback) {
@@ -632,7 +712,7 @@
 
                 const violationTypes = emp.violations.map(v => v.type).join(', ');
                 
-                content += `<tr><td>${emp.name}</td><td>${emp.dept}</td><td>${cardIndicatorHtml}</td><td>${violationTypes || '—'}</td><td>${status}</td></tr>`;
+                content += `<tr class="cursor-pointer" data-employee-name="${emp.name}"><td>${emp.name}</td><td>${emp.dept}</td><td>${cardIndicatorHtml}</td><td>${violationTypes || '—'}</td><td>${status}</td></tr>`;
             });
             tableBody.innerHTML = content;
             lucide.createIcons();
@@ -643,12 +723,6 @@
             container.innerHTML = '';
             document.getElementById('team-structure-heading').innerText = `Team Structure (${employees.length} Members)`;
             
-            const departmentColors = {
-                'Design': '#6D28D9', 'Development': '#147857', 'AI Team': '#147857', 'Project Management': '#DC2626',
-                'Lead Generation': '#EC4899', 'Sales': '#EC4899', 'Video Production': '#F97316', 'Recruiting': '#4299e1',
-                'Finance': '#4299e1', 'default': '#4B5563'
-            };
-
             const departments = [...new Set(employees.map(e => e.dept))].sort();
             
             departments.forEach(dept => {
@@ -658,11 +732,19 @@
                 let gridHTML = `<h3 class="text-xl font-semibold" style="color: ${deptColor};">${dept} (${deptEmployees.length})</h3><div class="team-grid">`;
                 
                 deptEmployees.forEach(emp => {
+                    const initials = emp.name.split(' ').map(n => n[0]).join('').toUpperCase();
                     gridHTML += `
                         <div class="team-member" data-name="${emp.name}" data-role="${emp.role}" data-dept="${emp.dept}" 
                              data-cards="${emp.violations.length}" data-email="${emp.email}" data-discord-id="${emp.discordId}">
-                            <h4 class="font-bold text-gray-800">${emp.name}</h4>
-                            <div class="text-sm text-gray-600">${emp.role}</div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="font-bold text-gray-500 dark:text-gray-300">${initials}</span>
+                                </div>
+                                <div class="text-left">
+                                    <h4 class="font-bold text-gray-800">${emp.name}</h4>
+                                    <div class="text-sm text-gray-600">${emp.role}</div>
+                                </div>
+                            </div>
                         </div>`;
                 });
                 gridHTML += `</div>`;
@@ -677,7 +759,7 @@
             
             // Give Card Modal
             const giveCardModalContent = document.getElementById('giveCardModalContent');
-            giveCardModalContent.innerHTML = `<button class="close-btn" onclick="closeModal('giveCardModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Give Yellow Card</h2><label for="cardEmployeeDropdown">Employee:</label><div id="cardEmployeeDropdown" class="custom-dropdown"></div><label for="cardViolationTypeDropdown">Violation Type:</label><div id="cardViolationTypeDropdown" class="custom-dropdown"></div><label for="cardComment">Details:</label><textarea id="cardComment" rows="3" placeholder="Add specific details..." required></textarea><button class="action-button mt-2" onclick="submitYellowCard()"><i data-lucide="send" class="w-4 h-4"></i><span>Issue Yellow Card</span></button>`;
+            giveCardModalContent.innerHTML = `<button class="close-btn" onclick="closeModal('giveCardModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Give Yellow Card</h2><label for="cardEmployeeDropdown">Employee:</label><div id="cardEmployeeDropdown" class="custom-dropdown"></div><label for="cardViolationTypeDropdown">Violation Type:</label><div id="cardViolationTypeDropdown" class="custom-dropdown"></div><label for="cardComment">Details:</label><textarea id="cardComment" rows="3" placeholder="Add specific details..." required></textarea><button class="action-button mt-2" onclick="submitYellowCard(this)"><i data-lucide="send" class="w-4 h-4"></i><span>Issue Yellow Card</span></button>`;
             createDropdown('cardEmployeeDropdown', employeeOptions, 'Select an employee...');
             createDropdown('cardViolationTypeDropdown', [
                 { value: 'Documentation', text: 'Documentation' },
@@ -686,15 +768,27 @@
             ], 'Select a type...');
             
             // Add Employee Modal
-            document.getElementById('addEmployeeModalContent').innerHTML = `<button class="close-btn" onclick="closeModal('addEmployeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Add New Employee</h2><label>Full Name: <span class="text-red-500">*</span></label><input type="text" id="newEmpName" placeholder="e.g., John Doe"><label>Profession/Role: <span class="text-red-500">*</span></label><input type="text" id="newEmpRole" placeholder="e.g., lead generator"><label>Department: <span class="text-red-500">*</span></label><input type="text" id="newEmpDept" placeholder="e.g., Lead Generation"><label>Email:</label><input type="email" id="newEmpEmail" placeholder="e.g., john.doe@example.com"><label>Discord:</label><input type="text" id="newEmpDiscord" placeholder="e.g., username#1234"><button class="action-button-success mt-2" onclick="addEmployee()"><i data-lucide="save" class="w-4 h-4"></i><span>Save Employee</span></button>`;
+            document.getElementById('addEmployeeModalContent').innerHTML = `<button class="close-btn" onclick="closeModal('addEmployeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Add New Employee</h2><label>Full Name: <span class="text-red-500">*</span></label><input type="text" id="newEmpName" placeholder="e.g., John Doe"><label>Profession/Role: <span class="text-red-500">*</span></label><input type="text" id="newEmpRole" placeholder="e.g., lead generator"><label>Department: <span class="text-red-500">*</span></label><input type="text" id="newEmpDept" placeholder="e.g., Lead Generation"><label>Email:</label><input type="email" id="newEmpEmail" placeholder="e.g., john.doe@example.com"><label>Discord:</label><input type="text" id="newEmpDiscord" placeholder="e.g., username#1234"><button class="action-button-success mt-2" onclick="addEmployee(this)"><i data-lucide="save" class="w-4 h-4"></i><span>Save Employee</span></button>`;
             
             // Remove Employee Modal
             const removeEmpModalContent = document.getElementById('removeEmployeeModalContent');
-            removeEmpModalContent.innerHTML = `<button class="close-btn" onclick="closeModal('removeEmployeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Remove Employee</h2><label for="removeEmpDropdown">Select Employee:</label><div id="removeEmpDropdown" class="custom-dropdown"></div><p class="my-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-md">Warning: This action is permanent and cannot be undone.</p><button class="action-button-delete" onclick="removeEmployee()">Confirm Removal</button>`;
+            removeEmpModalContent.innerHTML = `<button class="close-btn" onclick="closeModal('removeEmployeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Remove Employee</h2><label for="removeEmpDropdown">Select Employee:</label><div id="removeEmpDropdown" class="custom-dropdown"></div><p class="my-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-md">Warning: This action is permanent and cannot be undone.</p><button class="action-button-delete" onclick="removeEmployee(this)">Confirm Removal</button>`;
             createDropdown('removeEmpDropdown', employeeOptions, 'Select an employee to remove...');
         }
+        
+        function showSuccessMessage(buttonElement, message = "Success") {
+            if (!buttonElement) return;
+            const originalHtml = buttonElement.innerHTML;
+            buttonElement.disabled = true;
+            buttonElement.innerHTML = `<span class="text-green-400">✓ ${message}</span>`;
+            setTimeout(() => {
+                buttonElement.innerHTML = originalHtml;
+                buttonElement.disabled = false;
+                lucide.createIcons();
+            }, 2000);
+        }
 
-        function addEmployee() {
+        function addEmployee(btn) {
             const name = document.getElementById('newEmpName').value.trim();
             const role = document.getElementById('newEmpRole').value.trim();
             const dept = document.getElementById('newEmpDept').value.trim();
@@ -705,20 +799,22 @@
             if (employees.some(e => e.name.toLowerCase() === name.toLowerCase())) { alert('An employee with this name already exists.'); return; }
             employees.push({ name, role, dept, email, discordId, violations: [], joinDate });
             renderAll();
-            closeModal('addEmployeeModal');
+            showSuccessMessage(btn, "Employee Added");
+            setTimeout(() => closeModal('addEmployeeModal'), 500);
         }
         
-        function removeEmployee() {
+        function removeEmployee(btn) {
             const name = document.querySelector('#removeEmpDropdown .custom-dropdown-toggle').dataset.value;
             if (!name) { alert('Please select an employee to remove.'); return; }
             if (confirm(`Are you sure you want to remove ${name}? This action is permanent.`)) {
                 employees = employees.filter(e => e.name !== name);
                 renderAll();
-                closeModal('removeEmployeeModal');
+                showSuccessMessage(btn, "Employee Removed");
+                setTimeout(() => closeModal('removeEmployeeModal'), 500);
             }
         }
 
-        function submitYellowCard() {
+        function submitYellowCard(btn) {
             const name = document.querySelector('#cardEmployeeDropdown .custom-dropdown-toggle').dataset.value;
             const type = document.querySelector('#cardViolationTypeDropdown .custom-dropdown-toggle').dataset.value;
             const comment = document.getElementById('cardComment').value.trim();
@@ -727,7 +823,8 @@
             if (!comment) { alert('Please fill in the details field.'); return; }
             
             giveCard(name, type, comment);
-            closeModal('giveCardModal');
+            showSuccessMessage(btn, "Card Issued");
+            setTimeout(() => closeModal('giveCardModal'), 500);
         }
         
         function giveCard(name, type, comment) {
@@ -737,29 +834,62 @@
                 const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
                 emp.violations.push({ date: dateStr, type, comment });
                 renderAll();
-                alert(`Yellow card (${type}) given to ${name}. They now have ${emp.violations.length} card(s).`);
             }
+        }
+
+        function copyToClipboard(text, buttonElement) {
+            if (!text || !navigator.clipboard) {
+                const originalText = buttonElement.querySelector('.info-label').textContent;
+                buttonElement.querySelector('.info-label').textContent = 'Error';
+                setTimeout(() => {
+                    buttonElement.querySelector('.info-label').textContent = originalText;
+                }, 1500);
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                const label = buttonElement.querySelector('.info-label');
+                const icon = buttonElement.querySelector('i');
+                const originalText = label.textContent;
+                
+                label.textContent = 'Copied!';
+                label.classList.add('text-green-500');
+                icon.setAttribute('data-lucide', 'check');
+                icon.classList.add('text-green-500');
+                lucide.createIcons();
+
+                setTimeout(() => {
+                    label.textContent = originalText;
+                    label.classList.remove('text-green-500');
+                    if(originalText.toLowerCase() === 'discord'){
+                         icon.setAttribute('data-lucide', 'hash');
+                    } else {
+                         icon.setAttribute('data-lucide', originalText.toLowerCase());
+                    }
+                    icon.classList.remove('text-green-500');
+                    lucide.createIcons();
+                }, 1500);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
         }
         
         // --- Other Functions ---
         function showEmployeeModal(data) {
             const employee = employees.find(e => e.name === data.name);
             const cards = parseInt(data.cards, 10);
-            
-            const cardColors = ['text-green-600', 'text-yellow-600', 'text-orange-600', 'text-red-600'];
-            const cardColorClass = cardColors[Math.min(cards, 3)];
+            const initials = data.name.split(' ').map(n => n[0]).join('').toUpperCase();
+            const deptColor = departmentColors[data.dept] || departmentColors['default'];
 
             const violationsList = employee.violations.length > 0
-                ? `<div class="mt-4 pt-4 border-t border-gray-200"><h4 class="font-semibold mb-2">Violations:</h4><ul class="space-y-2 text-sm text-gray-600">${
+                ? `<div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"><h4 class="font-semibold mb-2">Violations:</h4><ul class="space-y-2 text-sm text-gray-600">${
                     employee.violations.map(v => {
-                        let colorClass;
-                        if (cards === 1) colorClass = 'bg-yellow-500';
-                        else if (cards === 2) colorClass = 'bg-orange-500';
-                        else if (cards >= 3) colorClass = 'bg-red-600';
-                        else colorClass = 'bg-green-500';
-
+                        let indicatorColor;
+                        if (v.type === 'Documentation') indicatorColor = 'var(--color-primary-main)';
+                        else if (v.type === 'Workflow') indicatorColor = 'var(--color-warning-main)';
+                        else indicatorColor = 'var(--color-error-main)';
+                        
                         return `<li class="flex items-start gap-3">
-                                    <div class="w-3 h-3 mt-1 rounded-sm ${colorClass} flex-shrink-0"></div>
+                                    <div class="w-3 h-3 mt-1 rounded-sm flex-shrink-0" style="background-color:${indicatorColor}"></div>
                                     <div class="flex-1"><strong>${v.date} [${v.type}]</strong>: ${v.comment || 'No comment'}</div>
                                 </li>`;
                     }).join('')
@@ -768,18 +898,40 @@
 
             document.getElementById('employeeModalContent').innerHTML = `
                 <button class="close-btn" onclick="closeModal('employeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button>
-                <h2 class="text-2xl font-bold text-gray-800 mb-1">${data.name}</h2>
-                <p class="text-gray-500 mb-4">${data.role} • ${data.dept}</p>
-                <div class="space-y-2 text-gray-700">
-                    <p><strong>Email:</strong> ${data.email || 'N/A'}</p>
-                    <p><strong>Discord:</strong> ${data.discordId || 'N/A'}</p>
-                    <p class="flex items-center gap-2"><strong>Yellow Cards:</strong> <span class="font-bold text-2xl ${cardColorClass}">${cards}</span></p>
+                
+                <div class="flex flex-col sm:flex-row items-center gap-6 mb-6">
+                    <div class="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-3xl font-bold text-gray-500 dark:text-gray-400">${initials}</span>
+                    </div>
+                    <div class="flex-grow text-center sm:text-left">
+                        <h2 class="text-2xl font-bold text-gray-800">${data.name}</h2>
+                        <p class="font-semibold" style="color: ${deptColor};">${data.role}</p>
+                        <p class="font-semibold" style="color: ${deptColor};">${data.dept}</p>
+                    </div>
                 </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    <div class="info-block" onclick="copyToClipboard('${data.email || ''}', this)">
+                        <i data-lucide="mail" class="w-6 h-6"></i>
+                        <span class="info-label">Email</span>
+                    </div>
+                     <div class="info-block" onclick="copyToClipboard('${data.discordId || ''}', this)">
+                        <i data-lucide="hash" class="w-6 h-6"></i>
+                        <span class="info-label">Discord</span>
+                    </div>
+                     <div class="info-block static-block">
+                        <span class="info-value">${cards}</span>
+                        <span class="info-label">Yellow Cards</span>
+                    </div>
+                </div>
+
                 ${violationsList}
-                <div class="flex flex-wrap gap-3 mt-6 pt-6 border-t border-gray-200">
+                
+                <div class="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                     <button class="action-button-secondary" onclick="openEditEmployeeModal('${data.name}')"><i data-lucide="edit" class="w-4 h-4"></i><span>Edit</span></button>
                     <button class="action-button" onclick="openGiveCardModalForEmployee('${data.name}')"><i data-lucide="alert-triangle" class="w-4 h-4"></i><span>Give Card</span></button>
-                </div>`;
+                </div>
+            `;
             document.getElementById('employeeModal').style.display = 'flex';
             lucide.createIcons();
         }
@@ -836,13 +988,13 @@
                 <label>Department: <span class="text-red-500">*</span></label><input type="text" id="editEmpDept" value="${emp.dept}">
                 <label>Email:</label><input type="email" id="editEmpEmail" value="${emp.email}">
                 <label>Discord:</label><input type="text" id="editEmpDiscord" value="${emp.discordId || ''}">
-                <button class="action-button-success mt-2" onclick="saveEmployeeChanges()"><i data-lucide="save" class="w-4 h-4"></i><span>Save Changes</span></button>`;
+                <button class="action-button-success mt-2" onclick="saveEmployeeChanges(this)"><i data-lucide="save" class="w-4 h-4"></i><span>Save Changes</span></button>`;
             closeModal('employeeModal');
             document.getElementById('editEmployeeModal').style.display = 'flex';
             lucide.createIcons();
         }
 
-        function saveEmployeeChanges() {
+        function saveEmployeeChanges(btn) {
             const originalName = document.getElementById('originalEmpName').value;
             const newName = document.getElementById('editEmpName').value.trim();
             const newRole = document.getElementById('editEmpRole').value.trim();
@@ -858,7 +1010,8 @@
                 emp.email = newEmail; emp.discordId = newDiscordId;
             }
             renderAll();
-            closeModal('editEmployeeModal');
+            showSuccessMessage(btn, "Changes Saved");
+            setTimeout(() => closeModal('editEmployeeModal'), 500);
         }
 
         function switchTab(buttonElement) {
@@ -926,9 +1079,24 @@
             buttonElement.classList.add('active');
             renderLeaderboard();
         }
+        
+        function navigateToEmployee(name) {
+            const teamTabButton = document.querySelector('.tab-btn[data-tab="team"]');
+            switchTab(teamTabButton);
+
+            const employee = employees.find(e => e.name === name);
+            if (employee) {
+                const modalData = {
+                    name: employee.name, role: employee.role, dept: employee.dept,
+                    cards: employee.violations.length, email: employee.email, discordId: employee.discordId
+                };
+                showEmployeeModal(modalData);
+            }
+        }
 
         function renderLeaderboard() {
             const tableBody = document.getElementById('leaderboard-table-body');
+            const pedestalContainer = document.getElementById('leaderboard-pedestal');
             const searchTerm = document.getElementById('leaderboard-search').value.toLowerCase();
             const deptDropdown = document.querySelector('#leaderboard-dept-filter-container .custom-dropdown-toggle');
             const selectedDept = deptDropdown ? deptDropdown.dataset.value : '';
@@ -950,32 +1118,60 @@
                 else if (daysWithoutCards >= 90) badges.push({type: 'streak', text: '🔥 90+ days'});
                 else if (daysWithoutCards >= 60) badges.push({type: 'streak', text: '🔥 60+ days'});
 
-                return { ...emp, lastCardDate: displayDate, daysWithoutCards, badges };
+                return { ...emp, lastCardDate: displayDate, daysWithoutCards, daysInSystem, badges };
             });
 
-            const filteredData = leaderboardData.filter(emp => {
+            let filteredData = leaderboardData.filter(emp => {
                 const nameMatch = emp.name.toLowerCase().includes(searchTerm);
                 const deptMatch = !selectedDept || emp.dept === selectedDept;
-                const periodMatch = selectedPeriod === 'all' || emp.daysWithoutCards >= parseInt(selectedPeriod, 10);
+                
+                let periodMatch = false;
+                if (selectedPeriod === 'all') {
+                    periodMatch = true;
+                } else if (selectedPeriod === 'new') {
+                    periodMatch = emp.daysInSystem < 14;
+                } else {
+                    const days = parseInt(selectedPeriod, 10);
+                    periodMatch = emp.daysWithoutCards >= days;
+                }
+
                 return nameMatch && deptMatch && periodMatch;
             });
             
-            filteredData.sort((a, b) => {
-                if (b.daysWithoutCards !== a.daysWithoutCards) return b.daysWithoutCards - a.daysWithoutCards;
-                const dateA = new Date(a.lastCardDate);
-                const dateB = new Date(b.lastCardDate);
-                if (dateA !== dateB) return dateA - dateB;
-                return a.name.localeCompare(b.name);
-            });
+            filteredData.sort((a, b) => b.daysWithoutCards - a.daysWithoutCards || a.name.localeCompare(b.name));
+            
+            // Render Pedestal
+            const pedestalEligible = filteredData.filter(e => e.daysInSystem >=14);
+            const top3 = pedestalEligible.slice(0, 3);
+            pedestalContainer.innerHTML = '';
+            if (top3.length > 0) {
+                 const medalIcons = ['medal', 'award', 'trophy'];
+                 const placements = [2, 1, 3];
+                 
+                 let pedestalHTML = top3.map((emp, index) => {
+                     const rank = index + 1;
+                     return `
+                         <div class="pedestal-item" style="order: ${placements[index]};">
+                             <div class="pedestal-base pedestal-${rank}">
+                                 <i data-lucide="${medalIcons[index]}" class="w-10 h-10" style="color: #1f2937;"></i>
+                                 <div class="days">${emp.daysWithoutCards}</div>
+                             </div>
+                             <div class="name">${emp.name}</div>
+                         </div>
+                     `;
+                 }).join('');
+                 pedestalContainer.innerHTML = pedestalHTML;
+                 lucide.createIcons();
+            }
 
             if (filteredData.length === 0) {
                 tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-8">No employees match the selected filters.</td></tr>`;
             } else {
                 tableBody.innerHTML = filteredData.map(emp => `
-                    <tr>
+                    <tr class="cursor-pointer" data-employee-name="${emp.name}">
                         <td>${emp.name}</td>
                         <td>${emp.dept}</td>
-                        <td>${emp.lastCardDate}</td>
+                        <td>${emp.violations.length > 0 ? emp.lastCardDate : 'Never'}</td>
                         <td class="font-bold text-lg">${emp.daysWithoutCards}</td>
                         <td>${emp.badges.map(b => `<span class="badge badge-${b.type}">${b.text}</span>`).join(' ')}</td>
                     </tr>
@@ -1018,6 +1214,22 @@
         document.addEventListener('DOMContentLoaded', () => {
             initializeTheme();
             renderAll();
+
+            // Add single event listener for clickable rows
+            const tableBodies = [
+                document.getElementById('yellow-card-table-body'),
+                document.getElementById('leaderboard-table-body')
+            ];
+            tableBodies.forEach(body => {
+                if (body) {
+                    body.addEventListener('click', (event) => {
+                        const row = event.target.closest('tr');
+                        if (row && row.dataset.employeeName) {
+                            navigateToEmployee(row.dataset.employeeName);
+                        }
+                    });
+                }
+            });
         });
         
         window.addEventListener('click', (event) => {
@@ -1054,10 +1266,10 @@
         .day-number { font-weight: bold; font-size: 1.1em; }
         .day-number.today-highlight { background-color: var(--color-primary-main); color: white; border-radius: 50%; display: inline-flex; width: 28px; height: 28px; line-height: 28px; align-items: center; justify-content: center; }
         .day-info { font-size: 0.75rem; margin-top: 5px; text-align: center; font-weight: 500; }
-        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-        .team-member { background-color: #ffffff; border: 1px solid var(--border-color); padding: 16px; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .team-member { background-color: #ffffff; border: 1px solid var(--border-color); padding: 16px; border-radius: 12px; text-align: left; cursor: pointer; transition: all 0.3s; }
         .team-member:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--color-primary-main); }
-        .action-button, .action-button-delete, .action-button-success, .action-button-secondary { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 0.9em; font-weight: 600; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+        .action-button, .action-button-delete, .action-button-success, .action-button-secondary { display: inline-flex; justify-content:center; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 0.9em; font-weight: 600; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
         .action-button { background-color: var(--color-primary-main); color: white; }
         .action-button:hover { background-color: var(--color-primary-dark); }
         .action-button-delete { background-color: var(--color-error-main); color: white; }
