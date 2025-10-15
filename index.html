@@ -67,7 +67,9 @@
         body.dark-theme .bg-white { background-color: #1f2937 !important; }
         body.dark-theme .bg-gray-50 { background-color: #374151 !important; }
         body.dark-theme .bg-gray-100 { background-color: #4b5563 !important; }
-        body.dark-theme .bg-gray-200 { background-color: #6b7280 !important; }
+        body.dark-theme .bg-gray-200 { background-color: #4b5563 !important; } /* Lighter avatar background */
+        body.dark-theme .bg-gray-600 { background-color: #4b5563 !important; } /* Lighter avatar background */
+        body.dark-theme .bg-gray-700 { background-color: #4b5563 !important; } /* Lighter modal avatar background */
         body.dark-theme .border-gray-200 { border-color: #374151 !important; }
         body.dark-theme .border-gray-300 { border-color: #4b5563 !important; }
         body.dark-theme .tab-btn { background-color: #1f2937; color: var(--color-primary-light); border-color: var(--color-primary-light); }
@@ -76,8 +78,9 @@
         body.dark-theme .calendar-header { background-color: #374151; color: var(--color-primary-light); }
         body.dark-theme .team-member { background-color: #1f2937; border-color: #374151; }
         body.dark-theme .team-member:hover { border-color: var(--color-primary-light); }
-        body.dark-theme .stat-card { background-color: #1f2937; }
+        body.dark-theme .stat-card { background-color: #1f2937; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         body.dark-theme .rule-card { background-color: #374151; }
+        body.dark-theme .table th, body.dark-theme .table td { border-color: #374151 !important; }
         body.dark-theme .table th { background-color: #374151; color: #e5e7eb; }
         body.dark-theme .table tr:hover { background-color: #374151; }
         body.dark-theme .custom-dropdown-toggle { background-color: #1f2937; border-color: #4b5563; color: #f7fafc; }
@@ -108,7 +111,7 @@
         body.dark-theme .period-btn { background-color: #1f2937; color: var(--color-primary-light); border-color: var(--color-primary-light); }
         body.dark-theme .period-btn:hover { background-color: rgba(99, 179, 237, 0.15); }
         body.dark-theme .period-btn.active { background-color: var(--color-primary-main); color: white; }
-        body.dark-theme .detailed-stat-card-v2.card-green { background-color: rgba(34, 197, 94, 0.2); }
+        body.dark-theme .detailed-stat-card-v2.card-green { background-color: rgba(34, 197, 94, 0.2); color: #4ade80; }
         body.dark-theme .detailed-stat-card-v2.card-yellow { background-color: rgba(234, 179, 8, 0.2); }
         body.dark-theme .detailed-stat-card-v2.card-orange { background-color: rgba(249, 115, 22, 0.2); }
         body.dark-theme .detailed-stat-card-v2.card-red { background-color: rgba(239, 68, 68, 0.2); }
@@ -180,6 +183,18 @@
         body.dark-theme .text-orange-600 { color: #fb923c !important; }
         body.dark-theme .text-red-600 { color: #f87171 !important; }
         body.dark-theme .rule-card h4[style*="--color-error-main"] { color: #f87171 !important; }
+        body.dark-theme img[src="discord_2.png"] { filter: invert(1) brightness(1.5); }
+        
+        /* Brighter purple for dark theme */
+        body.dark-theme p[style*="color: #6D28D9"],
+        body.dark-theme div[style*="color: #6D28D9"] {
+            color: #c4b5fd !important;
+        }
+        body.dark-theme .pedestal-card[style*="border-color: #6D28D9"],
+        body.dark-theme .pedestal-number-circle[style*="border-color: #6D28D9"] {
+            border-color: #c4b5fd !important;
+        }
+
     </style>
     <style>
         /* Detailed Breakdown cards styles */
@@ -252,31 +267,55 @@
         .close-btn { position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer; color: #aaa; padding: 4px; border-radius: 50%; transition: all 0.2s; }
         .close-btn:hover { color: #333; background-color: #f0f0f0; }
         
-        /* Leaderboard Pedestal */
-        .pedestal-item {
+        /* New Pedestal Styles */
+        .pedestal-item-v2 {
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
-            width: 150px;
+            width: 200px;
         }
-        .pedestal-base {
+        .pedestal-card {
+            background-color: #ffffff;
+            border-width: 1px;
+            padding: 12px;
+            border-radius: 12px;
             width: 100%;
-            border-radius: 8px 8px 0 0;
-            color: white;
-            padding: 16px 8px 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+            z-index: 2;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-        .pedestal-1 { height: 160px; background: linear-gradient(to top, #ffd700, #f9e79f); order: 2; }
-        .pedestal-2 { height: 120px; background: linear-gradient(to top, #c0c0c0, #e5e7eb); order: 1; }
-        .pedestal-3 { height: 90px; background: linear-gradient(to top, #cd7f32, #e59866); order: 3; }
-        .pedestal-item .name { font-weight: bold; color: #1f2937; margin-top: 8px; font-size: 0.9em; }
-        .pedestal-item .days { font-size: 1.5rem; font-weight: bold; color: #1f2937; }
-        body.dark-theme .pedestal-item .name, body.dark-theme .pedestal-item .days { color: #111827; }
+        body.dark-theme .pedestal-card {
+            background-color: #1f2937;
+        }
+        .pedestal-plinth {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffffff;
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            position: relative;
+        }
+        body.dark-theme .pedestal-plinth {
+            background-color: #374151;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .plinth-1 { height: 190px; }
+        .plinth-2 { height: 130px; }
+        .plinth-3 { height: 90px; }
+
+        .pedestal-number-circle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 3px solid;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
 
         /* Modal Info Blocks */
         .info-block {
@@ -335,7 +374,7 @@
                 <div class="flex-grow text-center">
                     <div class="flex items-center justify-center gap-4 mb-3">
                         <i data-lucide="alert-triangle" class="w-10 h-10 text-orange-500"></i>
-                        <h1 class="text-3xl lg:text-4xl font-bold text-gray-800">Yellow Card Accountability Dashboard</h1>
+                        <h1 class="text-3xl lg:text-4xl font-bold text-gray-800">Yellow Cards</h1>
                     </div>
                     <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-gray-600">
                         <span id="team-size-stat"></span>
@@ -365,6 +404,10 @@
                     <i data-lucide="moon" class="inline w-4 h-4 mr-2"></i><span id="theme-toggle-text">Dark Mode</span>
                 </button>
             </div>
+        </div>
+
+        <div id="leaderboard-pedestal-container" class="hidden mb-8">
+             <div id="leaderboard-pedestal" class="flex justify-center items-end gap-4"></div>
         </div>
         
         <main>
@@ -464,8 +507,6 @@
                     <h2 class="text-2xl font-bold text-gray-800 mb-2">Positive Leaderboard</h2>
                     <p class="text-gray-600 mb-6">The leaderboard shows employees who have gone the longest without receiving yellow cards.</p>
                     
-                    <div id="leaderboard-pedestal" class="flex justify-center items-end gap-4 my-8"></div>
-
                     <div class="leaderboard-filters flex flex-wrap items-center gap-4 mb-6">
                         <div class="search-input-container">
                             <input type="text" id="leaderboard-search" oninput="renderLeaderboard()" placeholder="Search by name...">
@@ -511,7 +552,7 @@
         ];
 
         const departmentColors = {
-            'Design': '#6D28D9', 'Development': '#147857', 'AI Team': '#147857', 'Project Management': '#DC2626',
+            'Design': '#6D28D9', 'Development': '#147857', 'AI Team': '#147857', 'Project Management': '#8e1c1c',
             'Lead Generation': '#EC4899', 'Sales': '#EC4899', 'Video Production': '#F97316', 'Recruiting': '#4299e1',
             'Finance': '#4299e1', 'default': '#4B5563'
         };
@@ -737,8 +778,8 @@
                         <div class="team-member" data-name="${emp.name}" data-role="${emp.role}" data-dept="${emp.dept}" 
                              data-cards="${emp.violations.length}" data-email="${emp.email}" data-discord-id="${emp.discordId}">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0">
-                                    <span class="font-bold text-gray-500 dark:text-gray-300">${initials}</span>
+                                <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <span class="font-bold text-gray-500 text-lg">${initials}</span>
                                 </div>
                                 <div class="text-left">
                                     <h4 class="font-bold text-gray-800">${emp.name}</h4>
@@ -838,38 +879,72 @@
         }
 
         function copyToClipboard(text, buttonElement) {
-            if (!text || !navigator.clipboard) {
-                const originalText = buttonElement.querySelector('.info-label').textContent;
-                buttonElement.querySelector('.info-label').textContent = 'Error';
+            const label = buttonElement.querySelector('.info-label');
+            const originalLabelText = label.textContent;
+
+            if (!text) {
+                label.textContent = 'No Data';
                 setTimeout(() => {
-                    buttonElement.querySelector('.info-label').textContent = originalText;
+                    label.textContent = originalLabelText;
                 }, 1500);
                 return;
             }
-            navigator.clipboard.writeText(text).then(() => {
-                const label = buttonElement.querySelector('.info-label');
-                const icon = buttonElement.querySelector('i');
-                const originalText = label.textContent;
-                
+
+            // Fallback for non-secure contexts (like local files)
+            const fallbackCopyTextToClipboard = (textToCopy) => {
+                const textArea = document.createElement("textarea");
+                textArea.value = textToCopy;
+                textArea.style.position = "fixed"; 
+                textArea.style.top = "0";
+                textArea.style.left = "0";
+                textArea.style.opacity = "0";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        return Promise.resolve();
+                    } else {
+                        return Promise.reject();
+                    }
+                } catch (err) {
+                    return Promise.reject(err);
+                } finally {
+                    document.body.removeChild(textArea);
+                }
+            };
+
+            const copyAction = navigator.clipboard ? navigator.clipboard.writeText(text) : fallbackCopyTextToClipboard(text);
+
+            copyAction.then(() => {
+                const iconContainer = buttonElement.querySelector('i, img');
+                const originalIconHTML = iconContainer.outerHTML;
+
                 label.textContent = 'Copied!';
                 label.classList.add('text-green-500');
-                icon.setAttribute('data-lucide', 'check');
-                icon.classList.add('text-green-500');
+
+                const checkIcon = document.createElement('i');
+                checkIcon.setAttribute('data-lucide', 'check');
+                checkIcon.classList.add('w-6', 'h-6', 'text-green-500');
+                iconContainer.replaceWith(checkIcon);
                 lucide.createIcons();
 
                 setTimeout(() => {
-                    label.textContent = originalText;
-                    label.classList.remove('text-green-500');
-                    if(originalText.toLowerCase() === 'discord'){
-                         icon.setAttribute('data-lucide', 'hash');
-                    } else {
-                         icon.setAttribute('data-lucide', originalText.toLowerCase());
+                    const currentIcon = buttonElement.querySelector('i'); // The checkmark
+                    if (currentIcon) {
+                         currentIcon.outerHTML = originalIconHTML;
                     }
-                    icon.classList.remove('text-green-500');
+                    label.textContent = originalLabelText;
+                    label.classList.remove('text-green-500');
                     lucide.createIcons();
                 }, 1500);
             }).catch(err => {
                 console.error('Failed to copy: ', err);
+                label.textContent = 'Failed!';
+                 setTimeout(() => {
+                    label.textContent = originalLabelText;
+                }, 1500);
             });
         }
         
@@ -879,6 +954,12 @@
             const cards = parseInt(data.cards, 10);
             const initials = data.name.split(' ').map(n => n[0]).join('').toUpperCase();
             const deptColor = departmentColors[data.dept] || departmentColors['default'];
+            const isDarkMode = document.body.classList.contains('dark-theme');
+
+            let finalDeptColor = deptColor;
+            if(isDarkMode && data.dept === 'Design') {
+                finalDeptColor = '#c4b5fd';
+            }
 
             const violationsList = employee.violations.length > 0
                 ? `<div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"><h4 class="font-semibold mb-2">Violations:</h4><ul class="space-y-2 text-sm text-gray-600">${
@@ -900,13 +981,13 @@
                 <button class="close-btn" onclick="closeModal('employeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button>
                 
                 <div class="flex flex-col sm:flex-row items-center gap-6 mb-6">
-                    <div class="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span class="text-3xl font-bold text-gray-500 dark:text-gray-400">${initials}</span>
+                    <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-3xl font-bold text-gray-500">${initials}</span>
                     </div>
                     <div class="flex-grow text-center sm:text-left">
                         <h2 class="text-2xl font-bold text-gray-800">${data.name}</h2>
-                        <p class="font-semibold" style="color: ${deptColor};">${data.role}</p>
-                        <p class="font-semibold" style="color: ${deptColor};">${data.dept}</p>
+                        <p class="font-semibold" style="color: ${finalDeptColor};">${data.role}</p>
+                        <p class="font-semibold" style="color: ${finalDeptColor};">${data.dept}</p>
                     </div>
                 </div>
 
@@ -916,7 +997,7 @@
                         <span class="info-label">Email</span>
                     </div>
                      <div class="info-block" onclick="copyToClipboard('${data.discordId || ''}', this)">
-                        <i data-lucide="hash" class="w-6 h-6"></i>
+                        <img src="discord_2.png" alt="Discord Icon" class="w-6 h-6">
                         <span class="info-label">Discord</span>
                     </div>
                      <div class="info-block static-block">
@@ -927,7 +1008,7 @@
 
                 ${violationsList}
                 
-                <div class="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex justify-start gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                     <button class="action-button-secondary" onclick="openEditEmployeeModal('${data.name}')"><i data-lucide="edit" class="w-4 h-4"></i><span>Edit</span></button>
                     <button class="action-button" onclick="openGiveCardModalForEmployee('${data.name}')"><i data-lucide="alert-triangle" class="w-4 h-4"></i><span>Give Card</span></button>
                 </div>
@@ -1016,13 +1097,20 @@
 
         function switchTab(buttonElement) {
             const tabId = buttonElement.dataset.tab;
+            const pedestalContainer = document.getElementById('leaderboard-pedestal-container');
+
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).classList.remove('hidden');
             buttonElement.classList.add('active');
+            
             lucide.createIcons();
+
             if (tabId === 'leaderboard') {
                 renderLeaderboard();
+                pedestalContainer.classList.remove('hidden');
+            } else {
+                pedestalContainer.classList.add('hidden');
             }
         }
         
@@ -1104,6 +1192,7 @@
             
             const today = new Date();
             today.setHours(0,0,0,0);
+            const isDarkMode = document.body.classList.contains('dark-theme');
 
             const leaderboardData = employees.map(emp => {
                 const lastViolation = emp.violations.length > 0 ? emp.violations.reduce((latest, v) => new Date(v.date) > new Date(latest.date) ? v : latest) : null;
@@ -1120,7 +1209,51 @@
 
                 return { ...emp, lastCardDate: displayDate, daysWithoutCards, daysInSystem, badges };
             });
+            
+            // Pedestal logic is separated: it always shows top non-new members
+            const pedestalEligible = leaderboardData
+                .filter(e => e.daysInSystem >= 14)
+                .sort((a,b) => b.daysWithoutCards - a.daysWithoutCards);
+            const top3 = pedestalEligible.slice(0, 3);
+            
+            let pedestalHTML = '';
+            const placements = [2, 1, 3]; 
 
+            if (top3.length > 0) {
+                 pedestalHTML = top3.map((emp, index) => {
+                    const rank = index + 1;
+                    const initials = emp.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                    let deptColor = departmentColors[emp.dept] || departmentColors['default'];
+                    
+                    if (isDarkMode && emp.dept === 'Project Management') {
+                        deptColor = '#f87171';
+                    }
+
+                    return `
+                        <div class="pedestal-item-v2 cursor-pointer" style="order: ${placements[index]};" onclick="navigateToEmployee('${emp.name}')">
+                            <div class="pedestal-card" style="border-color: ${deptColor};">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span class="font-bold text-gray-500 text-sm">${initials}</span>
+                                    </div>
+                                    <div class="text-left overflow-hidden">
+                                        <h4 class="font-bold text-gray-800 text-sm truncate">${emp.name}</h4>
+                                        <div class="text-xs truncate font-semibold" style="color: ${deptColor};">${emp.role}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pedestal-plinth plinth-${rank}">
+                                <div class="pedestal-number-circle" style="border-color: ${deptColor}; color: ${deptColor};">
+                                    ${rank}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            pedestalContainer.innerHTML = pedestalHTML;
+
+            // Main table filtering
             let filteredData = leaderboardData.filter(emp => {
                 const nameMatch = emp.name.toLowerCase().includes(searchTerm);
                 const deptMatch = !selectedDept || emp.dept === selectedDept;
@@ -1139,30 +1272,6 @@
             });
             
             filteredData.sort((a, b) => b.daysWithoutCards - a.daysWithoutCards || a.name.localeCompare(b.name));
-            
-            // Render Pedestal
-            const pedestalEligible = filteredData.filter(e => e.daysInSystem >=14);
-            const top3 = pedestalEligible.slice(0, 3);
-            pedestalContainer.innerHTML = '';
-            if (top3.length > 0) {
-                 const medalIcons = ['medal', 'award', 'trophy'];
-                 const placements = [2, 1, 3];
-                 
-                 let pedestalHTML = top3.map((emp, index) => {
-                     const rank = index + 1;
-                     return `
-                         <div class="pedestal-item" style="order: ${placements[index]};">
-                             <div class="pedestal-base pedestal-${rank}">
-                                 <i data-lucide="${medalIcons[index]}" class="w-10 h-10" style="color: #1f2937;"></i>
-                                 <div class="days">${emp.daysWithoutCards}</div>
-                             </div>
-                             <div class="name">${emp.name}</div>
-                         </div>
-                     `;
-                 }).join('');
-                 pedestalContainer.innerHTML = pedestalHTML;
-                 lucide.createIcons();
-            }
 
             if (filteredData.length === 0) {
                 tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-8">No employees match the selected filters.</td></tr>`;
@@ -1256,8 +1365,8 @@
         .table th { background: #f9fafb; font-weight: 600; color: #4b5563; }
         .table tr:last-child td { border-bottom: none; }
         .table tr:hover { background-color: #f9fafb; }
-        .stat-card { background-color: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: all 0.3s ease; display: flex; align-items: center; gap: 16px; }
-        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .stat-card { background-color: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: all 0.3s ease; display: flex; align-items: center; gap: 16px; }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,0.12); }
         .stat-icon { font-size: 1.5em; padding: 16px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
         .stat-info .stat-number { font-size: 2.25em; font-weight: bold; line-height: 1; color: var(--color-text-primary); }
         .stat-info .stat-label { color: var(--color-text-primary); font-size: 0.9em; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;}
