@@ -132,7 +132,7 @@
         body.dark-theme .bg-orange-100 { background-color: rgba(249, 115, 22, 0.2) !important; }
         body.dark-theme .text-orange-600 { color: #fb923c !important; }
         body.dark-theme .bg-red-100 { background-color: rgba(239, 68, 68, 0.2) !important; }
-        body.dark-theme .text-red-600 { color: #f87171 !important; }
+        body.dark-theme .text-red-600 { color: #be3535 !important; }
         
         /* Calendar - яскраві кольори для днів з порушеннями */
         body.dark-theme .border-yellow-400 { border-color: #facc15 !important; }
@@ -143,7 +143,7 @@
         body.dark-theme .text-orange-600 { color: #fb923c !important; }
         body.dark-theme .border-red-500 { border-color: #ef4444 !important; }
         body.dark-theme .bg-red-50 { background-color: rgba(239, 68, 68, 0.15) !important; }
-        body.dark-theme .text-red-600 { color: #f87171 !important; }
+        body.dark-theme .text-red-600 { color: #be3535 !important; }
         body.dark-theme .border-green-500 { border-color: #22c55e !important; }
         body.dark-theme .bg-green-50 { background-color: rgba(34, 197, 94, 0.15) !important; }
         body.dark-theme .text-green-700 { color: #4ade80 !important; }
@@ -154,7 +154,7 @@
         body.dark-theme .bg-orange-100 { background-color: rgba(249, 115, 22, 0.2) !important; }
         body.dark-theme .text-orange-700 { color: #fb923c !important; }
         body.dark-theme .bg-red-100 { background-color: rgba(239, 68, 68, 0.2) !important; }
-        body.dark-theme .text-red-700 { color: #f87171 !important; }
+        body.dark-theme .text-red-700 { color: #be3535 !important; }
         body.dark-theme .bg-green-100 { background-color: rgba(34, 197, 94, 0.2) !important; }
         body.dark-theme .text-green-700 { color: #4ade80 !important; }
         
@@ -175,14 +175,14 @@
         /* Alert backgrounds in modals */
         body.dark-theme .bg-red-50 { background-color: rgba(239, 68, 68, 0.15) !important; }
         body.dark-theme .border-red-500 { border-color: #ef4444 !important; }
-        body.dark-theme .text-red-700 { color: #f87171 !important; }
+        body.dark-theme .text-red-700 { color: #be3535 !important; }
         
         /* Text colors for card counts in modals */
         body.dark-theme .text-green-600 { color: #4ade80 !important; }
         body.dark-theme .text-yellow-600 { color: #fbbf24 !important; }
         body.dark-theme .text-orange-600 { color: #fb923c !important; }
-        body.dark-theme .text-red-600 { color: #f87171 !important; }
-        body.dark-theme .rule-card h4[style*="--color-error-main"] { color: #f87171 !important; }
+        body.dark-theme .text-red-600 { color: #be3535 !important; }
+        body.dark-theme .rule-card h4[style*="--color-error-main"] { color: #be3535 !important; }
         body.dark-theme img[src="discord_2.png"] { filter: invert(1) brightness(1.5); }
         
         /* Brighter purple for dark theme */
@@ -285,7 +285,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
         body.dark-theme .pedestal-card {
-            background-color: #1f2937;
+            background-color: #1f2937 !important; /* Force background */
         }
         .pedestal-plinth {
             display: flex;
@@ -298,7 +298,7 @@
             position: relative;
         }
         body.dark-theme .pedestal-plinth {
-            background-color: #374151;
+            /* background-color is set dynamically */
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
         .plinth-1 { height: 190px; }
@@ -548,7 +548,7 @@
         // Data and State
         let currentDate = new Date();
         let employees = [
-             { name: 'Hanan Zaheur', role: 'lead generator', dept: 'Lead Generation', email: 'hanane.zaheur@gmail.com', discordId: 'hanan_z', violations: [], joinDate: '2025-01-15' }, { name: 'Alakbarova Ulviyya Javid', role: 'lead generator', dept: 'Lead Generation', email: 'ulviyyelekberova@gmail.com', discordId: 'ulviyya_j', violations: [], joinDate: '2025-02-20' }, { name: 'Rybak Nataliia', role: 'lead generator', dept: 'Lead Generation', email: 'rybaknatalia91@gmail.com', discordId: 'nataliia_r', violations: [], joinDate: '2025-03-10' }, { name: 'Pasichna Anastasiia', role: 'lead generator', dept: 'Lead Generation', email: 'anastasiya.pasichnaya@gmail.com', discordId: 'anastasiia_p', violations: [], joinDate: '2025-08-01' }, { name: 'Kovalska Anastasiya', role: 'sales manager', dept: 'Sales', email: 'avkovalska23@gmail.com', discordId: 'anastasiya_k', violations: [], joinDate: '2025-04-05' }, { name: 'Artemchuk Nikolay', role: 'project manager', dept: 'Project Management', email: 'artemchuknn@gmail.com', discordId: 'nikolay_a', violations: [], joinDate: '2025-01-10' }, { name: 'Iskandarova Anush', role: 'sales manager', dept: 'Sales', email: 'nushnushok@icloud.com', discordId: 'anush_i', violations: [], joinDate: '2025-05-12' }, { name: 'Skrypkar Vilhelm', role: 'illustrator', dept: 'Design', email: 'ntwilson666@gmail.com', discordId: 'vilhelm_s', violations: [], joinDate: '2025-02-01' }, { name: 'Nealova Evgeniya', role: 'recruiter', dept: 'Recruiting', email: 'zp4058203@gmail.com', discordId: 'evgeniya_n', violations: [], joinDate: '2025-06-30' }, { name: 'Kucherenko Iuliia', role: 'graphic designer', dept: 'Design', email: 'ulia.k.rhs@gmail.com', discordId: 'iuliia_k', violations: [], joinDate: '2025-03-18' }, { name: 'Vereteno Marta', role: 'graphic designer', dept: 'Design', email: 'sd.designsmart@gmail.com', discordId: 'marta_v', violations: [], joinDate: '2025-09-25' }, { name: 'Davlatmamadova Firuza', role: 'lead generator', dept: 'Lead Generation', email: 'davlatmamadova.firuza@bk.ru', discordId: 'firuza_d', violations: [], joinDate: '2025-10-01' }, { name: 'Azanova DarÊ¼ya', role: 'video editor', dept: 'Video Production', email: 'azanova1997@gmail.com', discordId: 'darya_a', violations: [], joinDate: '2025-07-07' }, { name: 'Burda Anna', role: 'lead generator', dept: 'Lead Generation', email: 'burdaanna8@gmail.com', discordId: 'anna_b', violations: [], joinDate: '2025-08-15' }, { name: 'Danylenko Liliia', role: 'full stack developer', dept: 'Development', email: 'liliia.danylenko.dev@gmail.com', discordId: 'liliia_d', violations: [], joinDate: '2025-01-25' }, { name: 'Podolskyi Sviatoslav', role: 'video editor', dept: 'Video Production', email: 'neozoy.x@gmail.com', discordId: 'sviatoslav_p', violations: [], joinDate: '2025-09-01' }, { name: 'Ponomarova Kateryna', role: 'financial manager', dept: 'Finance', email: 'katrinp.usa@gmail.com', discordId: 'kateryna_p', violations: [], joinDate: '2025-02-11' }, { name: 'Yelisieieva Daria', role: 'financial manager', dept: 'Finance', email: 'zt.dasha@gmail.com', discordId: 'daria_y', violations: [], joinDate: '2025-03-03' }, { name: 'Kizilova Olha', role: 'back end developer', dept: 'Development', email: 'olgascorpions26@gmail.com', discordId: 'olha_k', violations: [], joinDate: '2025-04-19' }, { name: 'Rekonvald Viktoriya', role: 'recruiter', dept: 'Recruiting', email: 'viktoriiarekonvald@gmail.com', discordId: 'viktoriya_r', violations: [], joinDate: '2025-06-21' }, { name: 'Perederii Vladislav', role: 'prompt engineer', dept: 'AI Team', email: 'vladyslav.perederii@nure.ua', discordId: 'vladislav_p', violations: [], joinDate: '2025-05-02' }, { name: 'Archibong Isaac', role: 'lead generator', dept: 'Lead Generation', email: 'archibong222@gmail.com', discordId: 'isaac_a', violations: [], joinDate: '2025-09-15' }, { name: 'Shelep Olha', role: 'ui ux designer', dept: 'Design', email: 'shelep.olya@gmail.com', discordId: 'olha_s', violations: [], joinDate: '2025-01-05' }, { name: 'Peneva Plamena', role: 'lead generator', dept: 'Lead Generation', email: 'plamenapeneva1206@gmail.com', discordId: 'plamena_p', violations: [], joinDate: '2025-07-11' }, { name: 'Zasiadko Matvii', role: 'prompt engineer', dept: 'AI Team', email: 'matvey.z.2004@icloud.com', discordId: 'matvii_z', violations: [], joinDate: '2025-08-22' }, { name: 'Shkinder Kseniia', role: 'lead generator', dept: 'Lead Generation', email: 'k49209700@gmail.com', discordId: 'kseniia_s', violations: [], joinDate: '2025-10-05' }, { name: 'Klimenko Yaroslav', role: 'front end developer', dept: 'Development', email: 'klimyarik13@gmail.com', discordId: 'yaroslav_k', violations: [], joinDate: '2025-06-08' }, { name: 'Panchenko Diana', role: 'video editor', dept: 'Video Production', email: 'panchenko.di@yahoo.com', discordId: 'diana_p', violations: [], joinDate: '2025-09-12' }, { name: 'Bogun Polina', role: 'designer', dept: 'Design', email: '', discordId: 'polina_b', violations: [], joinDate: '2025-04-28' }, { name: 'Bindiak Dana', role: 'lead generator', dept: 'Lead Generation', email: '', discordId: 'dana_b', violations: [], joinDate: '2025-08-08' }, { name: 'Chobotar Yuliia', role: 'designer', dept: 'Design', email: '', discordId: 'yuliia_c', violations: [], joinDate: '2025-09-28' }
+             { name: 'Hanan Zaheur', role: 'lead generator', dept: 'Lead Generation', email: 'hanane.zaheur@example.com', discordId: 'hanan_z', violations: [], joinDate: '2025-01-15' }, { name: 'Alakbarova Ulviyya Javid', role: 'lead generator', dept: 'Lead Generation', email: 'ulviyyelekberova@example.com', discordId: 'ulviyya_j', violations: [], joinDate: '2025-02-20' }, { name: 'Rybak Nataliia', role: 'lead generator', dept: 'Lead Generation', email: 'rybaknatalia91@example.com', discordId: 'nataliia_r', violations: [], joinDate: '2025-03-10' }, { name: 'Pasichna Anastasiia', role: 'lead generator', dept: 'Lead Generation', email: 'anastasiya.pasichnaya@example.com', discordId: 'anastasiia_p', violations: [], joinDate: '2025-08-01' }, { name: 'Kovalska Anastasiya', role: 'sales manager', dept: 'Sales', email: 'avkovalska23@example.com', discordId: 'anastasiya_k', violations: [], joinDate: '2025-04-05' }, { name: 'Artemchuk Nikolay', role: 'project manager', dept: 'Project Management', email: 'artemchuknn@example.com', discordId: 'nikolay_a', violations: [], joinDate: '2025-01-10' }, { name: 'Iskandarova Anush', role: 'sales manager', dept: 'Sales', email: 'nushnushok@example.com', discordId: 'anush_i', violations: [], joinDate: '2025-05-12' }, { name: 'Skrypkar Vilhelm', role: 'illustrator', dept: 'Design', email: 'ntwilson666@example.com', discordId: 'vilhelm_s', violations: [], joinDate: '2025-02-01' }, { name: 'Nealova Evgeniya', role: 'recruiter', dept: 'Recruiting', email: 'zp4058203@example.com', discordId: 'evgeniya_n', violations: [], joinDate: '2025-06-30' }, { name: 'Kucherenko Iuliia', role: 'graphic designer', dept: 'Design', email: 'ulia.k.rhs@example.com', discordId: 'iuliia_k', violations: [], joinDate: '2025-03-18' }, { name: 'Vereteno Marta', role: 'graphic designer', dept: 'Design', email: 'sd.designsmart@example.com', discordId: 'marta_v', violations: [], joinDate: '2025-09-25' }, { name: 'Davlatmamadova Firuza', role: 'lead generator', dept: 'Lead Generation', email: 'davlatmamadova.firuza@example.com', discordId: 'firuza_d', violations: [], joinDate: '2025-10-01' }, { name: 'Azanova DarÊ¼ya', role: 'video editor', dept: 'Video Production', email: 'azanova1997@example.com', discordId: 'darya_a', violations: [], joinDate: '2025-07-07' }, { name: 'Burda Anna', role: 'lead generator', dept: 'Lead Generation', email: 'burdaanna8@example.com', discordId: 'anna_b', violations: [], joinDate: '2025-08-15' }, { name: 'Danylenko Liliia', role: 'full stack developer', dept: 'Development', email: 'liliia.danylenko.dev@example.com', discordId: 'liliia_d', violations: [], joinDate: '2025-01-25' }, { name: 'Podolskyi Sviatoslav', role: 'video editor', dept: 'Video Production', email: 'neozoy.x@example.com', discordId: 'sviatoslav_p', violations: [], joinDate: '2025-09-01' }, { name: 'Ponomarova Kateryna', role: 'financial manager', dept: 'Finance', email: 'katrinp.usa@example.com', discordId: 'kateryna_p', violations: [], joinDate: '2025-02-11' }, { name: 'Yelisieieva Daria', role: 'financial manager', dept: 'Finance', email: 'zt.dasha@example.com', discordId: 'daria_y', violations: [], joinDate: '2025-03-03' }, { name: 'Kizilova Olha', role: 'back end developer', dept: 'Development', email: 'olgascorpions26@example.com', discordId: 'olha_k', violations: [], joinDate: '2025-04-19' }, { name: 'Rekonvald Viktoriya', role: 'recruiter', dept: 'Recruiting', email: 'viktoriiarekonvald@example.com', discordId: 'viktoriya_r', violations: [], joinDate: '2025-06-21' }, { name: 'Perederii Vladislav', role: 'prompt engineer', dept: 'AI Team', email: 'vladyslav.perederii@example.com', discordId: 'vladislav_p', violations: [], joinDate: '2025-05-02' }, { name: 'Archibong Isaac', role: 'lead generator', dept: 'Lead Generation', email: 'archibong222@example.com', discordId: 'isaac_a', violations: [], joinDate: '2025-09-15' }, { name: 'Shelep Olha', role: 'ui ux designer', dept: 'Design', email: 'shelep.olya@example.com', discordId: 'olha_s', violations: [], joinDate: '2025-01-05' }, { name: 'Peneva Plamena', role: 'lead generator', dept: 'Lead Generation', email: 'plamenapeneva1206@example.com', discordId: 'plamena_p', violations: [], joinDate: '2025-07-11' }, { name: 'Zasiadko Matvii', role: 'prompt engineer', dept: 'AI Team', email: 'matvey.z.2004@example.com', discordId: 'matvii_z', violations: [], joinDate: '2025-08-22' }, { name: 'Shkinder Kseniia', role: 'lead generator', dept: 'Lead Generation', email: 'k49209700@example.com', discordId: 'kseniia_s', violations: [], joinDate: '2025-10-05' }, { name: 'Klimenko Yaroslav', role: 'front end developer', dept: 'Development', email: 'klimyarik13@example.com', discordId: 'yaroslav_k', violations: [], joinDate: '2025-06-08' }, { name: 'Panchenko Diana', role: 'video editor', dept: 'Video Production', email: 'panchenko.di@example.com', discordId: 'diana_p', violations: [], joinDate: '2025-09-12' }, { name: 'Bogun Polina', role: 'designer', dept: 'Design', email: '', discordId: 'polina_b', violations: [], joinDate: '2025-04-28' }, { name: 'Bindiak Dana', role: 'lead generator', dept: 'Lead Generation', email: '', discordId: 'dana_b', violations: [], joinDate: '2025-08-08' }, { name: 'Chobotar Yuliia', role: 'designer', dept: 'Design', email: '', discordId: 'yuliia_c', violations: [], joinDate: '2025-09-28' }
         ];
 
         const departmentColors = {
@@ -890,7 +890,6 @@
                 return;
             }
 
-            // Fallback for non-secure contexts (like local files)
             const fallbackCopyTextToClipboard = (textToCopy) => {
                 const textArea = document.createElement("textarea");
                 textArea.value = textToCopy;
@@ -949,6 +948,25 @@
         }
         
         // --- Other Functions ---
+        
+        function openEmailClient(email) {
+            if (email) {
+                window.location.href = `mailto:${email}`;
+            }
+        }
+
+        function openDiscordChat(discordId, name) {
+            if (name === 'Artemchuk Nikolay') {
+                const discordUserId = '910144676881903646'; 
+                window.open(`https://discord.com/users/${discordUserId}`, '_blank');
+            } else if (discordId) {
+                const discordButton = document.querySelector(`.info-block[onclick*="openDiscordChat('${discordId}'"]`);
+                if (discordButton) {
+                    copyToClipboard(discordId, discordButton);
+                }
+            }
+        }
+
         function showEmployeeModal(data) {
             const employee = employees.find(e => e.name === data.name);
             const cards = parseInt(data.cards, 10);
@@ -959,6 +977,10 @@
             let finalDeptColor = deptColor;
             if(isDarkMode && data.dept === 'Design') {
                 finalDeptColor = '#c4b5fd';
+            }
+            
+            if (isDarkMode && deptColor === '#8e1c1c') {
+                finalDeptColor = '#be3535';
             }
 
             const violationsList = employee.violations.length > 0
@@ -992,11 +1014,11 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                    <div class="info-block" onclick="copyToClipboard('${data.email || ''}', this)">
+                    <div class="info-block" onclick="openEmailClient('${data.email || ''}')">
                         <i data-lucide="mail" class="w-6 h-6"></i>
                         <span class="info-label">Email</span>
                     </div>
-                     <div class="info-block" onclick="copyToClipboard('${data.discordId || ''}', this)">
+                     <div class="info-block" onclick="openDiscordChat('${data.discordId || ''}', '${data.name}')">
                         <img src="discord_2.png" alt="Discord Icon" class="w-6 h-6">
                         <span class="info-label">Discord</span>
                     </div>
@@ -1153,6 +1175,7 @@
         }
         
         // --- Leaderboard Functions ---
+        
         function populateDeptFilter() {
             const depts = [...new Set(employees.map(e => e.dept))].sort();
             const options = [
@@ -1210,27 +1233,32 @@
                 return { ...emp, lastCardDate: displayDate, daysWithoutCards, daysInSystem, badges };
             });
             
-            // Pedestal logic is separated: it always shows top non-new members
             const pedestalEligible = leaderboardData
                 .filter(e => e.daysInSystem >= 14)
                 .sort((a,b) => b.daysWithoutCards - a.daysWithoutCards);
             const top3 = pedestalEligible.slice(0, 3);
             
             let pedestalHTML = '';
-            const placements = [2, 1, 3]; 
+            // Data for rendering the pedestal, correctly ordered
+            const pedestalData = [
+                { rank: 1, medal: '🥇', color: 'rgb(250 169 69 / 20%)', order: 2, heightClass: 'plinth-1', sizeClass: 'text-6xl' },
+                { rank: 2, medal: '🥈', color: 'rgb(225 210 239 / 50%)', order: 1, heightClass: 'plinth-2', sizeClass: 'text-5xl' },
+                { rank: 3, medal: '🥉', color: 'rgb(210 141 89 / 30%)', order: 3, heightClass: 'plinth-3', sizeClass: 'text-4xl' }
+            ];
 
             if (top3.length > 0) {
                  pedestalHTML = top3.map((emp, index) => {
-                    const rank = index + 1;
+                    const place = pedestalData[index];
                     const initials = emp.name.split(' ').map(n => n[0]).join('').toUpperCase();
                     let deptColor = departmentColors[emp.dept] || departmentColors['default'];
                     
-                    if (isDarkMode && emp.dept === 'Project Management') {
-                        deptColor = '#f87171';
+                    if (isDarkMode && deptColor === '#8e1c1c') {
+                        deptColor = '#be3535';
                     }
 
+                    // FINALIZED HTML structure
                     return `
-                        <div class="pedestal-item-v2 cursor-pointer" style="order: ${placements[index]};" onclick="navigateToEmployee('${emp.name}')">
+                        <div class="pedestal-item-v2 cursor-pointer" style="order: ${place.order};" onclick="navigateToEmployee('${emp.name}')">
                             <div class="pedestal-card" style="border-color: ${deptColor};">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
@@ -1242,10 +1270,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="pedestal-plinth plinth-${rank}">
-                                <div class="pedestal-number-circle" style="border-color: ${deptColor}; color: ${deptColor};">
-                                    ${rank}
-                                </div>
+                            <div class="pedestal-plinth ${place.heightClass}" style="background-color: ${place.color};">
+                                <div class="${place.sizeClass}">${place.medal}</div>
                             </div>
                         </div>
                     `;
