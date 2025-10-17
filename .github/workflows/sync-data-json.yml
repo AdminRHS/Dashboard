@@ -22,10 +22,7 @@ jobs:
 
       - name: Fetch remote data.json
         run: |
-          SOURCE_URL="${{ vars.DATA_JSON_SOURCE_URL }}"
-          if [ -z "$SOURCE_URL" ]; then
-            SOURCE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/data.json"
-          fi
+          SOURCE_URL="https://adminrhs.github.io/Dashboard/data.json"
           echo "Using source URL: $SOURCE_URL"
           curl -fL "$SOURCE_URL" -o /tmp/remote_data.json
           jq . /tmp/remote_data.json > /tmp/remote_pretty.json || {
