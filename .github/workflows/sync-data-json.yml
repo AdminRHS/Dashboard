@@ -1,4 +1,4 @@
-name: Sync data.json from source URL to repo
+name: Sync data.json from source URL to repo (main)
 
 on:
   schedule:
@@ -7,13 +7,11 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 env:
   TARGET_FILE_PATH: data.json
-  SYNC_BRANCH: data-sync
-  # Set this in repo Settings → Variables → Actions as DATA_JSON_SOURCE_URL
-  # Alternatively replace with a hardcoded URL below
+  # Optional: set repo variable DATA_JSON_SOURCE_URL in Settings → Variables → Actions
+  # If not set, workflow will fallback to GitHub Pages URL: https://<owner>.github.io/<repo>/data.json
 
 jobs:
   sync:
@@ -22,16 +20,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate source URL variable
-        run: |
-          if [ -z "${{ vars.DATA_JSON_SOURCE_URL }}" ]; then
-            echo "DATA_JSON_SOURCE_URL repo variable is not set. Configure it in Settings → Variables → Actions."
-            exit 1
-          fi
-
       - name: Fetch remote data.json
         run: |
-          curl -fL "${{ vars.DATA_JSON_SOURCE_URL }}" -o /tmp/remote_data.json
+          SOURCE_URL="${{ vars.DATA_JSON_SOURCE_URL }}"
+          if [ -z "$SOURCE_URL" ]; then
+            SOURCE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/data.json"
+          fi
+          echo "Using source URL: $SOURCE_URL"
+          curl -fL "$SOURCE_URL" -o /tmp/remote_data.json
           jq . /tmp/remote_data.json > /tmp/remote_pretty.json || {
             echo "Downloaded JSON is invalid"; exit 1; }
 
@@ -46,29 +42,18 @@ jobs:
             echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Update file in sync branch
+      - name: Update file on main
         if: steps.diff.outputs.missing == 'true' || steps.diff.outputs.changed == 'true'
         run: |
           git fetch --all --prune
-          git checkout -B "$SYNC_BRANCH" || git switch -c "$SYNC_BRANCH"
+          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+          git checkout "$DEFAULT_BRANCH"
+          git pull --ff-only
           mv /tmp/remote_pretty.json "$TARGET_FILE_PATH"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "$TARGET_FILE_PATH"
           git commit -m "chore(sync): update data.json from source URL"
-          git push -u origin "$SYNC_BRANCH"
-
-      - name: Create or update pull request
-        if: steps.diff.outputs.missing == 'true' || steps.diff.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(sync): update data.json from source URL"
-          title: "Sync data.json from source URL"
-          body: |
-            This PR syncs `data.json` from `${{ vars.DATA_JSON_SOURCE_URL }}` into the repo.
-          branch: ${{ env.SYNC_BRANCH }}
-          base: ${{ github.event.repository.default_branch }}
-          labels: sync, automation
+          git push
 
 
