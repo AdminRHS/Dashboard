@@ -1449,12 +1449,12 @@
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', async () => {
             initializeTheme();
-            // Prefer OPFS data if present; otherwise fallback to bundled data.json
+            // Always load from GitHub first, OPFS as fallback
             let loaded = false;
             try {
-                const opfsText = await loadFromOPFS('data.json');
-                if (opfsText) {
-                    const json = JSON.parse(opfsText);
+                const r = await fetch(`data.json?v=${Date.now()}`, { cache: 'no-cache' });
+                if (r.ok) {
+                    const json = await r.json();
                     employees = Array.isArray(json) ? json : (json && Array.isArray(json.employees) ? json.employees : []);
                     loaded = true;
                 }
@@ -1462,9 +1462,9 @@
 
             if (!loaded) {
                 try {
-                    const r = await fetch(`data.json?v=${Date.now()}`, { cache: 'no-cache' });
-                    if (r.ok) {
-                        const json = await r.json();
+                    const opfsText = await loadFromOPFS('data.json');
+                    if (opfsText) {
+                        const json = JSON.parse(opfsText);
                         employees = Array.isArray(json) ? json : (json && Array.isArray(json.employees) ? json.employees : []);
                     }
                 } catch (e) { /* ignore */ }
