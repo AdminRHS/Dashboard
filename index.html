@@ -1462,7 +1462,7 @@
 
             if (!loaded) {
                 try {
-                    const r = await fetch('data.json', { cache: 'no-cache' });
+                    const r = await fetch(`data.json?v=${Date.now()}`, { cache: 'no-cache' });
                     if (r.ok) {
                         const json = await r.json();
                         employees = Array.isArray(json) ? json : (json && Array.isArray(json.employees) ? json.employees : []);
