@@ -275,13 +275,7 @@
     "dept": "AI Team",
     "email": "matvey.z.2004@example.com",
     "discordId": "matvii_z",
-    "violations": [
-      {
-        "date": "2025-10-20",
-        "type": "Documentation",
-        "comment": "Не накписав план, не зробив діпресьорч плану, і не зробив діп ресьорч діпресьорча плану"
-      }
-    ],
+    "violations": [],
     "joinDate": "2025-08-22"
   }
 ]
