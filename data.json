@@ -1,281 +1,292 @@
 [
-    {
-      "name": "Alakbarova Ulviyya Javid",
-      "role": "lead generator",
-      "dept": "Lead Generation",
-      "email": "ulviyyelekberova@example.com",
-      "discordId": "ulviyya_j",
-      "violations": [],
-      "joinDate": "2025-02-20"
-    },
-    {
-      "name": "Archibong Isaac",
-      "role": "lead generator",
-      "dept": "Lead Generation",
-      "email": "archibong222@example.com",
-      "discordId": "isaac_a",
-      "violations": [],
-      "joinDate": "2025-09-15"
-    },
-    {
-      "name": "Artemchuk Nikolay",
-      "role": "project manager",
-      "dept": "Project Management",
-      "email": "artemchuknn@example.com",
-      "discordId": "nikolay_a",
-      "violations": [],
-      "joinDate": "2025-01-10"
-    },
-    {
-      "name": "Azanova Darʼya",
-      "role": "video editor",
-      "dept": "Video Production",
-      "email": "azanova1997@example.com",
-      "discordId": "darya_a",
-      "violations": [],
-      "joinDate": "2025-07-07"
-    },
-    {
-      "name": "Bindiak Dana",
-      "role": "lead generator",
-      "dept": "Lead Generation",
-      "email": "",
-      "discordId": "dana_b",
-      "violations": [],
-      "joinDate": "2025-08-08"
-    },
-    {
-      "name": "Bogun Polina",
-      "role": "designer",
-      "dept": "Design",
-      "email": "",
-      "discordId": "polina_b",
-      "violations": [],
-      "joinDate": "2025-04-28"
-    },
-    {
-      "name": "Burda Anna",
-      "role": "lead generator",
-      "dept": "Lead Generation",
-      "email": "burdaanna8@example.com",
-      "discordId": "anna_b",
-      "violations": [],
-      "joinDate": "2025-08-15"
-    },
-    {
-      "name": "Chobotar Yuliia",
-      "role": "designer",
-      "dept": "Design",
-      "email": "",
-      "discordId": "yuliia_c",
-      "violations": [],
-      "joinDate": "2025-09-28"
-    },
-    {
-      "name": "Danylenko Liliia",
-      "role": "full stack developer",
-      "dept": "Development",
-      "email": "liliia.danylenko.dev@example.com",
-      "discordId": "liliia_d",
-      "violations": [],
-      "joinDate": "2025-01-25"
-    },
-    {
-      "name": "Davlatmamadova Firuza",
-      "role": "lead generator",
-      "dept": "Lead Generation",
-      "email": "davlatmamadova.firuza@example.com",
-      "discordId": "firuza_d",
-      "violations": [],
-      "joinDate": "2025-10-01"
-    },
-    {
-      "name": "Hanan Zaheur",
-      "role": "lead generator",
-      "dept": "Lead Generation",
-      "email": "hanane.zaheur@example.com",
-      "discordId": "hanan_z",
-      "violations": [],
-      "joinDate": "2025-01-15"
-    },
-    {
-      "name": "Iskandarova Anush",
-      "role": "sales manager",
-      "dept": "Sales",
-      "email": "nushnushok@example.com",
-      "discordId": "anush_i",
-      "violations": [],
-      "joinDate": "2025-05-12"
-    },
-    {
-      "name": "Kizilova Olha",
-      "role": "back end developer",
-      "dept": "Development",
-      "email": "olgascorpions26@example.com",
-      "discordId": "olha_k",
-      "violations": [],
-      "joinDate": "2025-04-19"
-    },
-    {
-      "name": "Klimenko Yaroslav",
-      "role": "front end developer",
-      "dept": "Development",
-      "email": "klimyarik13@example.com",
-      "discordId": "yaroslav_k",
-      "violations": [],
-      "joinDate": "2025-06-08"
-    },
-    {
-      "name": "Kovalska Anastasiya",
-      "role": "sales manager",
-      "dept": "Sales",
-      "email": "avkovalska23@example.com",
-      "discordId": "anastasiya_k",
-      "violations": [],
-      "joinDate": "2025-04-05"
-    },
-    {
-      "name": "Kucherenko Iuliia",
-      "role": "graphic designer",
-      "dept": "Design",
-      "email": "ulia.k.rhs@example.com",
-      "discordId": "iuliia_k",
-      "violations": [],
-      "joinDate": "2025-03-18"
-    },
-    {
-      "name": "Nealova Evgeniya",
-      "role": "recruiter",
-      "dept": "Recruiting",
-      "email": "zp4058203@example.com",
-      "discordId": "evgeniya_n",
-      "violations": [],
-      "joinDate": "2025-06-30"
-    },
-    {
-      "name": "Panchenko Diana",
-      "role": "video editor",
-      "dept": "Video Production",
-      "email": "panchenko.di@example.com",
-      "discordId": "diana_p",
-      "violations": [],
-      "joinDate": "2025-09-12"
-    },
-    {
-      "name": "Pasichna Anastasiia",
-      "role": "lead generator",
-      "dept": "Lead Generation",
-      "email": "anastasiya.pasichnaya@example.com",
-      "discordId": "anastasiia_p",
-      "violations": [],
-      "joinDate": "2025-08-01"
-    },
-    {
-      "name": "Peneva Plamena",
-      "role": "lead generator",
-      "dept": "Lead Generation",
-      "email": "plamenapeneva1206@example.com",
-      "discordId": "plamena_p",
-      "violations": [],
-      "joinDate": "2025-07-11"
-    },
-    {
-      "name": "Perederii Vladislav",
-      "role": "prompt engineer",
-      "dept": "AI Team",
-      "email": "vladyslav.perederii@example.com",
-      "discordId": "vladislav_p",
-      "violations": [],
-      "joinDate": "2025-05-02"
-    },
-    {
-      "name": "Podolskyi Sviatoslav",
-      "role": "video editor",
-      "dept": "Video Production",
-      "email": "neozoy.x@example.com",
-      "discordId": "sviatoslav_p",
-      "violations": [],
-      "joinDate": "2025-09-01"
-    },
-    {
-      "name": "Ponomarova Kateryna",
-      "role": "financial manager",
-      "dept": "Finance",
-      "email": "katrinp.usa@example.com",
-      "discordId": "kateryna_p",
-      "violations": [],
-      "joinDate": "2025-02-11"
-    },
-    {
-      "name": "Rekonvald Viktoriya",
-      "role": "recruiter",
-      "dept": "Recruiting",
-      "email": "viktoriiarekonvald@example.com",
-      "discordId": "viktoriya_r",
-      "violations": [],
-      "joinDate": "2025-06-21"
-    },
-    {
-      "name": "Rybak Nataliia",
-      "role": "lead generator",
-      "dept": "Lead Generation",
-      "email": "rybaknatalia91@example.com",
-      "discordId": "nataliia_r",
-      "violations": [],
-      "joinDate": "2025-03-10"
-    },
-    {
-      "name": "Shelep Olha",
-      "role": "ui ux designer",
-      "dept": "Design",
-      "email": "shelep.olya@example.com",
-      "discordId": "olha_s",
-      "violations": [],
-      "joinDate": "2025-01-05"
-    },
-    {
-      "name": "Shkinder Kseniia",
-      "role": "lead generator",
-      "dept": "Lead Generation",
-      "email": "k49209700@example.com",
-      "discordId": "kseniia_s",
-      "violations": [],
-      "joinDate": "2025-10-05"
-    },
-    {
-      "name": "Skrypkar Vilhelm",
-      "role": "illustrator",
-      "dept": "Design",
-      "email": "ntwilson666@example.com",
-      "discordId": "vilhelm_s",
-      "violations": [],
-      "joinDate": "2025-02-01"
-    },
-    {
-      "name": "Vereteno Marta",
-      "role": "graphic designer",
-      "dept": "Design",
-      "email": "sd.designsmart@example.com",
-      "discordId": "marta_v",
-      "violations": [],
-      "joinDate": "2025-09-25"
-    },
-    {
-      "name": "Yelisieieva Daria",
-      "role": "financial manager",
-      "dept": "Finance",
-      "email": "zt.dasha@example.com",
-      "discordId": "daria_y",
-      "violations": [],
-      "joinDate": "2025-03-03"
-    },
-    {
-      "name": "Zasiadko Matvii",
-      "role": "prompt engineer",
-      "dept": "AI Team",
-      "email": "matvey.z.2004@example.com",
-      "discordId": "matvii_z",
-      "violations": [],
-      "joinDate": "2025-08-22"
-    }
+  {
+    "name": "Alakbarova Ulviyya Javid",
+    "role": "lead generator",
+    "dept": "Lead Generation",
+    "email": "ulviyyelekberova@example.com",
+    "discordId": "ulviyya_j",
+    "violations": [],
+    "joinDate": "2025-02-20"
+  },
+  {
+    "name": "Archibong Isaac",
+    "role": "lead generator",
+    "dept": "Lead Generation",
+    "email": "archibong222@example.com",
+    "discordId": "isaac_a",
+    "violations": [],
+    "joinDate": "2025-09-15"
+  },
+  {
+    "name": "Artemchuk Nikolay",
+    "role": "project manager",
+    "dept": "Project Management",
+    "email": "artemchuknn@example.com",
+    "discordId": "nikolay_a",
+    "violations": [],
+    "joinDate": "2025-01-10"
+  },
+  {
+    "name": "Azanova Darʼya",
+    "role": "video editor",
+    "dept": "Video Production",
+    "email": "azanova1997@example.com",
+    "discordId": "darya_a",
+    "violations": [],
+    "joinDate": "2025-07-07"
+  },
+  {
+    "name": "Bindiak Dana",
+    "role": "lead generator",
+    "dept": "Lead Generation",
+    "email": "",
+    "discordId": "dana_b",
+    "violations": [],
+    "joinDate": "2025-08-08"
+  },
+  {
+    "name": "Bogun Polina",
+    "role": "designer",
+    "dept": "Design",
+    "email": "",
+    "discordId": "polina_b",
+    "violations": [],
+    "joinDate": "2025-04-28"
+  },
+  {
+    "name": "Burda Anna",
+    "role": "lead generator",
+    "dept": "Lead Generation",
+    "email": "burdaanna8@example.com",
+    "discordId": "anna_b",
+    "violations": [],
+    "joinDate": "2025-08-15"
+  },
+  {
+    "name": "Chobotar Yuliia",
+    "role": "designer",
+    "dept": "Design",
+    "email": "",
+    "discordId": "yuliia_c",
+    "violations": [],
+    "joinDate": "2025-09-28"
+  },
+  {
+    "name": "Danylenko Liliia",
+    "role": "full stack developer",
+    "dept": "Development",
+    "email": "liliia.danylenko.dev@example.com",
+    "discordId": "liliia_d",
+    "violations": [],
+    "joinDate": "2025-01-25"
+  },
+  {
+    "name": "Davlatmamadova Firuza",
+    "role": "lead generator",
+    "dept": "Lead Generation",
+    "email": "davlatmamadova.firuza@example.com",
+    "discordId": "firuza_d",
+    "violations": [],
+    "joinDate": "2025-10-01"
+  },
+  {
+    "name": "Hanan Zaheur",
+    "role": "lead generator",
+    "dept": "Lead Generation",
+    "email": "hanane.zaheur@example.com",
+    "discordId": "hanan_z",
+    "violations": [],
+    "joinDate": "2025-01-15"
+  },
+  {
+    "name": "Iskandarova Anush",
+    "role": "sales manager",
+    "dept": "Sales",
+    "email": "nushnushok@example.com",
+    "discordId": "anush_i",
+    "violations": [],
+    "joinDate": "2025-05-12"
+  },
+  {
+    "name": "Kizilova Olha",
+    "role": "back end developer",
+    "dept": "Development",
+    "email": "olgascorpions26@example.com",
+    "discordId": "olha_k",
+    "violations": [],
+    "joinDate": "2025-04-19"
+  },
+  {
+    "name": "Klimenko Yaroslav",
+    "role": "front end developer",
+    "dept": "Development",
+    "email": "klimyarik13@example.com",
+    "discordId": "yaroslav_k",
+    "violations": [],
+    "joinDate": "2025-06-08"
+  },
+  {
+    "name": "Kovalska Anastasiya",
+    "role": "sales manager",
+    "dept": "Sales",
+    "email": "avkovalska23@example.com",
+    "discordId": "anastasiya_k",
+    "violations": [],
+    "joinDate": "2025-04-05"
+  },
+  {
+    "name": "Kucherenko Iuliia",
+    "role": "graphic designer",
+    "dept": "Design",
+    "email": "ulia.k.rhs@example.com",
+    "discordId": "iuliia_k",
+    "violations": [],
+    "joinDate": "2025-03-18"
+  },
+  {
+    "name": "Nealova Evgeniya",
+    "role": "recruiter",
+    "dept": "Recruiting",
+    "email": "zp4058203@example.com",
+    "discordId": "evgeniya_n",
+    "violations": [],
+    "joinDate": "2025-06-30"
+  },
+  {
+    "name": "Panchenko Diana",
+    "role": "video editor",
+    "dept": "Video Production",
+    "email": "panchenko.di@example.com",
+    "discordId": "diana_p",
+    "violations": [],
+    "joinDate": "2025-09-12"
+  },
+  {
+    "name": "Pasichna Anastasiia",
+    "role": "lead generator",
+    "dept": "Lead Generation",
+    "email": "anastasiya.pasichnaya@example.com",
+    "discordId": "anastasiia_p",
+    "violations": [],
+    "joinDate": "2025-08-01"
+  },
+  {
+    "name": "Peneva Plamena",
+    "role": "lead generator",
+    "dept": "Lead Generation",
+    "email": "plamenapeneva1206@example.com",
+    "discordId": "plamena_p",
+    "violations": [],
+    "joinDate": "2025-07-11"
+  },
+  {
+    "name": "Perederii Vladislav",
+    "role": "prompt engineer",
+    "dept": "AI Team",
+    "email": "vladyslav.perederii@example.com",
+    "discordId": "vladislav_p",
+    "violations": [],
+    "joinDate": "2025-05-02"
+  },
+  {
+    "name": "Podolskyi Sviatoslav",
+    "role": "video editor",
+    "dept": "Video Production",
+    "email": "neozoy.x@example.com",
+    "discordId": "sviatoslav_p",
+    "violations": [],
+    "joinDate": "2025-09-01"
+  },
+  {
+    "name": "Ponomarova Kateryna",
+    "role": "financial manager",
+    "dept": "Finance",
+    "email": "katrinp.usa@example.com",
+    "discordId": "kateryna_p",
+    "violations": [],
+    "joinDate": "2025-02-11"
+  },
+  {
+    "name": "Rekonvald Viktoriya",
+    "role": "recruiter",
+    "dept": "Recruiting",
+    "email": "viktoriiarekonvald@example.com",
+    "discordId": "viktoriya_r",
+    "violations": [],
+    "joinDate": "2025-06-21"
+  },
+  {
+    "name": "Rybak Nataliia",
+    "role": "lead generator",
+    "dept": "Lead Generation",
+    "email": "rybaknatalia91@example.com",
+    "discordId": "nataliia_r",
+    "violations": [],
+    "joinDate": "2025-03-10"
+  },
+  {
+    "name": "Shelep Olha",
+    "role": "ui ux designer",
+    "dept": "Design",
+    "email": "shelep.olya@example.com",
+    "discordId": "olha_s",
+    "violations": [],
+    "joinDate": "2025-01-05"
+  },
+  {
+    "name": "Shkinder Kseniia",
+    "role": "lead generator",
+    "dept": "Lead Generation",
+    "email": "k49209700@example.com",
+    "discordId": "kseniia_s",
+    "violations": [],
+    "joinDate": "2025-10-05"
+  },
+  {
+    "name": "Skrypkar Vilhelm",
+    "role": "illustrator",
+    "dept": "Design",
+    "email": "ntwilson666@example.com",
+    "discordId": "vilhelm_s",
+    "violations": [],
+    "joinDate": "2025-02-01"
+  },
+  {
+    "name": "Vereteno Marta",
+    "role": "graphic designer",
+    "dept": "Design",
+    "email": "sd.designsmart@example.com",
+    "discordId": "marta_v",
+    "violations": [],
+    "joinDate": "2025-09-25"
+  },
+  {
+    "name": "Yelisieieva Daria",
+    "role": "financial manager",
+    "dept": "Finance",
+    "email": "zt.dasha@example.com",
+    "discordId": "daria_y",
+    "violations": [],
+    "joinDate": "2025-03-03"
+  },
+  {
+    "name": "Zasiadko Matvii",
+    "role": "prompt engineer",
+    "dept": "AI Team",
+    "email": "matvey.z.2004@example.com",
+    "discordId": "matvii_z",
+    "violations": [
+      {
+        "date": "2025-10-20",
+        "type": "Documentation",
+        "comment": "asdasd"
+      },
+      {
+        "date": "2025-10-20",
+        "type": "Communication",
+        "comment": "sdf"
+      }
+    ],
+    "joinDate": "2025-08-22"
+  }
 ]
