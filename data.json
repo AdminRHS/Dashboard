@@ -23,13 +23,7 @@
     "dept": "Project Management",
     "email": "artemchuknn@example.com",
     "discordId": "nikolay_a",
-    "violations": [
-      {
-        "date": "2025-10-20",
-        "type": "Documentation",
-        "comment": "qefsdvsd"
-      }
-    ],
+    "violations": [],
     "joinDate": "2025-01-10"
   },
   {
