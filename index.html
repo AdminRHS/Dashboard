@@ -405,7 +405,7 @@
                         <img src="logo_hor_dark.png" alt="Company Logo" class="logo-dark object-contain hidden">
                     </div>
                 </div>
-
+                
                 <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 text-gray-800">
                     <i data-lucide="alert-triangle" class="w-8 h-8 text-orange-500"></i>
                     <h1 class="text-3xl lg:text-4xl font-bold">Yellow Cards</h1>
@@ -424,17 +424,17 @@
                 <div class="flex flex-wrap gap-3">
                     <button class="tab-btn active px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="overview" onclick="switchTab(this)">
                         <i data-lucide="layout-dashboard" class="inline w-4 h-4 mr-2"></i>Overview
-                    </button>
+                </button>
                     <button class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="yellowcard" onclick="switchTab(this)">
                         <i data-lucide="alert-circle" class="inline w-4 h-4 mr-2"></i>Yellow Cards
-                    </button>
+                </button>
                     <button class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="team" onclick="switchTab(this)">
                          <i data-lucide="users" class="inline w-4 h-4 mr-2"></i>Team
-                    </button>
+                </button>
                     <button class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="leaderboard" onclick="switchTab(this)">
                          <i data-lucide="trophy" class="inline w-4 h-4 mr-2"></i>Leaderboard
-                    </button>
-                </div>
+                </button>
+            </div>
                 <div class="flex items-center gap-2">
                     <button id="theme-toggle-btn" class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" onclick="toggleTheme()">
                         <i data-lucide="moon" class="inline w-4 h-4 mr-2"></i><span id="theme-toggle-text">Dark Mode</span>
@@ -468,7 +468,7 @@
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">No links to work outputs</li>
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">Wrong folder structure</li>
                             </ul>
-                        </div>
+                            </div>
                         <div class="rule-card bg-gray-50 p-6 rounded-lg">
                             <h4 class="font-bold text-lg mb-4 flex items-center gap-2" style="color: var(--color-warning-main);"><i data-lucide="git-pull-request" class="w-5 h-5"></i>Workflow</h4>
                             <ul class="space-y-2">
@@ -485,10 +485,10 @@
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-error-main);">Not reading pinned rules</li>
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-error-main);">Not confirming task assignments</li>
                             </ul>
+                            </div>
                         </div>
-                    </div>
                 </section>
-            </div>
+                            </div>
 
             <div id="yellowcard" class="tab-content hidden space-y-4">
                 <section class="bg-white p-6 rounded-xl shadow-lg">
@@ -496,7 +496,7 @@
                         <button onclick="changeMonth(-1)" class="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
                         <h3 id="calendar-month-year" class="text-xl font-bold text-gray-800"></h3>
                         <button onclick="changeMonth(1)" class="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
-                    </div>
+                        </div>
                     <div id="calendar-container"></div>
                 </section>
                 <section class="bg-white p-6 rounded-xl shadow-lg">
@@ -506,7 +506,7 @@
                             <i data-lucide="alert-triangle" class="w-4 h-4"></i>
                             <span>Give Yellow Card</span>
                         </button>
-                    </div>
+                            </div>
                     <div class="overflow-x-auto">
                         <table class="table w-full">
                             <thead>
@@ -516,9 +516,9 @@
                             </thead>
                             <tbody id="yellow-card-table-body"></tbody>
                         </table>
-                    </div>
+                        </div>
                 </section>
-            </div>
+                    </div>
 
             <div id="team" class="tab-content hidden">
                 <section class="bg-white p-6 rounded-xl shadow-lg">
@@ -537,7 +537,7 @@
                     </div>
                     <div id="team-grids-container" class="space-y-4"></div>
                 </section>
-            </div>
+                </div>
 
             <div id="leaderboard" class="tab-content hidden">
                 <section class="bg-white p-6 rounded-xl shadow-lg">
@@ -548,7 +548,7 @@
                         <div class="search-input-container">
                             <input type="text" id="leaderboard-search" oninput="renderLeaderboard()" placeholder="Search by name...">
                             <i data-lucide="search" class="search-icon w-5 h-5"></i>
-                        </div>
+            </div>
                         <div id="leaderboard-dept-filter-container" class="custom-dropdown" style="flex-grow: 0;"></div>
 
                         <div id="leaderboard-period-filter" class="flex items-center gap-2">
@@ -557,22 +557,22 @@
                              <button class="period-btn" data-period="new" onclick="setPeriodFilter(this)">New</button>
                              <button class="period-btn active" data-period="all" onclick="setPeriodFilter(this)">All Time</button>
                         </div>
-                    </div>
-
+                </div>
+                
                     <div class="overflow-x-auto">
                         <table class="table w-full">
                             <thead>
                                 <tr>
                                     <th>Employee</th><th>Department</th><th>Last Card Date</th><th>Days Without Cards</th><th>Notes/Badges</th>
-                                </tr>
-                            </thead>
+                            </tr>
+                        </thead>
                             <tbody id="leaderboard-table-body"></tbody>
-                        </table>
-                    </div>
+                    </table>
+                </div>
                 </section>
             </div>
         </main>
-    </div>
+            </div>
 
     <div id="employeeModal" class="modal"> <div class="modal-content" id="employeeModalContent"></div> </div>
     <div id="dayDetailsModal" class="modal"> <div class="modal-content" id="dayDetailsModalContent"></div> </div>
@@ -603,7 +603,7 @@
                 <button type="button" class="custom-dropdown-toggle">
                     <span class="selected-value placeholder">${placeholder}</span>
                     <i data-lucide="chevron-down" class="chevron-icon w-5 h-5"></i>
-                </button>
+                        </button>
                 <ul class="custom-dropdown-menu">
                     ${options.map(opt => `<li data-value="${opt.value}">${opt.text}</li>`).join('')}
                 </ul>
@@ -857,11 +857,11 @@
                             <div class="flex items-center gap-4">
                                 <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
                                     <span class="font-bold text-gray-500 text-lg">${initials}</span>
-                                </div>
+                </div>
                                 <div class="text-left">
                                     <h4 class="font-bold text-gray-800">${emp.name}</h4>
                                     <div class="text-sm text-gray-600">${emp.role}</div>
-                                </div>
+            </div>
                             </div>
                         </div>`;
                 });
@@ -1141,25 +1141,25 @@
                         <p class="font-semibold" style="color: ${finalDeptColor};">${data.dept}</p>
                     </div>
                 </div>
-
+                
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                     <div class="info-block" onclick="openEmailClient('${data.email || ''}')">
                         <i data-lucide="mail" class="w-6 h-6"></i>
                         <span class="info-label">Email</span>
-                    </div>
+                </div>
                      <div class="info-block" onclick="openDiscordChat('${data.discordId || ''}', '${data.name}')">
                         <img src="discord_2.png" alt="Discord Icon" class="w-6 h-6">
                         <span class="info-label">Discord</span>
-                    </div>
+            </div>
                     ${cardDisplayHTML}
-                </div>
+    </div>
 
                 ${violationsList}
                 
                 <div class="flex justify-start gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                     <button class="action-button-secondary" onclick="openEditEmployeeModal('${data.name}')"><i data-lucide="edit" class="w-4 h-4"></i><span>Edit</span></button>
                     <button class="action-button" onclick="openGiveCardModalForEmployee('${data.name}')"><i data-lucide="alert-triangle" class="w-4 h-4"></i><span>Give Card</span></button>
-                </div>
+            </div>
             `;
             document.getElementById('employeeModal').style.display = 'flex';
             lucide.createIcons();
@@ -1170,9 +1170,29 @@
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
             console.log('Looking for violations on date:', dateStr);
             console.log('All violations:', employees.flatMap(e => e.violations));
-            const violationsOnDay = employees.flatMap(e => 
-                e.violations.filter(v => v.date === dateStr).map(v => ({ name: e.name, type: v.type, comment: v.comment }))
-            );
+            const violationsOnDay = employees.flatMap(e => {
+                return e.violations
+                    .filter(v => {
+                        const raw = v.date;
+                        let vDateStr;
+                        if (typeof raw === 'string') {
+                            // Support ISO strings like 2025-10-21T00:00:00.000Z and plain YYYY-MM-DD
+                            vDateStr = raw.includes('T') ? raw.split('T')[0] : raw;
+                        } else if (raw instanceof Date) {
+                            vDateStr = `${raw.getFullYear()}-${String(raw.getMonth() + 1).padStart(2, '0')}-${String(raw.getDate()).padStart(2, '0')}`;
+                        } else {
+                            // Fallback: attempt to parse unknown types
+                            const d = new Date(raw);
+                            if (!isNaN(d)) {
+                                vDateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                            } else {
+                                vDateStr = '';
+                            }
+                        }
+                        return vDateStr === dateStr;
+                    })
+                    .map(v => ({ name: e.name, type: v.type, comment: v.comment }));
+            });
             console.log('Found violations:', violationsOnDay);
             
             let content = `<button class="close-btn" onclick="closeModal('dayDetailsModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-4">Violations on ${clickedDate.toLocaleDateString()}</h2>`;
@@ -1193,8 +1213,8 @@
                             <div class="w-3 h-3 mt-1.5 rounded-sm ${colorClass} flex-shrink-0"></div>
                             <div class="text-gray-700">
                                 <strong>${v.name} (${v.type}):</strong> ${v.comment || 'No comment'}
-                            </div>
-                        </div>
+                </div>
+        </div>
                     `;
                 });
                 content += '</div>';
@@ -1393,7 +1413,7 @@
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
                                         <span class="font-bold text-gray-500 text-sm">${initials}</span>
-                                    </div>
+    </div>
                                     <div class="text-left overflow-hidden">
                                         <h4 class="font-bold text-gray-800 text-sm truncate">${emp.name}</h4>
                                         <div class="text-xs truncate font-semibold" style="color: ${deptColor};">${emp.role}</div>
