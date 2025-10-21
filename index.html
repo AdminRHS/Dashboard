@@ -1100,8 +1100,8 @@
             const savedTheme = localStorage.getItem('theme') || 'light';
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-theme');
-                updateThemeButton(true);
             }
+            updateThemeButton(savedTheme === 'dark');
         }
         
         function toggleTheme() {
@@ -1113,16 +1113,27 @@
         
         function updateThemeButton(isDark) {
             const themeBtn = document.getElementById('theme-toggle-btn');
+            if (!themeBtn) return;
+            
             const icon = themeBtn.querySelector('i');
             const text = document.getElementById('theme-toggle-text');
             
-            if (isDark) {
-                icon.setAttribute('data-lucide', 'sun');
-                text.textContent = 'Light Mode';
-            } else {
-                icon.setAttribute('data-lucide', 'moon');
-                text.textContent = 'Dark Mode';
+            if (icon) {
+                if (isDark) {
+                    icon.setAttribute('data-lucide', 'sun');
+                } else {
+                    icon.setAttribute('data-lucide', 'moon');
+                }
             }
+            
+            if (text) {
+                if (isDark) {
+                    text.textContent = 'Light Mode';
+                } else {
+                    text.textContent = 'Dark Mode';
+                }
+            }
+            
             lucide.createIcons();
         }
 
