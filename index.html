@@ -11,6 +11,7 @@
     <script src="js/utils.js"></script>
     <script src="js/render.js"></script>
     <script src="js/actions.js"></script>
+    <script src="js/modals.js"></script>
     <script src="js/calendar.js"></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -894,34 +895,14 @@
         
         
         // --- Modal Opening / Closing ---
-        function openGiveCardModalForEmployee(name) {
-            closeModal('employeeModal');
-            openGiveCardModal(name);
-        }
-        function openAddEmployeeModal() {
-            document.getElementById('addEmployeeModal').style.display = 'flex';
-            lucide.createIcons();
-        }
-        function openRemoveEmployeeModal() {
-            renderModals();
-            document.getElementById('removeEmployeeModal').style.display = 'flex';
-            lucide.createIcons();
-        }
-        function openGiveCardModal(name = null) {
-            renderModals();
-            if (name) {
-                const dropdown = document.querySelector('#cardEmployeeDropdown');
-                const toggle = dropdown.querySelector('.custom-dropdown-toggle');
-                const item = dropdown.querySelector(`li[data-value="${name}"]`);
-                if (item) {
-                    toggle.dataset.value = name;
-                    toggle.querySelector('.selected-value').textContent = item.textContent;
-                    toggle.querySelector('.selected-value').classList.remove('placeholder');
-                }
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.custom-dropdown')) {
+                document.querySelectorAll('.custom-dropdown.open').forEach(dropdown => {
+                    dropdown.classList.remove('open');
+                });
             }
-            document.getElementById('giveCardModal').style.display = 'flex';
-            lucide.createIcons();
-        }
+        });
         function closeModal(id) {
             document.getElementById(id).style.display = 'none';
         }

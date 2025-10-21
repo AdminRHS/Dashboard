@@ -85,15 +85,23 @@ function showEmployeeModal(data) {
 
 function openGiveCardModalForEmployee(employeeName) {
     closeModal('employeeModal');
-    
-    // Set the employee dropdown to the selected employee
-    const employeeDropdown = document.querySelector('#cardEmployeeDropdown .custom-dropdown-toggle');
-    if (employeeDropdown) {
-        employeeDropdown.dataset.value = employeeName;
-        employeeDropdown.querySelector('.selected-value').textContent = employeeName;
+    openGiveCardModal(employeeName);
+}
+
+function openGiveCardModal(name = null) {
+    renderModals();
+    if (name) {
+        const dropdown = document.querySelector('#cardEmployeeDropdown');
+        const toggle = dropdown.querySelector('.custom-dropdown-toggle');
+        const item = dropdown.querySelector(`li[data-value="${name}"]`);
+        if (item) {
+            toggle.dataset.value = name;
+            toggle.querySelector('.selected-value').textContent = item.textContent;
+            toggle.querySelector('.selected-value').classList.remove('placeholder');
+        }
     }
-    
     document.getElementById('giveCardModal').style.display = 'flex';
+    lucide.createIcons();
 }
 
 function openEditEmployeeModal(employeeName) {
@@ -123,17 +131,3 @@ function openGiveCardModal() {
     document.getElementById('giveCardModal').style.display = 'flex';
 }
 
-// Additional modal functions from old file
-function openGiveCardModalForEmployee(employeeName) {
-    closeModal('employeeModal');
-    
-    // Set the employee dropdown to the selected employee
-    const employeeDropdown = document.querySelector('#cardEmployeeDropdown .custom-dropdown-toggle');
-    if (employeeDropdown) {
-        employeeDropdown.dataset.value = employeeName;
-        employeeDropdown.querySelector('.selected-value').textContent = employeeName;
-        employeeDropdown.querySelector('.selected-value').classList.remove('placeholder');
-    }
-    
-    document.getElementById('giveCardModal').style.display = 'flex';
-}
