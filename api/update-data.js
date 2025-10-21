@@ -1,72 +1,73 @@
-// Vercel API endpoint для оновлення data.json через GitHub Actions
+import postgres from 'postgres';
+
+const sql = postgres(process.env.DATABASE_URL);
+
 export default async function handler(req, res) {
-  // Тільки POST запити
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { data, commitMessage = 'Update data.json via API' } = req.body;
+    const { data, commitMessage } = req.body;
 
     if (!data) {
-      return res.status(400).json({ error: 'Data is required' });
+      return res.status(400).json({ error: 'Missing data in request body' });
     }
 
-    // Валідація JSON
+    // Parse and validate JSON data
+    let employees;
     try {
-      JSON.parse(data);
-    } catch (e) {
-      return res.status(400).json({ error: 'Invalid JSON format' });
-    }
-
-    // Конфігурація GitHub
-    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-    const GITHUB_OWNER = process.env.GITHUB_OWNER || 'adminrhs';
-    const GITHUB_REPO = process.env.GITHUB_REPO || 'Dashboard';
-
-    if (!GITHUB_TOKEN) {
-      return res.status(500).json({ error: 'GitHub token not configured' });
-    }
-
-    // Викликаємо GitHub Actions workflow
-    const response = await fetch(
-      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/actions/workflows/update-data-dispatch.yml/dispatches`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `token ${GITHUB_TOKEN}`,
-          'Accept': 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ref: 'main',
-          inputs: {
-            data: data,
-            commit_message: commitMessage
-          }
-        })
+      employees = JSON.parse(data);
+      if (!Array.isArray(employees)) {
+        throw new Error('Data must be an array of employees');
       }
-    );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('GitHub API error:', errorText);
-      return res.status(500).json({ 
-        error: 'Failed to trigger workflow',
-        details: errorText
+    } catch (parseError) {
+      return res.status(400).json({ 
+        error: 'Invalid JSON format in data field',
+        details: parseError.message
       });
     }
 
-    return res.status(200).json({ 
-      success: true, 
-      message: 'Data update triggered successfully' 
-    });
+    // Clear existing data
+    await sql`DELETE FROM violations`;
+    await sql`DELETE FROM employees`;
 
+    // Insert new data
+    for (const employee of employees) {
+      // Validate employee data
+      if (!employee.name) {
+        continue; // Skip invalid employees
+      }
+
+      const { rows } = await sql`
+        INSERT INTO employees (name, role, dept, email, discord_id, join_date)
+        VALUES (${employee.name}, ${employee.role || ''}, ${employee.dept || ''}, 
+                ${employee.email || ''}, ${employee.discordId || ''}, ${employee.joinDate || null})
+        RETURNING id
+      `;
+      
+      const employeeId = rows[0].id;
+
+      // Insert violations
+      for (const violation of employee.violations || []) {
+        if (violation.date && violation.type) {
+          await sql`
+            INSERT INTO violations (employee_id, date, type, comment)
+            VALUES (${employeeId}, ${violation.date}, ${violation.type}, ${violation.comment || ''})
+          `;
+        }
+      }
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      message: `Updated database with ${employees.length} employees` 
+    });
   } catch (error) {
-    console.error('API error:', error);
-    return res.status(500).json({ 
-      error: 'Internal server error',
-      details: error.message
+    console.error('Error updating data:', error);
+    res.status(500).json({ 
+      error: error.message,
+      details: 'Check Vercel logs for more information'
     });
   }
 }

@@ -1,0 +1,23 @@
+{
+  "name": "yellow-card-dashboard",
+  "version": "1.0.0",
+  "description": "Yellow Card Dashboard with PostgreSQL backend",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required for static site'",
+    "start": "vercel start"
+  },
+  "dependencies": {
+    "postgres": "^3.4.3"
+  },
+  "keywords": [
+    "dashboard",
+    "yellow-cards",
+    "employee-management",
+    "vercel",
+    "postgresql"
+  ],
+  "author": "Matviy Zasyadko",
+  "license": "MIT"
+}
