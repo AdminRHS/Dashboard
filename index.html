@@ -951,6 +951,7 @@
                 updateSaveStatus('Saving...', 'saving');
                 
                 try {
+                    console.log('Adding violation for employee:', emp.name, 'ID:', emp.id, 'Violation:', violation);
                     const success = await addViolationViaAPI(emp.id, violation);
                     if (success) {
                         // Add to local array for immediate UI update
