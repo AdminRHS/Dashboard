@@ -89,20 +89,29 @@ function openGiveCardModalForEmployee(employeeName) {
 }
 
 function openGiveCardModal(name = null) {
+    console.log('openGiveCardModal called with name:', name);
     renderModals();
-    if (name) {
-        const dropdown = document.querySelector('#cardEmployeeDropdown');
-        const toggle = dropdown.querySelector('.custom-dropdown-toggle');
-        const item = dropdown.querySelector(`li[data-value="${name}"]`);
-        if (item) {
-            toggle.dataset.value = name;
-            toggle.querySelector('.selected-value').textContent = item.textContent;
-            toggle.querySelector('.selected-value').classList.remove('placeholder');
+    
+    // Wait a bit for DOM to update
+    setTimeout(() => {
+        if (name) {
+            const dropdown = document.querySelector('#cardEmployeeDropdown');
+            const toggle = dropdown.querySelector('.custom-dropdown-toggle');
+            const item = dropdown.querySelector(`li[data-value="${name}"]`);
+            if (item) {
+                toggle.dataset.value = name;
+                toggle.querySelector('.selected-value').textContent = item.textContent;
+                toggle.querySelector('.selected-value').classList.remove('placeholder');
+            }
         }
-    }
-    document.getElementById('giveCardModal').style.display = 'flex';
-    lucide.createIcons();
+        document.getElementById('giveCardModal').style.display = 'flex';
+        lucide.createIcons();
+    }, 100);
 }
+
+// Make functions globally available
+window.openGiveCardModal = openGiveCardModal;
+window.openGiveCardModalForEmployee = openGiveCardModalForEmployee;
 
 function openEditEmployeeModal(employeeName) {
     closeModal('employeeModal');

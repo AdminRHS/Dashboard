@@ -104,7 +104,13 @@ function editEmployee(btn) {
 
 // Dropdown functionality
 function createDropdown(containerId, options, placeholder, onchangeCallback) {
+    console.log('createDropdown called for:', containerId, 'with options:', options);
     const container = document.getElementById(containerId);
+    if (!container) {
+        console.error('Container not found:', containerId);
+        return;
+    }
+    
     container.innerHTML = `
         <button class="custom-dropdown-toggle" onclick="toggleDropdown('${containerId}')">
             <span class="selected-value placeholder">${placeholder}</span>
@@ -146,6 +152,10 @@ function toggleDropdown(containerId) {
     const container = document.getElementById(containerId);
     container.classList.toggle('open');
 }
+
+// Make functions globally available
+window.createDropdown = createDropdown;
+window.toggleDropdown = toggleDropdown;
 
 // Department filter for leaderboard
 function populateDeptFilter() {

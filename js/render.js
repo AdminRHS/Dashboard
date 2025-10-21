@@ -264,3 +264,6 @@ function renderModals() {
     
     lucide.createIcons();
 }
+
+// Make functions globally available
+window.renderModals = renderModals;
