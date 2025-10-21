@@ -37,6 +37,7 @@ function renderCalendar() {
     }
     
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
     
     for (let day = 1; day <= daysInMonth; day++) {
         const loopDate = new Date(year, month, day);

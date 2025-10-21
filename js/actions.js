@@ -223,6 +223,7 @@ function renderLeaderboard() {
     });
     
     tableBody.innerHTML = content;
+    lucide.createIcons();
 }
 
 function getDaysWithoutCards(employee) {
@@ -251,4 +252,77 @@ function setPeriodFilter(btn) {
     document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     renderLeaderboard();
+}
+
+// Additional functions from old file
+function saveEmployeeChanges(btn) {
+    const originalName = document.getElementById('originalEmpName').value;
+    const name = document.getElementById('editEmpName').value.trim();
+    const role = document.getElementById('editEmpRole').value.trim();
+    const dept = document.getElementById('editEmpDept').value.trim();
+    const email = document.getElementById('editEmpEmail').value.trim();
+    const discordId = document.getElementById('editEmpDiscord').value.trim();
+    
+    if (!name || !role || !dept) { 
+        alert('Please fill in all required fields.'); 
+        return; 
+    }
+    
+    const emp = employees.find(e => e.name === originalName);
+    if (emp) {
+        // Check if name changed and if new name already exists
+        if (name !== originalName && employees.some(e => e.name.toLowerCase() === name.toLowerCase())) {
+            alert('An employee with this name already exists.');
+            return;
+        }
+        
+        emp.name = name;
+        emp.role = role;
+        emp.dept = dept;
+        emp.email = email;
+        emp.discordId = discordId;
+        
+        renderAll();
+        persistIfPossible();
+        showSuccessMessage(btn, "Employee Updated");
+        setTimeout(() => closeModal('editEmployeeModal'), 500);
+    }
+}
+
+function openEditEmployeeModal(employeeName) {
+    closeModal('employeeModal');
+    
+    const employee = employees.find(e => e.name === employeeName);
+    if (employee) {
+        // Create edit modal content if it doesn't exist
+        const editModalContent = document.getElementById('editEmployeeModalContent');
+        if (!editModalContent.innerHTML.includes('editEmpName')) {
+            editModalContent.innerHTML = `
+                <button class="close-btn" onclick="closeModal('editEmployeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button>
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Employee</h2>
+                <input type="hidden" id="originalEmpName" value="${employee.name}">
+                <label for="editEmpName" class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i>Name:</label>
+                <input type="text" id="editEmpName" value="${employee.name}" required>
+                <label for="editEmpRole" class="flex items-center gap-2"><i data-lucide="briefcase" class="w-4 h-4"></i>Role:</label>
+                <input type="text" id="editEmpRole" value="${employee.role}" required>
+                <label for="editEmpDept" class="flex items-center gap-2"><i data-lucide="building" class="w-4 h-4"></i>Department:</label>
+                <input type="text" id="editEmpDept" value="${employee.dept}" required>
+                <label for="editEmpEmail" class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i>Email:</label>
+                <input type="email" id="editEmpEmail" value="${employee.email || ''}">
+                <label for="editEmpDiscord" class="flex items-center gap-2"><i data-lucide="message-circle" class="w-4 h-4"></i>Discord ID:</label>
+                <input type="text" id="editEmpDiscord" value="${employee.discordId || ''}">
+                <button class="action-button mt-2" onclick="saveEmployeeChanges(this)"><i data-lucide="save" class="w-4 h-4"></i><span>Save Changes</span></button>
+            `;
+        } else {
+            document.getElementById('originalEmpName').value = employee.name;
+            document.getElementById('editEmpName').value = employee.name;
+            document.getElementById('editEmpRole').value = employee.role;
+            document.getElementById('editEmpDept').value = employee.dept;
+            document.getElementById('editEmpEmail').value = employee.email || '';
+            document.getElementById('editEmpDiscord').value = employee.discordId || '';
+        }
+        
+        document.getElementById('editEmployeeModal').style.display = 'flex';
+        lucide.createIcons();
+    }
 }

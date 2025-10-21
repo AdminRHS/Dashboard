@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     renderAll();
+    lucide.createIcons();
 
     // Add single event listener for clickable rows
     const tableBodies = [

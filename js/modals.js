@@ -122,3 +122,18 @@ function openRemoveEmployeeModal() {
 function openGiveCardModal() {
     document.getElementById('giveCardModal').style.display = 'flex';
 }
+
+// Additional modal functions from old file
+function openGiveCardModalForEmployee(employeeName) {
+    closeModal('employeeModal');
+    
+    // Set the employee dropdown to the selected employee
+    const employeeDropdown = document.querySelector('#cardEmployeeDropdown .custom-dropdown-toggle');
+    if (employeeDropdown) {
+        employeeDropdown.dataset.value = employeeName;
+        employeeDropdown.querySelector('.selected-value').textContent = employeeName;
+        employeeDropdown.querySelector('.selected-value').classList.remove('placeholder');
+    }
+    
+    document.getElementById('giveCardModal').style.display = 'flex';
+}

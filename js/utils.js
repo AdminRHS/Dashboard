@@ -87,3 +87,45 @@ function persistIfPossible() {
         console.warn('Could not persist data:', e);
     }
 }
+
+// Additional utility functions from old file
+function copyToClipboard(text, buttonElement) {
+    const label = buttonElement.querySelector('.info-label');
+    const originalText = label.textContent;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        label.textContent = 'Copied!';
+        label.style.color = '#10b981';
+        setTimeout(() => {
+            label.textContent = originalText;
+            label.style.color = '';
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+        label.textContent = 'Failed';
+        label.style.color = '#ef4444';
+        setTimeout(() => {
+            label.textContent = originalText;
+            label.style.color = '';
+        }, 2000);
+    });
+}
+
+function navigateToEmployee(name) {
+    const teamTabButton = document.querySelector('.tab-btn[data-tab="team"]');
+    if (teamTabButton) {
+        teamTabButton.click();
+        setTimeout(() => {
+            const employeeElement = document.querySelector(`[data-name="${name}"]`);
+            if (employeeElement) {
+                employeeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                employeeElement.style.transform = 'scale(1.05)';
+                employeeElement.style.boxShadow = '0 0 20px rgba(66, 153, 225, 0.5)';
+                setTimeout(() => {
+                    employeeElement.style.transform = '';
+                    employeeElement.style.boxShadow = '';
+                }, 2000);
+            }
+        }, 100);
+    }
+}

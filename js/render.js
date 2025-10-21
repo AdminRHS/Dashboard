@@ -9,6 +9,7 @@ function renderAll() {
     populateDeptFilter();
     renderLeaderboard();
     renderModals();
+    lucide.createIcons();
 }
 
 function renderStats() {
@@ -30,43 +31,42 @@ function renderStats() {
         }
     }
 
+    document.getElementById('team-size-stat').innerHTML = `<strong>Team Size:</strong> ${totalEmployees} employees`;
+    document.getElementById('card-ratio-stat').innerHTML = `<strong>Total Cards:</strong> ${totalCards}`;
+    
     document.getElementById('overview-stats').innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="stat-card bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="text-3xl font-bold text-gray-800">${totalEmployees}</div>
-                        <div class="text-sm text-gray-600">Total Employees</div>
-                    </div>
-                    <i data-lucide="users" class="w-8 h-8 text-blue-500"></i>
-                </div>
+        <div class="stat-card">
+            <div class="stat-icon bg-blue-100 text-blue-600"><i data-lucide="users"></i></div>
+            <div class="stat-info">
+                <div class="stat-number">${totalEmployees}</div>
+                <div class="stat-label">Total Employees</div>
             </div>
-            <div class="stat-card bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="text-3xl font-bold text-gray-800">${totalCards}</div>
-                        <div class="text-sm text-gray-600">Total Yellow Cards</div>
-                    </div>
-                    <i data-lucide="alert-triangle" class="w-8 h-8 text-yellow-500"></i>
-                </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon bg-green-100 text-green-600"><i data-lucide="shield-check"></i></div>
+            <div class="stat-info">
+                <div class="stat-number">${complianceRate}%</div>
+                <div class="stat-label">Compliance</div>
             </div>
-            <div class="stat-card bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="text-3xl font-bold text-green-600">${complianceRate}%</div>
-                        <div class="text-sm text-gray-600">Compliance Rate</div>
-                    </div>
-                    <i data-lucide="shield-check" class="w-8 h-8 text-green-500"></i>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon bg-orange-100 text-orange-600"><i data-lucide="alert-triangle"></i></div>
+            <div class="stat-info">
+                <div class="flex items-baseline gap-2">
+                     <div class="stat-number">${atRiskCount}</div>
+                     <div class="stat-label" style="text-transform: none; line-height: 1.1;">AT RISK</div>
                 </div>
+                <div class="stat-sublabel">(2+ cards)</div>
             </div>
-            <div class="stat-card bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="text-3xl font-bold text-red-600">${atRiskCount}</div>
-                        <div class="text-sm text-gray-600">At Risk (2+ Cards)</div>
-                    </div>
-                    <i data-lucide="alert-circle" class="w-8 h-8 text-red-500"></i>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon bg-red-100 text-red-600"><i data-lucide="siren"></i></div>
+            <div class="stat-info">
+                <div class="flex items-baseline gap-2">
+                    <div class="stat-number">${maxCount}</div>
+                    <div class="stat-label" style="text-transform: none; line-height: 1.1;">MOST VIOL.</div>
                 </div>
+                <div class="stat-sublabel">${maxDept}</div>
             </div>
         </div>
     `;
@@ -82,8 +82,8 @@ function renderStats() {
     document.getElementById('detailed-stats').innerHTML = `
         <div class="detailed-stat-card-v2 card-green"><div class="stat-number">${cardCounts[0]}</div></div>
         <div class="detailed-stat-card-v2 card-yellow"><div class="stat-number">${cardCounts[1]}</div><div class="card-stack-wrapper"><div class="stack-shape stack-medium"></div></div></div>
-        <div class="detailed-stat-card-v2 card-orange"><div class="stat-number">${cardCounts[2]}</div><div class="card-stack-wrapper"><div class="stack-shape stack-large"></div></div></div>
-        <div class="detailed-stat-card-v2 card-red"><div class="stat-number">${cardCounts[3]}</div><div class="card-stack-wrapper"><div class="stack-shape stack-large"></div></div></div>
+        <div class="detailed-stat-card-v2 card-orange"><div class="stat-number">${cardCounts[2]}</div><div class="card-stack-wrapper"><div class="stack-shape stack-dark"></div><div class="stack-shape stack-medium"></div></div></div>
+        <div class="detailed-stat-card-v2 card-red"><div class="stat-number">${cardCounts[3]}</div><div class="card-stack-wrapper"><div class="stack-shape stack-dark"></div><div class="stack-shape stack-medium"></div><div class="stack-shape stack-light"></div></div></div>
     `;
 }
 
@@ -111,6 +111,9 @@ function renderYellowCardTable() {
         const initials = getInitials(emp.name);
         const deptColor = departmentColors[emp.dept] || departmentColors['default'];
         
+        // Get violation types for display
+        const violationTypes = emp.violations.map(v => v.type).join(', ') || 'None';
+        
         content += `
             <tr class="hover:bg-gray-50 cursor-pointer" data-name="${emp.name}" data-role="${emp.role}" data-dept="${emp.dept}" data-email="${emp.email}" data-discord="${emp.discordId}" data-cards="${cards}">
                 <td class="p-4">
@@ -133,11 +136,15 @@ function renderYellowCardTable() {
                         <span class="text-sm text-gray-600">${cards} card${cards !== 1 ? 's' : ''}</span>
                     </div>
                 </td>
+                <td class="p-4">
+                    <div class="text-sm text-gray-600">${violationTypes}</div>
+                </td>
                 <td class="p-4">${status}</td>
             </tr>
         `;
     });
     tableBody.innerHTML = content;
+    lucide.createIcons();
 }
 
 function renderTeamGrids() {
@@ -179,10 +186,10 @@ function renderTeamGrids() {
                      data-name="${emp.name}" data-role="${emp.role}" data-dept="${emp.dept}" 
                      data-email="${emp.email}" data-discord="${emp.discordId}" data-cards="${cards}">
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-                            <span class="font-bold text-gray-500 text-lg">${initials}</span>
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" style="background-color: ${deptColor}20; border: 2px solid ${deptColor}">
+                            <span class="font-bold text-lg" style="color: ${deptColor}">${initials}</span>
                         </div>
-                        <div class="text-left">
+                        <div class="text-left flex-1">
                             <h4 class="font-bold text-gray-800">${emp.name}</h4>
                             <div class="text-sm text-gray-600">${emp.role}</div>
                         </div>
@@ -197,6 +204,7 @@ function renderTeamGrids() {
     });
     
     document.querySelectorAll('.team-member').forEach(member => member.addEventListener('click', () => showEmployeeModal(member.dataset)));
+    lucide.createIcons();
 }
 
 function renderModals() {
@@ -204,7 +212,17 @@ function renderModals() {
     
     // Give Card Modal
     const giveCardModalContent = document.getElementById('giveCardModalContent');
-    giveCardModalContent.innerHTML = `<button class="close-btn" onclick="closeModal('giveCardModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Give Yellow Card</h2><label for="cardEmployeeDropdown" class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i>Employee:</label><div id="cardEmployeeDropdown" class="custom-dropdown"></div><label for="cardViolationTypeDropdown" class="flex items-center gap-2"><i data-lucide="alert-circle" class="w-4 h-4"></i>Violation Type:</label><div id="cardViolationTypeDropdown" class="custom-dropdown"></div><label for="cardComment" class="flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4"></i>Details:</label><textarea id="cardComment" rows="3" placeholder="Add specific details..." required></textarea><button class="action-button mt-2" onclick="submitYellowCard(this)"><i data-lucide="send" class="w-4 h-4"></i><span>Issue Yellow Card</span></button>`;
+    giveCardModalContent.innerHTML = `
+        <button class="close-btn" onclick="closeModal('giveCardModal')"><i data-lucide="x" class="w-6 h-6"></i></button>
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Give Yellow Card</h2>
+        <label for="cardEmployeeDropdown" class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i>Employee:</label>
+        <div id="cardEmployeeDropdown" class="custom-dropdown"></div>
+        <label for="cardViolationTypeDropdown" class="flex items-center gap-2"><i data-lucide="alert-circle" class="w-4 h-4"></i>Violation Type:</label>
+        <div id="cardViolationTypeDropdown" class="custom-dropdown"></div>
+        <label for="cardComment" class="flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4"></i>Details:</label>
+        <textarea id="cardComment" rows="3" placeholder="Add specific details..." required></textarea>
+        <button class="action-button mt-2" onclick="submitYellowCard(this)"><i data-lucide="send" class="w-4 h-4"></i><span>Issue Yellow Card</span></button>
+    `;
     createDropdown('cardEmployeeDropdown', employeeOptions, 'Select an employee...');
     createDropdown('cardViolationTypeDropdown', [
         { value: 'Attendance', text: 'Attendance Issues' },
@@ -217,11 +235,31 @@ function renderModals() {
     
     // Add Employee Modal
     const addEmployeeModalContent = document.getElementById('addEmployeeModalContent');
-    addEmployeeModalContent.innerHTML = `<button class="close-btn" onclick="closeModal('addEmployeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Add New Employee</h2><label for="newEmpName" class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i>Name:</label><input type="text" id="newEmpName" placeholder="Full name" required><label for="newEmpRole" class="flex items-center gap-2"><i data-lucide="briefcase" class="w-4 h-4"></i>Role:</label><input type="text" id="newEmpRole" placeholder="Job title" required><label for="newEmpDept" class="flex items-center gap-2"><i data-lucide="building" class="w-4 h-4"></i>Department:</label><input type="text" id="newEmpDept" placeholder="Department" required><label for="newEmpEmail" class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i>Email:</label><input type="email" id="newEmpEmail" placeholder="Email address"><label for="newEmpDiscord" class="flex items-center gap-2"><i data-lucide="message-circle" class="w-4 h-4"></i>Discord ID:</label><input type="text" id="newEmpDiscord" placeholder="Discord username"><button class="action-button mt-2" onclick="addEmployee(this)"><i data-lucide="user-plus" class="w-4 h-4"></i><span>Add Employee</span></button>`;
+    addEmployeeModalContent.innerHTML = `
+        <button class="close-btn" onclick="closeModal('addEmployeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button>
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Add New Employee</h2>
+        <label for="newEmpName" class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i>Name:</label>
+        <input type="text" id="newEmpName" placeholder="Full name" required>
+        <label for="newEmpRole" class="flex items-center gap-2"><i data-lucide="briefcase" class="w-4 h-4"></i>Role:</label>
+        <input type="text" id="newEmpRole" placeholder="Job title" required>
+        <label for="newEmpDept" class="flex items-center gap-2"><i data-lucide="building" class="w-4 h-4"></i>Department:</label>
+        <input type="text" id="newEmpDept" placeholder="Department" required>
+        <label for="newEmpEmail" class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i>Email:</label>
+        <input type="email" id="newEmpEmail" placeholder="Email address">
+        <label for="newEmpDiscord" class="flex items-center gap-2"><i data-lucide="message-circle" class="w-4 h-4"></i>Discord ID:</label>
+        <input type="text" id="newEmpDiscord" placeholder="Discord username">
+        <button class="action-button mt-2" onclick="addEmployee(this)"><i data-lucide="user-plus" class="w-4 h-4"></i><span>Add Employee</span></button>
+    `;
     
     // Remove Employee Modal
     const removeEmployeeModalContent = document.getElementById('removeEmployeeModalContent');
-    removeEmployeeModalContent.innerHTML = `<button class="close-btn" onclick="closeModal('removeEmployeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Remove Employee</h2><label for="removeEmpDropdown" class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i>Employee:</label><div id="removeEmpDropdown" class="custom-dropdown"></div><button class="action-button mt-2" onclick="removeEmployee(this)"><i data-lucide="user-minus" class="w-4 h-4"></i><span>Remove Employee</span></button>`;
+    removeEmployeeModalContent.innerHTML = `
+        <button class="close-btn" onclick="closeModal('removeEmployeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button>
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Remove Employee</h2>
+        <label for="removeEmpDropdown" class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i>Employee:</label>
+        <div id="removeEmpDropdown" class="custom-dropdown"></div>
+        <button class="action-button mt-2" onclick="removeEmployee(this)"><i data-lucide="user-minus" class="w-4 h-4"></i><span>Remove Employee</span></button>
+    `;
     createDropdown('removeEmpDropdown', employeeOptions, 'Select an employee...');
     
     lucide.createIcons();
