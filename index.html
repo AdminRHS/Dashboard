@@ -730,11 +730,18 @@
             
             let dailyViolations = {};
             employees.forEach(e => e.violations.forEach(v => {
-                const d = new Date(v.date);
-                if (d.getFullYear() === year && d.getMonth() === month) {
-                    dailyViolations[d.getDate()] = (dailyViolations[d.getDate()] || 0) + 1;
+                // Parse date string directly to avoid timezone issues
+                const dateParts = v.date.split('-');
+                const violationYear = parseInt(dateParts[0]);
+                const violationMonth = parseInt(dateParts[1]) - 1; // Month is 0-indexed
+                const violationDay = parseInt(dateParts[2]);
+                
+                if (violationYear === year && violationMonth === month) {
+                    dailyViolations[violationDay] = (dailyViolations[violationDay] || 0) + 1;
+                    console.log(`Found violation on ${v.date} -> day ${violationDay} (${dailyViolations[violationDay]} total)`);
                 }
             }));
+            console.log('Daily violations for calendar:', dailyViolations);
             
             let html = '<div class="grid grid-cols-7 gap-2"><div class="calendar-header">Mon</div><div class="calendar-header">Tue</div><div class="calendar-header">Wed</div><div class="calendar-header">Thu</div><div class="calendar-header">Fri</div><div class="calendar-header">Sat</div><div class="calendar-header">Sun</div>';
             
@@ -1161,9 +1168,12 @@
         function showDayDetailsModal(year, month, day) {
             const clickedDate = new Date(year, month, day);
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            console.log('Looking for violations on date:', dateStr);
+            console.log('All violations:', employees.flatMap(e => e.violations));
             const violationsOnDay = employees.flatMap(e => 
                 e.violations.filter(v => v.date === dateStr).map(v => ({ name: e.name, type: v.type, comment: v.comment }))
             );
+            console.log('Found violations:', violationsOnDay);
             
             let content = `<button class="close-btn" onclick="closeModal('dayDetailsModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-4">Violations on ${clickedDate.toLocaleDateString()}</h2>`;
             if (violationsOnDay.length > 0) {
