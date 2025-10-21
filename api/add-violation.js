@@ -26,11 +26,11 @@ export default async function handler(req, res) {
     }
 
     // Check if employee exists
-    const { rows: employeeCheck } = await sql`
+    const result = await sql`
       SELECT id FROM employees WHERE id = ${employeeId}
     `;
 
-    if (employeeCheck.length === 0) {
+    if (!result || result.length === 0) {
       return res.status(404).json({ error: 'Employee not found' });
     }
 
