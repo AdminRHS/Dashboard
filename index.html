@@ -599,39 +599,6 @@
         };
 
         // Custom Dropdown Creation Function
-        function createDropdown(containerId, options, placeholder, onchangeCallback) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-
-            container.innerHTML = `
-                <button type="button" class="custom-dropdown-toggle">
-                    <span class="selected-value placeholder">${placeholder}</span>
-                    <i data-lucide="chevron-down" class="chevron-icon w-5 h-5"></i>
-                        </button>
-                <ul class="custom-dropdown-menu">
-                    ${options.map(opt => `<li data-value="${opt.value}">${opt.text}</li>`).join('')}
-                </ul>
-            `;
-            lucide.createIcons();
-
-            const toggle = container.querySelector('.custom-dropdown-toggle');
-            const menu = container.querySelector('.custom-dropdown-menu');
-            const selectedValueSpan = container.querySelector('.selected-value');
-
-            menu.querySelectorAll('li').forEach(item => {
-                item.addEventListener('click', () => {
-                    selectedValueSpan.textContent = item.textContent;
-                    selectedValueSpan.classList.remove('placeholder');
-                    toggle.dataset.value = item.dataset.value;
-
-                    menu.querySelectorAll('li').forEach(i => i.classList.remove('selected'));
-                    item.classList.add('selected');
-
-                    container.classList.remove('open');
-                    if (onchangeCallback) onchangeCallback();
-                });
-            });
-        }
         
         // --- Main Render Functions ---
 
@@ -710,75 +677,9 @@
             }, 2000);
         }
 
-        function addEmployee(btn) {
-            const name = document.getElementById('newEmpName').value.trim();
-            const role = document.getElementById('newEmpRole').value.trim();
-            const dept = document.getElementById('newEmpDept').value.trim();
-            const email = document.getElementById('newEmpEmail').value.trim();
-            const discordId = document.getElementById('newEmpDiscord').value.trim();
-            const joinDate = new Date().toISOString().split('T')[0];
-            if (!name || !role || !dept) { alert('Please fill in all required fields.'); return; }
-            if (employees.some(e => e.name.toLowerCase() === name.toLowerCase())) { alert('An employee with this name already exists.'); return; }
-            employees.push({ name, role, dept, email, discordId, violations: [], joinDate });
-            renderAll();
-            persistIfPossible();
-            showSuccessMessage(btn, "Employee Added");
-            setTimeout(() => closeModal('addEmployeeModal'), 500);
-        }
         
-        function removeEmployee(btn) {
-            const name = document.querySelector('#removeEmpDropdown .custom-dropdown-toggle').dataset.value;
-            if (!name) { alert('Please select an employee to remove.'); return; }
-            if (confirm(`Are you sure you want to remove ${name}? This action is permanent.`)) {
-                employees = employees.filter(e => e.name !== name);
-                renderAll();
-                persistIfPossible();
-                showSuccessMessage(btn, "Employee Removed");
-                setTimeout(() => closeModal('removeEmployeeModal'), 500);
-            }
-        }
 
-        function submitYellowCard(btn) {
-            const name = document.querySelector('#cardEmployeeDropdown .custom-dropdown-toggle').dataset.value;
-            const type = document.querySelector('#cardViolationTypeDropdown .custom-dropdown-toggle').dataset.value;
-            const comment = document.getElementById('cardComment').value.trim();
-
-            if (!name || !type) { alert('Please select an employee and a violation type.'); return; }
-            if (!comment) { alert('Please fill in the details field.'); return; }
-            
-            giveCard(name, type, comment);
-            showSuccessMessage(btn, "Card Issued");
-            setTimeout(() => closeModal('giveCardModal'), 500);
-        }
         
-        async function giveCard(name, type, comment) {
-            const emp = employees.find(e => e.name === name);
-            if (emp) {
-                const today = new Date();
-                const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-                const violation = { date: dateStr, type, comment };
-                
-                // Save via PostgreSQL API only
-                updateSaveStatus('Saving...', 'saving');
-                
-                try {
-                    console.log('Adding violation for employee:', emp.name, 'ID:', emp.id, 'Violation:', violation);
-                    const success = await addViolationViaAPI(emp.id, violation);
-                    if (success) {
-                        // Add to local array for immediate UI update
-                        emp.violations.push(violation);
-                        renderAll();
-                        updateSaveStatus('✓ Saved', 'success');
-                        console.log('Violation saved to PostgreSQL');
-                    } else {
-                        updateSaveStatus('✗ Failed to save', 'error');
-                    }
-                } catch (error) {
-                    console.error('Failed to save via API:', error);
-                    updateSaveStatus('✗ Failed to save', 'error');
-                }
-            }
-        }
 
         function copyToClipboard(text, buttonElement) {
             const label = buttonElement.querySelector('.info-label');
@@ -970,45 +871,7 @@
         }
 
         
-        function openEditEmployeeModal(name) {
-            const emp = employees.find(e => e.name === name);
-            if (!emp) return;
 
-            document.getElementById('editEmployeeModalContent').innerHTML = `
-                <button class="close-btn" onclick="closeModal('editEmployeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button>
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Employee</h2>
-                <input type="hidden" id="originalEmpName" value="${emp.name}">
-                <label class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i> Full Name: <span class="text-red-500">*</span></label><input type="text" id="editEmpName" value="${emp.name}">
-                <label class="flex items-center gap-2"><i data-lucide="briefcase" class="w-4 h-4"></i> Profession/Role: <span class="text-red-500">*</span></label><input type="text" id="editEmpRole" value="${emp.role}">
-                <label class="flex items-center gap-2"><i data-lucide="building-2" class="w-4 h-4"></i> Department: <span class="text-red-500">*</span></label><input type="text" id="editEmpDept" value="${emp.dept}">
-                <label class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> Email:</label><input type="email" id="editEmpEmail" value="${emp.email}">
-                <label class="flex items-center gap-2"><i data-lucide="at-sign" class="w-4 h-4"></i> Discord:</label><input type="text" id="editEmpDiscord" value="${emp.discordId || ''}">
-                <button class="action-button-success mt-2" onclick="saveEmployeeChanges(this)"><i data-lucide="save" class="w-4 h-4"></i><span>Save Changes</span></button>`;
-            closeModal('employeeModal');
-            document.getElementById('editEmployeeModal').style.display = 'flex';
-            lucide.createIcons();
-        }
-
-        function saveEmployeeChanges(btn) {
-            const originalName = document.getElementById('originalEmpName').value;
-            const newName = document.getElementById('editEmpName').value.trim();
-            const newRole = document.getElementById('editEmpRole').value.trim();
-            const newDept = document.getElementById('editEmpDept').value.trim();
-            const newEmail = document.getElementById('editEmpEmail').value.trim();
-            const newDiscordId = document.getElementById('editEmpDiscord').value.trim();
-
-            if (!newName || !newRole || !newDept) { alert('Please fill in all required fields.'); return; }
-            
-            const emp = employees.find(e => e.name === originalName);
-            if (emp) {
-                emp.name = newName; emp.role = newRole; emp.dept = newDept;
-                emp.email = newEmail; emp.discordId = newDiscordId;
-            }
-            renderAll();
-            persistIfPossible();
-            showSuccessMessage(btn, "Changes Saved");
-            setTimeout(() => closeModal('editEmployeeModal'), 500);
-        }
 
         function switchTab(buttonElement) {
             const tabId = buttonElement.dataset.tab;
@@ -1065,20 +928,7 @@
         
         // --- Leaderboard Functions ---
         
-        function populateDeptFilter() {
-            const depts = [...new Set(employees.map(e => e.dept))].sort();
-            const options = [
-                { value: '', text: 'All Departments' },
-                ...depts.map(d => ({ value: d, text: d }))
-            ];
-            createDropdown('leaderboard-dept-filter-container', options, 'All Departments', renderLeaderboard);
-        }
 
-        function setPeriodFilter(buttonElement) {
-            document.querySelectorAll('#leaderboard-period-filter .period-btn').forEach(btn => btn.classList.remove('active'));
-            buttonElement.classList.add('active');
-            renderLeaderboard();
-        }
         
         function navigateToEmployee(name) {
             const teamTabButton = document.querySelector('.tab-btn[data-tab="team"]');
