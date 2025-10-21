@@ -43,21 +43,23 @@ export default async function handler(req, res) {
 
     // 4. Insert employees
     for (const employee of employees) {
-      const { rows } = await sql`
+      const result = await sql`
         INSERT INTO employees (name, role, dept, email, discord_id, join_date)
         VALUES (${employee.name}, ${employee.role}, ${employee.dept}, 
                 ${employee.email}, ${employee.discordId}, ${employee.joinDate})
         RETURNING id
       `;
       
-      const employeeId = rows[0].id;
+      const employeeId = result[0]?.id;
 
       // 5. Insert violations
-      for (const violation of employee.violations || []) {
-        await sql`
-          INSERT INTO violations (employee_id, date, type, comment)
-          VALUES (${employeeId}, ${violation.date}, ${violation.type}, ${violation.comment})
-        `;
+      if (employeeId) {
+        for (const violation of employee.violations || []) {
+          await sql`
+            INSERT INTO violations (employee_id, date, type, comment)
+            VALUES (${employeeId}, ${violation.date}, ${violation.type}, ${violation.comment})
+          `;
+        }
       }
     }
 
