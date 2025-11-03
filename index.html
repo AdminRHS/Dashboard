@@ -1188,16 +1188,10 @@
         
         function updateThemeButton(isDark) {
             const themeBtn = document.getElementById('theme-toggle-btn');
-            const icon = themeBtn.querySelector('i');
-            const text = document.getElementById('theme-toggle-text');
-            
-            if (isDark) {
-                icon.setAttribute('data-lucide', 'sun');
-                text.textContent = 'Light Mode';
-            } else {
-                icon.setAttribute('data-lucide', 'moon');
-                text.textContent = 'Dark Mode';
-            }
+            if (!themeBtn) return;
+            const iconName = isDark ? 'sun' : 'moon';
+            const label = isDark ? 'Light Mode' : 'Dark Mode';
+            themeBtn.innerHTML = `<i data-lucide="${iconName}" class="inline w-4 h-4 mr-2"></i><span id="theme-toggle-text">${label}</span>`;
             lucide.createIcons();
         }
 
