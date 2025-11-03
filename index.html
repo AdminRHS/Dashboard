@@ -593,66 +593,13 @@
             'Finance': '#4299e1', 'default': '#4B5563'
         };
 
-        // Custom Dropdown Creation Function
-        function createDropdown(containerId, options, placeholder, onchangeCallback) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-
-            container.innerHTML = `
-                <button type="button" class="custom-dropdown-toggle">
-                    <span class="selected-value placeholder">${placeholder}</span>
-                    <i data-lucide="chevron-down" class="chevron-icon w-5 h-5"></i>
-                        </button>
-                <ul class="custom-dropdown-menu">
-                    ${options.map(opt => `<li data-value="${opt.value}">${opt.text}</li>`).join('')}
-                </ul>
-            `;
-            lucide.createIcons();
-
-            const toggle = container.querySelector('.custom-dropdown-toggle');
-            const menu = container.querySelector('.custom-dropdown-menu');
-            const selectedValueSpan = container.querySelector('.selected-value');
-
-            menu.querySelectorAll('li').forEach(item => {
-                item.addEventListener('click', () => {
-                    selectedValueSpan.textContent = item.textContent;
-                    selectedValueSpan.classList.remove('placeholder');
-                    toggle.dataset.value = item.dataset.value;
-
-                    menu.querySelectorAll('li').forEach(i => i.classList.remove('selected'));
-                    item.classList.add('selected');
-
-                    container.classList.remove('open');
-                    if (onchangeCallback) onchangeCallback();
-                });
-            });
-        }
+        // createDropdown moved to external file: lib/ui.js
         
         // --- Main Render Functions ---
-        function renderAll() {
-            employees.sort((a, b) => a.name.localeCompare(b.name));
-            renderStats();
-            renderCalendar();
-            renderYellowCardTable();
-            renderTeamGrids();
-            populateDeptFilter();
-            renderLeaderboard(); 
-            renderModals();
-            lucide.createIcons();
-        }
+        // renderAll moved to external file: lib/render-stats.js
 
         
-        function showSuccessMessage(buttonElement, message = "Success") {
-            if (!buttonElement) return;
-            const originalHtml = buttonElement.innerHTML;
-            buttonElement.disabled = true;
-            buttonElement.innerHTML = `<span class="text-green-400">✓ ${message}</span>`;
-            setTimeout(() => {
-                buttonElement.innerHTML = originalHtml;
-                buttonElement.disabled = false;
-                lucide.createIcons();
-            }, 2000);
-        }
+        // showSuccessMessage moved to external file: lib/actions.js
 
         // addEmployee moved to external file: lib/actions.js
         
@@ -666,23 +613,9 @@
         
         // --- Other Functions ---
         
-        function openEmailClient(email) {
-            if (email) {
-                window.location.href = `mailto:${email}`;
-            }
-        }
+        // openEmailClient moved to external file: lib/actions.js
 
-        function openDiscordChat(discordId, name) {
-            if (name === 'Artemchuk Nikolay') {
-                const discordUserId = '910144676881903646'; 
-                window.open(`https://discord.com/users/${discordUserId}`, '_blank');
-            } else if (discordId) {
-                const discordButton = document.querySelector(`.info-block[onclick*="openDiscordChat('${discordId}'"]`);
-                if (discordButton) {
-                    copyToClipboard(discordId, discordButton);
-                }
-            }
-        }
+        // openDiscordChat moved to external file: lib/actions.js
 
         // showEmployeeModal moved to external file: lib/modals.js
 
@@ -775,65 +708,15 @@
             updateData: 'https://dashboard-eight-beta-59.vercel.app/api/update-data'
         };
 
-        // Load employees from PostgreSQL API
-        async function loadEmployeesFromAPI() {
-            try {
-                const response = await fetch(API_CONFIG.getEmployees);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const employees = await response.json();
-                return employees;
-            } catch (error) {
-                console.error('Failed to load employees from API:', error);
-                return [];
-            }
-        }
+        // loadEmployeesFromAPI moved to external file: lib/frontend-api.js
 
         // Add violation/save helpers moved to external file: lib/frontend-api.js
 
-        function updateSaveStatus(message, type = 'info') {
-            const statusElement = document.getElementById('save-status');
-            if (!statusElement) return;
-            
-            const colors = {
-                'saving': 'text-blue-600',
-                'success': 'text-green-600',
-                'error': 'text-red-600',
-                'info': 'text-gray-600'
-            };
-            
-            statusElement.textContent = message;
-            statusElement.className = `text-sm ${colors[type] || colors.info}`;
-            
-            // Автоматично приховати статус через 3 секунди
-            if (type === 'success') {
-                setTimeout(() => {
-                    statusElement.textContent = '';
-                }, 3000);
-            }
-        }
+        // updateSaveStatus moved to external file: lib/ui.js
 
         
 
-        async function persistIfPossible() {
-            updateSaveStatus('Saving...', 'saving');
-            
-            // Save via PostgreSQL API only
-            try {
-                const success = await saveViaAPI();
-                if (success) {
-                    console.log('Data saved via PostgreSQL API');
-                    updateSaveStatus('✓ Saved', 'success');
-                } else {
-                    console.error('Failed to save via PostgreSQL API');
-                    updateSaveStatus('✗ Failed to save', 'error');
-                }
-            } catch (e) {
-                console.error('PostgreSQL API save failed', e);
-                updateSaveStatus('✗ Failed to save', 'error');
-            }
-        }
+        // persistIfPossible moved to external file: lib/frontend-api.js
 
         // File operations removed - using PostgreSQL only
     </script>
