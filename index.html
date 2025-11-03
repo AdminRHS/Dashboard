@@ -690,141 +690,25 @@
         
         // openEditEmployeeModal moved to external file: lib/modals.js
 
-        function saveEmployeeChanges(btn) {
-            const originalName = document.getElementById('originalEmpName').value;
-            const newName = document.getElementById('editEmpName').value.trim();
-            const newRole = document.getElementById('editEmpRole').value.trim();
-            const newDept = document.getElementById('editEmpDept').value.trim();
-            const newEmail = document.getElementById('editEmpEmail').value.trim();
-            const newDiscordId = document.getElementById('editEmpDiscord').value.trim();
+        // saveEmployeeChanges moved to external file: lib/actions.js
 
-            if (!newName || !newRole || !newDept) { alert('Please fill in all required fields.'); return; }
-            
-            const emp = employees.find(e => e.name === originalName);
-            if (emp) {
-                emp.name = newName; emp.role = newRole; emp.dept = newDept;
-                emp.email = newEmail; emp.discordId = newDiscordId;
-            }
-            renderAll();
-            persistIfPossible();
-            showSuccessMessage(btn, "Changes Saved");
-            setTimeout(() => closeModal('editEmployeeModal'), 500);
-        }
-
-        function switchTab(buttonElement) {
-            const tabId = buttonElement.dataset.tab;
-            const pedestalContainer = document.getElementById('leaderboard-pedestal-container');
-
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.remove('hidden');
-            buttonElement.classList.add('active');
-            
-            lucide.createIcons();
-
-            if (tabId === 'leaderboard') {
-                renderLeaderboard();
-                pedestalContainer.classList.remove('hidden');
-            } else {
-                pedestalContainer.classList.add('hidden');
-            }
-        }
+        // switchTab moved to external file: lib/ui.js
         
-        function changeMonth(direction) {
-            currentDate.setMonth(currentDate.getMonth() + direction);
-            renderCalendar();
-        }
+        // changeMonth moved to external file: lib/ui.js
         
         // --- Modal Opening / Closing ---
-        function openGiveCardModalForEmployee(name) {
-            closeModal('employeeModal');
-            openGiveCardModal(name);
-        }
-        function openAddEmployeeModal() {
-            document.getElementById('addEmployeeModal').style.display = 'flex';
-            lucide.createIcons();
-        }
-        function openRemoveEmployeeModal() {
-            renderModals();
-            document.getElementById('removeEmployeeModal').style.display = 'flex';
-            lucide.createIcons();
-        }
-        function openGiveCardModal(name = null) {
-            renderModals();
-            if (name) {
-                const dropdown = document.querySelector('#cardEmployeeDropdown');
-                const toggle = dropdown.querySelector('.custom-dropdown-toggle');
-                const item = dropdown.querySelector(`li[data-value="${name}"]`);
-                if (item) {
-                    toggle.dataset.value = name;
-                    toggle.querySelector('.selected-value').textContent = item.textContent;
-                    toggle.querySelector('.selected-value').classList.remove('placeholder');
-                }
-            }
-            document.getElementById('giveCardModal').style.display = 'flex';
-            lucide.createIcons();
-        }
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-        }
+        // modal open/close helpers moved to external file: lib/modals.js
         
         // --- Leaderboard Functions ---
         
-        function populateDeptFilter() {
-            const depts = [...new Set(employees.map(e => e.dept))].sort();
-            const options = [
-                { value: '', text: 'All Departments' },
-                ...depts.map(d => ({ value: d, text: d }))
-            ];
-            createDropdown('leaderboard-dept-filter-container', options, 'All Departments', renderLeaderboard);
-        }
-
-        function setPeriodFilter(buttonElement) {
-            document.querySelectorAll('#leaderboard-period-filter .period-btn').forEach(btn => btn.classList.remove('active'));
-            buttonElement.classList.add('active');
-            renderLeaderboard();
-        }
+        // leaderboard filter helpers moved to external file: lib/render-stats.js
         
-        function navigateToEmployee(name) {
-            const teamTabButton = document.querySelector('.tab-btn[data-tab="team"]');
-            switchTab(teamTabButton);
-
-            const employee = employees.find(e => e.name === name);
-            if (employee) {
-                const modalData = {
-                    name: employee.name, role: employee.role, dept: employee.dept,
-                    cards: employee.violations.length, email: employee.email, discordId: employee.discordId
-                };
-                showEmployeeModal(modalData);
-            }
-        }
+        // navigateToEmployee moved to external file: lib/ui.js
 
         // renderLeaderboard moved to external file: lib/render-stats.js
 
         // --- Theme Toggle Functions ---
-        function initializeTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-theme');
-                updateThemeButton(true);
-            }
-        }
-        
-        function toggleTheme() {
-            const isDark = document.body.classList.toggle('dark-theme');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            updateThemeButton(isDark);
-            lucide.createIcons();
-        }
-        
-        function updateThemeButton(isDark) {
-            const themeBtn = document.getElementById('theme-toggle-btn');
-            if (!themeBtn) return;
-            const iconName = isDark ? 'sun' : 'moon';
-            const label = isDark ? 'Light Mode' : 'Dark Mode';
-            themeBtn.innerHTML = `<i data-lucide="${iconName}" class="inline w-4 h-4 mr-2"></i><span id="theme-toggle-text">${label}</span>`;
-            lucide.createIcons();
-        }
+        // theme helpers moved to external file: lib/theme.js
 
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', async () => {
@@ -1004,5 +888,7 @@
     <script src="lib/render-stats.js"></script>
     <script src="lib/frontend-api.js"></script>
     <script src="lib/actions.js"></script>
+    <script src="lib/ui.js"></script>
+    <script src="lib/theme.js"></script>
 </body>
 </html>
