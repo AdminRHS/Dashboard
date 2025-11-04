@@ -8,10 +8,10 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { name, type, comment } = req.body || {};
+    const { name, type, comment, employeeId } = req.body || {};
 
-    if (!name || !type) {
-      return res.status(400).json({ error: 'Missing required fields: name, type' });
+    if ((!employeeId && !name) || !type) {
+      return res.status(400).json({ error: 'Missing required fields: (employeeId or name), type' });
     }
 
     const validTypes = ['Documentation', 'Workflow', 'Communication'];
@@ -19,25 +19,45 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: `Invalid violation type. Must be one of: ${validTypes.join(', ')}` });
     }
 
-    // Find employee by exact name (case-insensitive)
-    const { rows: matches } = await sql`
-      SELECT id, name FROM employees WHERE LOWER(name) = LOWER(${name}) LIMIT 1
-    `;
+    let targetEmployeeId = employeeId;
 
-    if (!matches || matches.length === 0) {
-      return res.status(404).json({ error: 'Employee not found' });
+    if (!targetEmployeeId && name) {
+      // Try exact match ignoring surrounding spaces and case
+      const exact = await sql`
+        SELECT id, name FROM employees
+        WHERE LOWER(TRIM(name)) = LOWER(TRIM(${name}))
+        LIMIT 1
+      `;
+
+      if (exact && exact.length === 1) {
+        targetEmployeeId = exact[0].id;
+      } else {
+        // Fallback: partial match (ambiguous-safe)
+        const partial = await sql`
+          SELECT id, name FROM employees
+          WHERE LOWER(name) ILIKE '%' || LOWER(${name}) || '%'
+          LIMIT 2
+        `;
+        if (partial.length === 1) {
+          targetEmployeeId = partial[0].id;
+        } else if (partial.length > 1) {
+          return res.status(409).json({ error: 'Ambiguous name', candidates: partial.map(r => r.name) });
+        }
+      }
     }
 
-    const employeeId = matches[0].id;
+    if (!targetEmployeeId) {
+      return res.status(404).json({ error: 'Employee not found' });
+    }
     const today = new Date();
     const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
     await sql`
       INSERT INTO violations (employee_id, date, type, comment)
-      VALUES (${employeeId}, ${dateStr}, ${type}, ${comment || ''})
+      VALUES (${targetEmployeeId}, ${dateStr}, ${type}, ${comment || ''})
     `;
 
-    return res.status(200).json({ success: true, employeeId });
+    return res.status(200).json({ success: true, employeeId: targetEmployeeId });
   } catch (error) {
     console.error('Error in give-card:', error);
     return res.status(500).json({ error: 'Internal server error' });
