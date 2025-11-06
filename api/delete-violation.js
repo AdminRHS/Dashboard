@@ -8,20 +8,50 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { violationId } = req.body || {};
-    if (!violationId) {
-      return res.status(400).json({ error: 'Missing required field: violationId' });
+    const { violationId, employeeId, name, date, type, comment } = req.body || {};
+
+    if (violationId) {
+      const result = await sql`
+        DELETE FROM violations WHERE id = ${violationId}
+        RETURNING id
+      `;
+      if (!result || result.length === 0) {
+        return res.status(404).json({ error: 'Violation not found' });
+      }
+      return res.status(200).json({ success: true });
     }
 
-    const result = await sql`
-      DELETE FROM violations WHERE id = ${violationId}
+    // Flexible deletion by composite fields
+    if (!type || !date || (!employeeId && !name)) {
+      return res.status(400).json({ error: 'Missing required fields: date, type and (employeeId or name)' });
+    }
+
+    let targetEmployeeId = employeeId;
+    if (!targetEmployeeId && name) {
+      const exact = await sql`SELECT id FROM employees WHERE LOWER(TRIM(name)) = LOWER(TRIM(${name})) LIMIT 1`;
+      if (exact && exact.length === 1) {
+        targetEmployeeId = exact[0].id;
+      } else {
+        const partial = await sql`SELECT id,name FROM employees WHERE LOWER(name) ILIKE '%' || LOWER(${name}) || '%' LIMIT 2`;
+        if (partial.length === 1) {
+          targetEmployeeId = partial[0].id;
+        } else {
+          return res.status(404).json({ error: 'Employee not found' });
+        }
+      }
+    }
+
+    const del = await sql`
+      DELETE FROM violations
+      WHERE employee_id = ${targetEmployeeId}
+        AND date = ${date}
+        AND type = ${type}
+        AND COALESCE(comment,'') = COALESCE(${comment || ''}, '')
       RETURNING id
     `;
-
-    if (!result || result.length === 0) {
+    if (!del || del.length === 0) {
       return res.status(404).json({ error: 'Violation not found' });
     }
-
     return res.status(200).json({ success: true });
   } catch (error) {
     console.error('Error deleting violation:', error);
