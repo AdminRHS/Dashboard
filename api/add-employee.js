@@ -14,9 +14,18 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required field: name' });
     }
 
+    const normalizedJoinDate = joinDate ? new Date(joinDate).toISOString().split('T')[0] : null;
+
     const { rows } = await sql`
       INSERT INTO employees (name, role, dept, email, discord_id, join_date)
-      VALUES (${name}, ${role || ''}, ${dept || ''}, ${email || ''}, ${discordId || ''}, ${joinDate || null})
+      VALUES (
+        ${name},
+        ${role || ''},
+        ${dept || ''},
+        ${email || ''},
+        ${discordId || ''},
+        ${normalizedJoinDate}
+      )
       RETURNING id, name, role, dept, email, discord_id, join_date
     `;
 
@@ -34,7 +43,10 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true, employee });
   } catch (error) {
     console.error('Error adding employee:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({
+      error: 'Internal server error',
+      details: error.message
+    });
   }
 }
 
