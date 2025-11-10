@@ -14,18 +14,21 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required fields: id, name' });
     }
 
-    const { rowCount } = await sql`
+    const normalizedJoinDate = joinDate ? new Date(joinDate).toISOString().split('T')[0] : null;
+
+    const result = await sql`
       UPDATE employees
       SET name = ${name},
           role = ${role || ''},
           dept = ${dept || ''},
           email = ${email || ''},
           discord_id = ${discordId || ''},
-          join_date = ${joinDate || null}
+          join_date = ${normalizedJoinDate}
       WHERE id = ${id}
+      RETURNING id
     `;
 
-    if (rowCount === 0) {
+    if (!result || result.length === 0) {
       return res.status(404).json({ error: 'Employee not found' });
     }
 
