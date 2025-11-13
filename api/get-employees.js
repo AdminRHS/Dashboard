@@ -13,17 +13,32 @@ export default async function handler(req, res) {
 
     const employees = result || [];
 
-    // Get violations for each employee
+    // Get violations and green cards for each employee
     const employeesWithViolations = await Promise.all(
       employees.map(async (employee) => {
         const violationsResult = await sql`
-          SELECT date, type, comment
+          SELECT id, date, type, comment
           FROM violations
           WHERE employee_id = ${employee.id}
           ORDER BY date DESC
         `;
 
+        // Get green cards (check if table exists, if not return empty array)
+        let greenCardsResult = [];
+        try {
+          greenCardsResult = await sql`
+            SELECT id, date, type, comment
+            FROM green_cards
+            WHERE employee_id = ${employee.id}
+            ORDER BY date DESC
+          `;
+        } catch (error) {
+          // Table might not exist yet, return empty array
+          console.log('Green cards table not found, returning empty array');
+        }
+
         const violations = violationsResult || [];
+        const greenCards = greenCardsResult || [];
 
         return {
           id: employee.id,
@@ -34,9 +49,16 @@ export default async function handler(req, res) {
           discordId: employee.discord_id,
           joinDate: employee.join_date,
           violations: violations.map(v => ({
+            id: v.id,
             date: v.date,
             type: v.type,
             comment: v.comment
+          })),
+          greenCards: greenCards.map(gc => ({
+            id: gc.id,
+            date: gc.date,
+            type: gc.type,
+            comment: gc.comment
           }))
         };
       })

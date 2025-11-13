@@ -449,6 +449,9 @@
                     <button class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="yellowcard" onclick="switchTab(this)">
                         <i data-lucide="alert-circle" class="inline w-4 h-4 mr-2"></i>Yellow Cards
                 </button>
+                    <button class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="greencard" onclick="switchTab(this)">
+                        <i data-lucide="check-circle" class="inline w-4 h-4 mr-2"></i>Green Cards
+                </button>
                     <button class="tab-btn px-5 py-2 text-sm font-semibold rounded-full transition-all" data-tab="team" onclick="switchTab(this)">
                          <i data-lucide="users" class="inline w-4 h-4 mr-2"></i>Team
                 </button>
@@ -543,6 +546,38 @@
                 </section>
                     </div>
 
+            <div id="greencard" class="tab-content hidden space-y-4">
+                <section class="bg-white p-6 rounded-xl shadow-lg">
+                    <div class="calendar-nav flex justify-between items-center mb-6">
+                        <button onclick="changeMonthGreen(-1, event)" class="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+                        <h3 id="calendar-month-year-green" class="text-xl font-bold text-gray-800"></h3>
+                        <button onclick="changeMonthGreen(1, event)" class="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+                        </div>
+                    <div class="calendar-container">
+                        <div id="calendar-month-current-green" class="calendar-month"></div>
+                    </div>
+                </section>
+                <section class="bg-white p-6 rounded-xl shadow-lg">
+                    <div class="flex flex-wrap justify-between items-center gap-4 mb-6 pb-3 border-b border-gray-200">
+                        <h2 class="text-2xl font-bold text-gray-800">Current Month Status</h2>
+                        <button class="action-button-success" onclick="openGiveGreenCardModal()">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                            <span>Give Green Card</span>
+                        </button>
+                            </div>
+                    <div class="overflow-x-auto">
+                        <table class="table w-full">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th><th>Department</th><th>Green Cards</th><th>Card Types</th><th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="green-card-table-body"></tbody>
+                        </table>
+                        </div>
+                </section>
+                    </div>
+
             <div id="team" class="tab-content hidden">
                 <section class="bg-white p-6 rounded-xl shadow-lg">
                     <div class="flex flex-wrap justify-between items-center gap-4 mb-6 pb-3 border-b border-gray-200">
@@ -600,6 +635,7 @@
     <div id="employeeModal" class="modal"> <div class="modal-content" id="employeeModalContent"></div> </div>
     <div id="dayDetailsModal" class="modal"> <div class="modal-content" id="dayDetailsModalContent"></div> </div>
     <div id="giveCardModal" class="modal"> <div class="modal-content" id="giveCardModalContent"></div> </div>
+    <div id="giveGreenCardModal" class="modal"> <div class="modal-content" id="giveGreenCardModalContent"></div> </div>
     <div id="addEmployeeModal" class="modal"> <div class="modal-content" id="addEmployeeModalContent"></div> </div>
     <div id="editEmployeeModal" class="modal"> <div class="modal-content" id="editEmployeeModalContent"></div> </div>
     <div id="removeEmployeeModal" class="modal"> <div class="modal-content" id="removeEmployeeModalContent"></div> </div>
@@ -607,6 +643,8 @@
     <script>
         // Data and State
         let currentDate = new Date();
+        let currentDateGreen = new Date();
+        window.currentDateGreen = currentDateGreen; // Make it globally accessible
         
         let employees = [];
 
@@ -717,7 +755,7 @@
             }
 
             if (event.target.classList.contains('modal')) {
-                event.target.style.display = 'none';
+                closeModal(event.target.id);
             }
         });
     </script>
@@ -772,7 +810,9 @@
         .action-button-success:hover { background-color: #2f855a; }
         .action-button-secondary { background-color: white; color: var(--color-primary-main); border-color: var(--color-primary-main); }
         .action-button-secondary:hover { background-color: rgba(66, 153, 225, 0.08); }
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        body.modal-open { overflow: hidden; }
         .modal-content { background-color: #fefefe; padding: 24px 32px; width: 90%; max-width: 550px; border-radius: 16px; box-shadow: 0 10px 20px rgba(0,0,0,0.19); position: relative; }
         .modal-content label { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 6px; font-weight: 500; color: #4b5563; font-size: 0.9rem; margin-top: 16px; }
         .modal-content label:first-of-type { margin-top: 0; }
