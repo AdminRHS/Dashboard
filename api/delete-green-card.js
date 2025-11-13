@@ -8,6 +8,22 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Ensure green_cards table exists
+    try {
+      await sql`
+        CREATE TABLE IF NOT EXISTS green_cards (
+          id SERIAL PRIMARY KEY,
+          employee_id INTEGER REFERENCES employees(id) ON DELETE CASCADE,
+          date DATE NOT NULL,
+          type VARCHAR(50) NOT NULL,
+          comment TEXT,
+          created_at TIMESTAMP DEFAULT NOW()
+        )
+      `;
+    } catch (tableError) {
+      console.log('Table creation check:', tableError.message);
+    }
+
     const { greenCardId, employeeId, name, date, type, comment } = req.body || {};
 
     if (greenCardId) {
