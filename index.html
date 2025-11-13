@@ -195,6 +195,27 @@
             border-color: #c4b5fd !important;
         }
 
+        /* Calendar Slide Animation */
+        .calendar-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .calendar-month {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transition: transform 0.4s ease-in-out;
+            will-change: transform;
+        }
+        
+        /* Initial month should be relative to set container height */
+        .calendar-month:first-child:last-child {
+            position: relative;
+        }
+
     </style>
     <style>
         /* Detailed Breakdown cards styles -- MODIFIED */
@@ -493,11 +514,13 @@
             <div id="yellowcard" class="tab-content hidden space-y-4">
                 <section class="bg-white p-6 rounded-xl shadow-lg">
                     <div class="calendar-nav flex justify-between items-center mb-6">
-                        <button onclick="changeMonth(-1)" class="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+                        <button onclick="changeMonth(-1, event)" class="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
                         <h3 id="calendar-month-year" class="text-xl font-bold text-gray-800"></h3>
-                        <button onclick="changeMonth(1)" class="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+                        <button onclick="changeMonth(1, event)" class="p-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
                         </div>
-                    <div id="calendar-container"></div>
+                    <div class="calendar-container">
+                        <div id="calendar-month-current" class="calendar-month"></div>
+                    </div>
                 </section>
                 <section class="bg-white p-6 rounded-xl shadow-lg">
                     <div class="flex flex-wrap justify-between items-center gap-4 mb-6 pb-3 border-b border-gray-200">
