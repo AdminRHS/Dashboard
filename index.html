@@ -130,9 +130,12 @@
         /* Dark Theme Styles */
         body.dark-theme { background-color: #1a202c; color: #f7fafc; }
         .max-w-7xl { 
+            background-color: transparent !important;
             transition: background-color 0.3s ease !important;
         }
-        body.dark-theme .max-w-7xl { background-color: #1a202c; }
+        body.dark-theme .max-w-7xl { 
+            background-color: #1a202c !important;
+        }
         header { 
             transition: background-color 0.3s ease, color 0.3s ease;
         }
