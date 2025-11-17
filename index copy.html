@@ -226,9 +226,15 @@
         .card-yellow { background-color: #FEFCE8; color: #B45309; }
         .card-orange { background-color: #FFF7ED; color: #D97706; }
         .card-red { background-color: #FEF2F2; color: #B91C1C; }
+        .card-green .stack-medium { background-color: #4ADE80; }
+        .card-green .stack-dark { background-color: #22C55E; }
+        .card-green .stack-light { background-color: #86EFAC; }
         .card-yellow .stack-medium { background-color: #FCD34D; }
+        .card-yellow .stack-dark { background-color: #FACC15; }
+        .card-yellow .stack-light { background-color: #FEF9C3; }
         .card-orange .stack-medium { background-color: #FB923C; }
         .card-orange .stack-dark { background-color: #F97316; }
+        .card-orange .stack-light { background-color: #FFD8B4; }
         .card-red .stack-dark { background-color: #EF4444; }
         .card-red .stack-medium { background-color: #F87171; }
         .card-red .stack-light { background-color: #FCA5A5; }
@@ -729,49 +735,45 @@
             const totalGreenCards = employees.reduce((sum, emp) => {
                 return sum + ((emp.greenCards && emp.greenCards.length) || 0);
             }, 0);
-            const formatValue = (value) => value >= 3 ? '3+' : `${value}`;
-            
-            const greenCardActual = totalGreenCards;
-            const yellowCardActual = totalCards;
-            const orangeCardActual = cardCounts[2];
-            const redCardActual = cardCounts[3];
+            const getStackClassesForCount = (count) => {
+                if (count <= 0) return [];
+                if (count === 1) return ['stack-medium'];
+                if (count === 2) return ['stack-light', 'stack-medium'];
+                return ['stack-light', 'stack-medium', 'stack-dark'];
+            };
 
-            const greenCardDisplay = formatValue(greenCardActual);
-            const yellowCardDisplay = formatValue(yellowCardActual);
-            const orangeCardDisplay = formatValue(orangeCardActual);
-            const redCardDisplay = formatValue(redCardActual);
+            const renderCardStack = (count) => {
+                const classes = getStackClassesForCount(count);
+                if (!classes.length) return '';
+                return `
+                    <div class="card-stack-wrapper">
+                        ${classes.map(cls => `<div class="stack-shape ${cls}"></div>`).join('')}
+                    </div>
+                `;
+            };
             
             document.getElementById('detailed-stats').innerHTML = `
                 <div class="detailed-stat-card-v2 card-green">
                     <div>
-                        <div class="stat-number">${greenCardDisplay}</div>
+                        <div class="stat-number">${totalGreenCards}</div>
                         <div class="card-label">Green Cards</div>
                     </div>
-                    <div class="card-stack-wrapper">
-                        <div class="stack-shape stack-dark"></div>
-                        <div class="stack-shape stack-medium"></div>
-                        <div class="stack-shape stack-light"></div>
-                    </div>
+                    ${renderCardStack(totalGreenCards)}
                 </div>
                 <div class="detailed-stat-card-v2 card-yellow">
                     <div>
-                        <div class="stat-number">${yellowCardDisplay}</div>
+                        <div class="stat-number">${totalCards}</div>
                         <div class="card-label">Yellow Cards</div>
                     </div>
-                    <div class="card-stack-wrapper">
-                        <div class="stack-shape stack-medium"></div>
-                    </div>
+                    ${renderCardStack(totalCards)}
                 </div>
                 <div class="detailed-stat-card-v2 card-orange">
-                    <div class="stat-number">${orangeCardDisplay}</div>
+                    <div class="stat-number">${cardCounts[2]}</div>
+                    ${renderCardStack(cardCounts[2])}
                 </div>
                 <div class="detailed-stat-card-v2 card-red">
-                    <div class="stat-number">${redCardDisplay}</div>
-                    <div class="card-stack-wrapper">
-                        <div class="stack-shape stack-dark"></div>
-                        <div class="stack-shape stack-medium"></div>
-                        <div class="stack-shape stack-light"></div>
-                    </div>
+                    <div class="stat-number">${cardCounts[3]}</div>
+                    ${renderCardStack(cardCounts[3])}
                 </div>
             `;
         }
