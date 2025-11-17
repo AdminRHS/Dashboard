@@ -711,10 +711,31 @@
             };
             
             document.getElementById('detailed-stats').innerHTML = `
-                <div class="detailed-stat-card-v2 card-green"><div class="stat-number">${cardCounts[0]}</div></div>
-                <div class="detailed-stat-card-v2 card-yellow"><div class="stat-number">${cardCounts[1]}</div><div class="card-stack-wrapper"><div class="stack-shape stack-medium"></div></div></div>
-                <div class="detailed-stat-card-v2 card-orange"><div class="stat-number">${cardCounts[2]}</div><div class="card-stack-wrapper"><div class="stack-shape stack-dark"></div><div class="stack-shape stack-medium"></div></div></div>
-                <div class="detailed-stat-card-v2 card-red"><div class="stat-number">${cardCounts[3]}</div><div class="card-stack-wrapper"><div class="stack-shape stack-dark"></div><div class="stack-shape stack-medium"></div><div class="stack-shape stack-light"></div></div></div>
+                <div class="detailed-stat-card-v2 card-green">
+                    <div class="stat-number">${cardCounts[0]}</div>
+                    <div class="card-stack-wrapper">
+                        <div class="stack-shape stack-dark"></div>
+                        <div class="stack-shape stack-medium"></div>
+                        <div class="stack-shape stack-light"></div>
+                    </div>
+                </div>
+                <div class="detailed-stat-card-v2 card-yellow">
+                    <div class="stat-number">${cardCounts[1]}</div>
+                    <div class="card-stack-wrapper">
+                        <div class="stack-shape stack-medium"></div>
+                    </div>
+                </div>
+                <div class="detailed-stat-card-v2 card-orange">
+                    <div class="stat-number">${cardCounts[2]}</div>
+                </div>
+                <div class="detailed-stat-card-v2 card-red">
+                    <div class="stat-number">${cardCounts[3]}</div>
+                    <div class="card-stack-wrapper">
+                        <div class="stack-shape stack-dark"></div>
+                        <div class="stack-shape stack-medium"></div>
+                        <div class="stack-shape stack-light"></div>
+                    </div>
+                </div>
             `;
         }
         
