@@ -1,4 +1,13 @@
 (function registerActions(global) {
+    const stateApi = global.EmployeeState;
+    function notifyStateChange() {
+        if (stateApi && typeof stateApi.markDirty === 'function') {
+            stateApi.markDirty();
+        }
+        else if (typeof renderAll === 'function') {
+            renderAll();
+        }
+    }
     function showSuccessMessage(buttonElement, message = 'Success') {
         if (!buttonElement)
             return;
@@ -42,7 +51,7 @@
                 throw new Error('Empty response from API');
             }
             employees.push(remoteEmployee);
-            renderAll();
+            notifyStateChange();
             showSuccessMessage(btn, 'Employee Added');
             updateSaveStatus('✓ Saved', 'success');
             setTimeout(() => closeModal('addEmployeeModal'), 500);
@@ -84,7 +93,7 @@
             if (index >= 0) {
                 employees.splice(index, 1);
             }
-            renderAll();
+            notifyStateChange();
             showSuccessMessage(btn, 'Employee Removed');
             updateSaveStatus('✓ Saved', 'success');
             setTimeout(() => closeModal('removeEmployeeModal'), 500);
@@ -128,7 +137,7 @@
             const success = await addViolationViaAPI(emp.id, violation);
             if (success) {
                 emp.violations.push(violation);
-                renderAll();
+                notifyStateChange();
                 updateSaveStatus('✓ Saved', 'success');
             }
             else {
@@ -174,7 +183,7 @@
                 }
                 greenCard.id = result.id;
                 emp.greenCards.push(greenCard);
-                renderAll();
+                notifyStateChange();
                 updateSaveStatus('✓ Saved', 'success');
             }
             else {
@@ -229,7 +238,7 @@
                 emp.dept = newDept;
                 emp.email = newEmail;
                 emp.discordId = newDiscordId;
-                renderAll();
+                notifyStateChange();
                 showSuccessMessage(btn, 'Changes Saved');
                 updateSaveStatus('✓ Saved', 'success');
                 setTimeout(() => closeModal('editEmployeeModal'), 500);
@@ -297,7 +306,7 @@
                     }
                 });
             }
-            renderAll();
+            notifyStateChange();
             updateSaveStatus('✓ Card removed', 'success');
             if (meta && meta.context === 'employee') {
                 const updatedEmp = employees.find(e => e.name === employeeName);
@@ -357,7 +366,7 @@
                     emp.greenCards = emp.greenCards.filter(gc => !(gc.date === meta.date && gc.type === meta.type && (gc.comment || '') === (meta.comment || '')));
                 }
             }
-            renderAll();
+            notifyStateChange();
             updateSaveStatus('✓ Green card removed', 'success');
             if (meta && meta.context === 'employee') {
                 const updatedEmp = employees.find(e => e.name === employeeName);

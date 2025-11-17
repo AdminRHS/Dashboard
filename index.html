@@ -346,7 +346,18 @@
     </style>
     <style>
         /* Detailed Breakdown cards styles -- MODIFIED */
-        .detailed-stat-card-v2 { position: relative; overflow: hidden; display: flex; justify-content: flex-start; align-items: center; border-radius: 16px; padding: 24px; }
+        .detailed-stat-card-v2 { 
+            position: relative; 
+            overflow: hidden; 
+            display: flex; 
+            justify-content: flex-start; 
+            align-items: center; 
+            border-radius: 16px; 
+            padding: 24px; 
+            --stack-dark: rgba(0,0,0,0.15);
+            --stack-medium: rgba(0,0,0,0.1);
+            --stack-light: rgba(0,0,0,0.05);
+        }
         .detailed-stat-card-v2 .stat-number { font-size: 4.5rem; font-weight: 500; line-height: 1; z-index: 10; }
         .detailed-stat-card-v2 .card-label {
             font-size: 0.85rem;
@@ -358,25 +369,37 @@
         }
         .detailed-stat-card-v2 .card-stack-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
         .detailed-stat-card-v2 .stack-shape { border-radius: 12px; position: absolute; width: 108px; height: 165.29px; }
-        .detailed-stat-card-v2 .stack-dark { right: -59.021px; bottom: -65px; transform: rotate(16.736deg); z-index: 3; }
-        .detailed-stat-card-v2 .stack-medium { right: -11.46px; bottom: -75px; transform: rotate(4.07deg); z-index: 2; }
-        .detailed-stat-card-v2 .stack-light { right: 20.151px; bottom: -95px; transform: rotate(-3.848deg); z-index: 1; }
-        .card-green { background-color: #F0FDF4; color: #15803D; }
-        .card-yellow { background-color: #FEFCE8; color: #B45309; }
-        .card-orange { background-color: #FFF7ED; color: #D97706; }
-        .card-red { background-color: #FEF2F2; color: #B91C1C; }
-        .card-green .stack-medium { background-color: #4ADE80; }
-        .card-green .stack-dark { background-color: #22C55E; }
-        .card-green .stack-light { background-color: #86EFAC; }
-        .card-yellow .stack-medium { background-color: #FCD34D; }
-        .card-yellow .stack-dark { background-color: #FACC15; }
-        .card-yellow .stack-light { background-color: #FEF9C3; }
-        .card-orange .stack-medium { background-color: #FB923C; }
-        .card-orange .stack-dark { background-color: #F97316; }
-        .card-orange .stack-light { background-color: #FFD8B4; }
-        .card-red .stack-dark { background-color: #EF4444; }
-        .card-red .stack-medium { background-color: #F87171; }
-        .card-red .stack-light { background-color: #FCA5A5; }
+        .detailed-stat-card-v2 .stack-dark { right: -59.021px; bottom: -65px; transform: rotate(16.736deg); z-index: 3; background-color: var(--stack-dark); }
+        .detailed-stat-card-v2 .stack-medium { right: -11.46px; bottom: -75px; transform: rotate(4.07deg); z-index: 2; background-color: var(--stack-medium); }
+        .detailed-stat-card-v2 .stack-light { right: 20.151px; bottom: -95px; transform: rotate(-3.848deg); z-index: 1; background-color: var(--stack-light); }
+        .card-green { 
+            background-color: #F0FDF4; 
+            color: #15803D; 
+            --stack-dark: #22C55E;
+            --stack-medium: #4ADE80;
+            --stack-light: #86EFAC;
+        }
+        .card-yellow { 
+            background-color: #FEFCE8; 
+            color: #B45309; 
+            --stack-dark: #FACC15;
+            --stack-medium: #FCD34D;
+            --stack-light: #FEF9C3;
+        }
+        .card-orange { 
+            background-color: #FFF7ED; 
+            color: #D97706; 
+            --stack-dark: #F97316;
+            --stack-medium: #FB923C;
+            --stack-light: #FFD8B4;
+        }
+        .card-red { 
+            background-color: #FEF2F2; 
+            color: #B91C1C; 
+            --stack-dark: #EF4444;
+            --stack-medium: #F87171;
+            --stack-light: #FCA5A5;
+        }
 
         /* --- STYLES FOR MODAL CARD DISPLAY --- */
         .modal-stat-card {
@@ -787,125 +810,6 @@
     <div id="removeEmployeeModal" class="modal"> <div class="modal-content" id="removeEmployeeModalContent"></div> </div>
     </template>
 
-    <script>
-        // Data and State
-        let currentDate = new Date();
-        let currentDateGreen = new Date();
-        window.currentDateGreen = currentDateGreen; // Make it globally accessible
-        
-        let employees = [];
-
-        const departmentColors = {
-            'Design': '#6D28D9', 'Development': '#147857', 'AI Team': '#147857', 'Project Management': '#8e1c1c',
-            'Lead Generation': '#EC4899', 'Sales': '#EC4899', 'Video Production': '#F97316', 'Recruiting': '#4299e1',
-            'Finance': '#4299e1', 'default': '#4B5563'
-        };
-
-        // createDropdown moved to external file: lib/ui.js
-        
-        // --- Main Render Functions ---
-        // renderAll moved to external file: lib/render-stats.js
-
-        
-        // showSuccessMessage moved to external file: lib/actions.js
-
-        // addEmployee moved to external file: lib/actions.js
-        
-        // removeEmployee moved to external file: lib/actions.js
-
-        // submitYellowCard moved to external file: lib/actions.js
-        
-        // giveCard moved to external file: lib/actions.js
-
-        // copyToClipboard moved to external file: lib/actions.js
-        
-        // --- Other Functions ---
-        
-        // openEmailClient moved to external file: lib/actions.js
-
-        // openDiscordChat moved to external file: lib/actions.js
-
-        // showEmployeeModal moved to external file: lib/modals.js
-
-        // showDayDetailsModal moved to external file: lib/modals.js
-        
-        // openEditEmployeeModal moved to external file: lib/modals.js
-
-        // saveEmployeeChanges moved to external file: lib/actions.js
-
-        // switchTab moved to external file: lib/ui.js
-        
-        // changeMonth moved to external file: lib/ui.js
-        
-        // --- Modal Opening / Closing ---
-        // modal open/close helpers moved to external file: lib/modals.js
-        
-        // --- Leaderboard Functions ---
-        
-        // leaderboard filter helpers moved to external file: lib/render-stats.js
-        
-        // navigateToEmployee moved to external file: lib/ui.js
-
-        // renderLeaderboard moved to external file: lib/render-stats.js
-
-        // --- Theme Toggle Functions ---
-        // theme helpers moved to external file: lib/theme.js
-
-        // --- Event Listeners ---
-        document.addEventListener('DOMContentLoaded', async () => {
-            initializeTheme();
-            
-            // Load employees from PostgreSQL API only
-            try {
-                const apiEmployees = await loadEmployeesFromAPI();
-                if (apiEmployees && apiEmployees.length > 0) {
-                    employees = apiEmployees;
-                    console.log('Loaded employees from PostgreSQL API:', apiEmployees.length);
-                } else {
-                    console.log('No employees found in PostgreSQL database');
-                    employees = [];
-                }
-            } catch (e) { 
-                console.error('Failed to load from PostgreSQL API:', e);
-                employees = [];
-            }
-
-            renderAll();
-
-            // Add single event listener for clickable rows
-            const tableBodies = [
-                document.getElementById('yellow-card-table-body'),
-                document.getElementById('leaderboard-table-body')
-            ];
-            tableBodies.forEach(body => {
-                if (body) {
-                    body.addEventListener('click', (event) => {
-                        const row = event.target.closest('tr');
-                        if (row && row.dataset.employeeName) {
-                            navigateToEmployee(row.dataset.employeeName);
-                        }
-                    });
-                }
-            });
-        });
-        
-        window.addEventListener('click', (event) => {
-            document.querySelectorAll('.custom-dropdown.open').forEach(dropdown => {
-                if (!dropdown.contains(event.target)) {
-                    dropdown.classList.remove('open');
-                }
-            });
-
-            const dropdownToggle = event.target.closest('.custom-dropdown-toggle');
-            if (dropdownToggle) {
-                dropdownToggle.parentElement.classList.toggle('open');
-            }
-
-            if (event.target.classList.contains('modal')) {
-                closeModal(event.target.id);
-            }
-        });
-    </script>
     
     <script>
         // API configuration
@@ -995,5 +899,114 @@
     <script src="dist/lib/actions.js"></script>
     <script src="dist/lib/ui.js"></script>
     <script src="dist/lib/theme.js"></script>
+    <script src="dist/lib/state.js"></script>
+    <script>
+        (function () {
+            const EmployeeState = window.EmployeeState;
+            const employees = window.employees || [];
+            const departmentColors = {
+                'Design': '#6D28D9', 'Development': '#147857', 'AI Team': '#147857', 'Project Management': '#8e1c1c',
+                'Lead Generation': '#EC4899', 'Sales': '#EC4899', 'Video Production': '#F97316', 'Recruiting': '#4299e1',
+                'Finance': '#4299e1', 'default': '#4B5563'
+            };
+            window.departmentColors = departmentColors;
+
+            const currentDate = new Date();
+            const currentDateGreen = new Date();
+            window.currentDate = currentDate;
+            window.currentDateGreen = currentDateGreen;
+
+            const requestRender = () => {
+                if (typeof renderAll === 'function') {
+                    renderAll();
+                }
+            };
+
+            if (EmployeeState && typeof EmployeeState.subscribe === 'function') {
+                EmployeeState.subscribe(() => requestRender());
+            }
+
+            document.addEventListener('DOMContentLoaded', async () => {
+                initializeTheme();
+
+                let cacheSnapshot = null;
+                if (EmployeeState && typeof EmployeeState.loadCache === 'function') {
+                    cacheSnapshot = EmployeeState.loadCache(EmployeeState.CACHE_TTL);
+                    if (cacheSnapshot && cacheSnapshot.length > 0) {
+                        EmployeeState.replaceEmployees(cacheSnapshot, { skipCache: true });
+                        console.log(`Loaded employees from cache: ${cacheSnapshot.length}`);
+                    }
+                }
+
+                try {
+                    const apiEmployees = await loadEmployeesFromAPI();
+                    if (apiEmployees && apiEmployees.length > 0) {
+                        if (EmployeeState) {
+                            EmployeeState.replaceEmployees(apiEmployees);
+                        } else {
+                            employees.splice(0, employees.length, ...apiEmployees);
+                            requestRender();
+                        }
+                        console.log('Loaded employees from PostgreSQL API:', apiEmployees.length);
+                    } else if (!cacheSnapshot || cacheSnapshot.length === 0) {
+                        if (EmployeeState) {
+                            EmployeeState.replaceEmployees([]);
+                        } else {
+                            employees.splice(0, employees.length);
+                            requestRender();
+                        }
+                        console.log('No employees found in PostgreSQL database');
+                    }
+                } catch (e) {
+                    console.error('Failed to load from PostgreSQL API:', e);
+                    if (!cacheSnapshot || cacheSnapshot.length === 0) {
+                        if (EmployeeState) {
+                            EmployeeState.replaceEmployees([]);
+                        } else {
+                            employees.splice(0, employees.length);
+                            requestRender();
+                        }
+                    }
+                }
+
+                const tableBodies = [
+                    document.getElementById('yellow-card-table-body'),
+                    document.getElementById('leaderboard-table-body')
+                ];
+                tableBodies.forEach(body => {
+                    if (body) {
+                        body.addEventListener('click', (event) => {
+                            const row = (event.target && event.target.closest)
+                                ? event.target.closest('tr')
+                                : null;
+                            if (row && row.dataset.employeeName) {
+                                navigateToEmployee(row.dataset.employeeName);
+                            }
+                        });
+                    }
+                });
+            });
+
+            window.addEventListener('click', (event) => {
+                document.querySelectorAll('.custom-dropdown.open').forEach(dropdown => {
+                    if (!dropdown.contains(event.target)) {
+                        dropdown.classList.remove('open');
+                    }
+                });
+
+                const dropdownToggle = event.target && event.target.closest
+                    ? event.target.closest('.custom-dropdown-toggle')
+                    : null;
+                if (dropdownToggle && dropdownToggle.parentElement) {
+                    dropdownToggle.parentElement.classList.toggle('open');
+                }
+
+                const target = event.target;
+                if (target && target.classList && target.classList.contains('modal')) {
+                    closeModal(target.id);
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
