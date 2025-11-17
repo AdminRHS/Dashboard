@@ -561,7 +561,8 @@
     </style>
 </head>
 <body class="p-4 lg:p-8">
-
+    <div id="app"></div>
+    <template id="app-template">
     <div class="max-w-7xl mx-auto">
         <header class="bg-white p-4 sm:p-6 rounded-2xl shadow-lg mb-4">
             <div class="flex flex-col sm:flex-row items-center sm:justify-between relative gap-4">
@@ -784,6 +785,7 @@
     <div id="addEmployeeModal" class="modal"> <div class="modal-content" id="addEmployeeModalContent"></div> </div>
     <div id="editEmployeeModal" class="modal"> <div class="modal-content" id="editEmployeeModalContent"></div> </div>
     <div id="removeEmployeeModal" class="modal"> <div class="modal-content" id="removeEmployeeModalContent"></div> </div>
+    </template>
 
     <script>
         // Data and State
@@ -983,14 +985,15 @@
         .badge-new { background-color: #e0e7ff; color: #4338ca; }
         .badge-streak { background-color: #dcfce7; color: #166534; }
     </style>
-    <script src="lib/modals.js"></script>
-    <script src="lib/calendar.js"></script>
-    <script src="lib/tables.js"></script>
-    <script src="lib/leaderboard.js"></script>
-    <script src="lib/render-stats.js"></script>
-    <script src="lib/frontend-api.js"></script>
-    <script src="lib/actions.js"></script>
-    <script src="lib/ui.js"></script>
-    <script src="lib/theme.js"></script>
+    <script src="dist/components/layout.js"></script>
+    <script src="dist/lib/modals.js"></script>
+    <script src="dist/lib/calendar.js"></script>
+    <script src="dist/lib/tables.js"></script>
+    <script src="dist/lib/leaderboard.js"></script>
+    <script src="dist/lib/render-stats.js"></script>
+    <script src="dist/lib/frontend-api.js"></script>
+    <script src="dist/lib/actions.js"></script>
+    <script src="dist/lib/ui.js"></script>
+    <script src="dist/lib/theme.js"></script>
 </body>
 </html>
