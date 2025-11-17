@@ -895,53 +895,29 @@
             '.nav-tabs button'
         ];
 
-        const shadowHandlers = (() => {
-            const calcValues = (event, element) => {
-                const rect = element.getBoundingClientRect();
-                const offsetX = (event.clientX - rect.left) / rect.width;
-                const offsetY = (event.clientY - rect.top) / rect.height;
-                const rotX = (offsetY - 0.5) * -10;
-                const rotY = (offsetX - 0.5) * 10;
-                const depthX = (offsetX - 0.5) * -30;
-                const depthY = (offsetY - 0.5) * 30;
-                return { rotX, rotY, depthX, depthY };
-            };
-
-            function onMove(event) {
-                const target = event.currentTarget;
-                if (!target) return;
-                const { rotX, rotY, depthX, depthY } = calcValues(event, target);
-                target.dataset.shadowActive = 'true';
-                target.style.setProperty('--shadow-rot-x', rotX.toFixed(2));
-                target.style.setProperty('--shadow-rot-y', rotY.toFixed(2));
-                target.style.setProperty('--shadow-depth-x', depthX.toFixed(2));
-                target.style.setProperty('--shadow-depth-y', depthY.toFixed(2));
-            }
-
-            function onLeave(event) {
-                const target = event.currentTarget;
-                if (!target) return;
-                target.dataset.shadowActive = 'false';
-                target.style.removeProperty('--shadow-rot-x');
-                target.style.removeProperty('--shadow-rot-y');
-                target.style.removeProperty('--shadow-depth-x');
-                target.style.removeProperty('--shadow-depth-y');
-            }
-
-            return { onMove, onLeave };
-        })();
-
         function applyInteractiveShadows() {
             const selector = SHADOW_TARGET_SELECTORS.join(',');
             const elements = document.querySelectorAll(selector);
+
             elements.forEach(element => {
                 if (!element.classList.contains('shadow-follow')) {
                     element.classList.add('shadow-follow');
                 }
                 if (element.dataset.shadowInit === 'true') return;
                 element.dataset.shadowInit = 'true';
-                element.addEventListener('mousemove', shadowHandlers.onMove);
-                element.addEventListener('mouseleave', shadowHandlers.onLeave);
+
+                element.addEventListener('mousemove', (event) => {
+                    const rect = element.getBoundingClientRect();
+                    const x = ((event.clientX - rect.left) / rect.width) * 100;
+                    const y = ((event.clientY - rect.top) / rect.height) * 100;
+                    element.style.setProperty('--glow-x', `${x}%`);
+                    element.style.setProperty('--glow-y', `${y}%`);
+                    element.style.setProperty('--glow-opacity', '1');
+                });
+
+                element.addEventListener('mouseleave', () => {
+                    element.style.setProperty('--glow-opacity', '0');
+                });
             });
         }
 
@@ -1083,12 +1059,24 @@
         .badge-streak { background-color: #dcfce7; color: #166534; }
         .shadow-follow {
             position: relative;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            will-change: transform, box-shadow;
+            transition: box-shadow 0.2s ease;
+            --glow-x: 50%;
+            --glow-y: 50%;
+            --glow-opacity: 0;
         }
-        .shadow-follow[data-shadow-active="true"] {
-            transform: perspective(900px) rotateX(calc(var(--shadow-rot-x, 0) * 1deg)) rotateY(calc(var(--shadow-rot-y, 0) * 1deg));
-            box-shadow: calc(var(--shadow-depth-x, 0) * 1px) calc(var(--shadow-depth-y, 0) * 1px) 35px rgba(0,0,0,0.35);
+        .shadow-follow::after {
+            content: '';
+            position: absolute;
+            inset: -20%;
+            background: radial-gradient(
+                circle at var(--glow-x) var(--glow-y),
+                rgba(0, 0, 0, 0.35),
+                transparent 55%
+            );
+            opacity: var(--glow-opacity);
+            transition: opacity 0.35s ease;
+            pointer-events: none;
+            z-index: -1;
         }
     </style>
     <script src="dist/components/layout.js"></script>
