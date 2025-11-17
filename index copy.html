@@ -729,11 +729,17 @@
             const totalGreenCards = employees.reduce((sum, emp) => {
                 return sum + ((emp.greenCards && emp.greenCards.length) || 0);
             }, 0);
-            const clampCardDisplay = (value) => Math.min(value, 3);
-            const greenCardDisplay = clampCardDisplay(totalGreenCards);
-            const yellowCardDisplay = clampCardDisplay(totalCards);
-            const orangeCardDisplay = clampCardDisplay(cardCounts[2]);
-            const redCardDisplay = clampCardDisplay(cardCounts[3]);
+            const formatValue = (value) => value >= 3 ? '3+' : `${value}`;
+            
+            const greenCardActual = totalGreenCards;
+            const yellowCardActual = totalCards;
+            const orangeCardActual = cardCounts[2];
+            const redCardActual = cardCounts[3];
+
+            const greenCardDisplay = formatValue(greenCardActual);
+            const yellowCardDisplay = formatValue(yellowCardActual);
+            const orangeCardDisplay = formatValue(orangeCardActual);
+            const redCardDisplay = formatValue(redCardActual);
             
             document.getElementById('detailed-stats').innerHTML = `
                 <div class="detailed-stat-card-v2 card-green">
