@@ -14,15 +14,6 @@ declare global {
   let currentDateGreen: Date;
   const employees: Employee[];
   const departmentColors: DepartmentColors;
-  const EmployeeState: {
-    employees: Employee[];
-    replaceEmployees(list: Employee[], options?: { skipCache?: boolean }): void;
-    markDirty(): void;
-    subscribe(callback: (employees: Employee[]) => void): () => void;
-    loadCache(maxAge?: number): Employee[] | null;
-    clearCache(): void;
-    CACHE_TTL: number;
-  };
   const lucide: Lucide;
   const API_CONFIG: ApiConfig | undefined;
   function addEmployee(button: HTMLButtonElement): void;
@@ -104,15 +95,6 @@ declare global {
     employees: Employee[];
     departmentColors: DepartmentColors;
     lucide: Lucide;
-    EmployeeState?: {
-      employees: Employee[];
-      replaceEmployees(list: Employee[], options?: { skipCache?: boolean }): void;
-      markDirty(): void;
-      subscribe(callback: (employees: Employee[]) => void): () => void;
-      loadCache(maxAge?: number): Employee[] | null;
-      clearCache(): void;
-      CACHE_TTL: number;
-    };
     addEmployee: typeof addEmployee;
     removeEmployee: typeof removeEmployee;
     submitYellowCard: typeof submitYellowCard;

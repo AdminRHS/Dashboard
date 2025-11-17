@@ -1,13 +1,4 @@
 (function registerActions(global: Window & typeof globalThis) {
-  const stateApi = global.EmployeeState;
-
-  function notifyStateChange(): void {
-    if (stateApi && typeof stateApi.markDirty === 'function') {
-      stateApi.markDirty();
-    } else if (typeof renderAll === 'function') {
-      renderAll();
-    }
-  }
   function showSuccessMessage(buttonElement: HTMLButtonElement | null, message = 'Success'): void {
     if (!buttonElement) return;
     const originalHtml = buttonElement.innerHTML;
@@ -48,7 +39,7 @@
         throw new Error('Empty response from API');
       }
       employees.push(remoteEmployee);
-      notifyStateChange();
+      renderAll();
       showSuccessMessage(btn, 'Employee Added');
       updateSaveStatus('✓ Saved', 'success');
       setTimeout(() => closeModal('addEmployeeModal'), 500);
@@ -88,7 +79,7 @@
       if (index >= 0) {
         employees.splice(index, 1);
       }
-      notifyStateChange();
+      renderAll();
       showSuccessMessage(btn, 'Employee Removed');
       updateSaveStatus('✓ Saved', 'success');
       setTimeout(() => closeModal('removeEmployeeModal'), 500);
@@ -130,7 +121,7 @@
       const success = await addViolationViaAPI(emp.id, violation);
       if (success) {
         emp.violations.push(violation);
-        notifyStateChange();
+        renderAll();
         updateSaveStatus('✓ Saved', 'success');
       } else {
         updateSaveStatus('✗ Failed to save', 'error');
@@ -173,7 +164,7 @@
         }
         greenCard.id = result.id;
         emp.greenCards.push(greenCard);
-        notifyStateChange();
+        renderAll();
         updateSaveStatus('✓ Saved', 'success');
       } else {
         updateSaveStatus('✗ Failed to save', 'error');
@@ -227,7 +218,7 @@
         emp.dept = newDept;
         emp.email = newEmail;
         emp.discordId = newDiscordId;
-        notifyStateChange();
+        renderAll();
         showSuccessMessage(btn, 'Changes Saved');
         updateSaveStatus('✓ Saved', 'success');
         setTimeout(() => closeModal('editEmployeeModal'), 500);
@@ -289,7 +280,7 @@
           }
         });
       }
-      notifyStateChange();
+      renderAll();
       updateSaveStatus('✓ Card removed', 'success');
       if (meta && meta.context === 'employee') {
         const updatedEmp = employees.find(e => e.name === employeeName);
@@ -343,7 +334,7 @@
           emp.greenCards = emp.greenCards.filter(gc => !(gc.date === meta.date && gc.type === meta.type && (gc.comment || '') === (meta.comment || '')));
         }
       }
-      notifyStateChange();
+      renderAll();
       updateSaveStatus('✓ Green card removed', 'success');
       if (meta && meta.context === 'employee') {
         const updatedEmp = employees.find(e => e.name === employeeName);
