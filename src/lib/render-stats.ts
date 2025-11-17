@@ -25,6 +25,9 @@
     renderModals();
     renderGreenCardModals();
     lucide.createIcons();
+    if (typeof global.applyInteractiveShadows === 'function') {
+      global.applyInteractiveShadows();
+    }
   }
 
   function renderStats(): void {

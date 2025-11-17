@@ -23,6 +23,9 @@
         renderModals();
         renderGreenCardModals();
         lucide.createIcons();
+        if (typeof global.applyInteractiveShadows === 'function') {
+            global.applyInteractiveShadows();
+        }
     }
     function renderStats() {
         const totalEmployees = employees.length;

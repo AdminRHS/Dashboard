@@ -80,6 +80,7 @@ declare global {
     placeholder?: string,
     onChange?: () => void
   ): void;
+  function applyInteractiveShadows(): void;
   function serializeData(): string;
   interface ApiConfig {
     baseUrl?: string;
@@ -148,6 +149,7 @@ declare global {
     showDayDetailsModal: typeof showDayDetailsModal;
     copyToClipboard: typeof copyToClipboard;
     createDropdown: typeof createDropdown;
+    applyInteractiveShadows: typeof applyInteractiveShadows;
     API_CONFIG?: ApiConfig;
   }
 }
