@@ -729,6 +729,7 @@
             const totalGreenCards = employees.reduce((sum, emp) => {
                 return sum + ((emp.greenCards && emp.greenCards.length) || 0);
             }, 0);
+            const yellowCardDisplay = Math.min(totalCards, 3);
             
             document.getElementById('detailed-stats').innerHTML = `
                 <div class="detailed-stat-card-v2 card-green">
@@ -743,7 +744,10 @@
                     </div>
                 </div>
                 <div class="detailed-stat-card-v2 card-yellow">
-                    <div class="stat-number">${cardCounts[1]}</div>
+                    <div>
+                        <div class="stat-number">${yellowCardDisplay}</div>
+                        <div class="card-label">Yellow Cards</div>
+                    </div>
                     <div class="card-stack-wrapper">
                         <div class="stack-shape stack-medium"></div>
                     </div>
