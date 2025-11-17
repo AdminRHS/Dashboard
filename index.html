@@ -526,6 +526,28 @@
         .plinth-2 { height: 130px; }
         .plinth-3 { height: 90px; }
 
+        /* Interactive Shadow/Glow Effect */
+        .shadow-follow {
+            --glow-x: 50%;
+            --glow-y: 50%;
+            --glow-opacity: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .shadow-follow::after {
+            content: "";
+            position: absolute;
+            inset: -30%;
+            background: radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(79, 140, 255, 0.18), transparent 60%);
+            opacity: var(--glow-opacity);
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+        body.dark-theme .shadow-follow::after {
+            filter: blur(18px);
+        }
+
         .pedestal-number-circle {
             display: flex;
             align-items: center;
