@@ -118,42 +118,33 @@
                 </div>
             `;
         };
-        const clampValue = (value) => {
-            if (value <= 0)
-                return '0';
-            if (value === 1)
-                return '1';
-            if (value === 2)
-                return '2';
-            return '3+';
-        };
         const detailedStats = document.getElementById('detailed-stats');
         if (detailedStats) {
             detailedStats.innerHTML = `
             <div class="detailed-stat-card-v2 card-green">
                 <div>
-                    <div class="stat-number">${clampValue(totalGreenCards)}</div>
+                    <div class="stat-number">${totalGreenCards}</div>
                     <div class="card-label">Green Cards</div>
                 </div>
                 ${renderCardStack(totalGreenCards)}
             </div>
             <div class="detailed-stat-card-v2 card-yellow">
                 <div>
-                    <div class="stat-number">${clampValue(totalCards)}</div>
+                    <div class="stat-number">${totalCards}</div>
                     <div class="card-label">Yellow Cards</div>
                 </div>
                 ${renderCardStack(totalCards)}
             </div>
             <div class="detailed-stat-card-v2 card-orange">
                 <div>
-                    <div class="stat-number">${clampValue(cardCounts[2])}</div>
+                    <div class="stat-number">${cardCounts[2]}</div>
                     <div class="card-label">Orange Cards</div>
                 </div>
                 ${renderCardStack(cardCounts[2])}
             </div>
             <div class="detailed-stat-card-v2 card-red">
                 <div>
-                    <div class="stat-number">${clampValue(cardCounts[3])}</div>
+                    <div class="stat-number">${cardCounts[3]}</div>
                     <div class="card-label">Red Cards</div>
                 </div>
                 ${renderCardStack(cardCounts[3])}
