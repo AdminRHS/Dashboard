@@ -136,6 +136,9 @@
         initLanguageSelector();
         applyTranslations();
     }
+    window.addEventListener('dashboard:rendered', () => {
+        applyTranslations();
+    });
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', handleDOMContentLoaded);
     }

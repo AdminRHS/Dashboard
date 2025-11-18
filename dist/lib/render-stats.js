@@ -26,9 +26,7 @@
         if (typeof global.applyInteractiveShadows === 'function') {
             global.applyInteractiveShadows();
         }
-        if (typeof global.applyTranslations === 'function') {
-            global.applyTranslations();
-        }
+        window.dispatchEvent(new CustomEvent('dashboard:rendered'));
     }
     function renderStats() {
         const totalEmployees = employees.length;
