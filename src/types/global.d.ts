@@ -94,6 +94,13 @@ type I18nKeyMap = {
   };
 };
 
+interface LanguageState {
+  LANGUAGE_EVENT: string;
+  getLanguage(): string;
+  setLanguageState(lang: string, options?: { silent?: boolean }): void;
+  subscribe(handler: (lang: string) => void): () => void;
+}
+
 type DepartmentColors = Record<string, string>;
 
 interface Lucide {
@@ -105,6 +112,7 @@ declare global {
   type GreenCard = DomainGreenCard;
   type Violation = DomainViolation;
   const I18N_KEYS: I18nKeyMap;
+  const languageState: LanguageState;
   const currentDate: Date;
   let currentDateGreen: Date;
   const employees: Employee[];
@@ -196,6 +204,7 @@ declare global {
   }
   interface Window {
     I18N_KEYS: I18nKeyMap;
+    languageState: LanguageState;
     currentDate: Date;
     currentDateGreen?: Date;
     employees: Employee[];

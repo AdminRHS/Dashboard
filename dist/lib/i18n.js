@@ -1,5 +1,7 @@
 (function registerI18n(global) {
     const KEYS = global.I18N_KEYS;
+    const languageState = global.languageState;
+    const LANGUAGE_EVENT = languageState?.LANGUAGE_EVENT || 'dashboard:languagechange';
     const TRANSLATIONS = {
         [KEYS.header.title]: { en: 'Yellow Cards', uk: 'Жовті картки', ru: 'Жёлтые карточки', de: 'Gelbe Karten' },
         [KEYS.nav.overview]: { en: 'Overview', uk: 'Огляд', ru: 'Обзор', de: 'Übersicht' },
@@ -82,6 +84,17 @@
         return (SUPPORTED_LANGS.includes(stored) ? stored : 'en');
     }
     let currentLanguage = getInitialLanguage();
+    if (languageState && typeof languageState.setLanguageState === 'function') {
+        languageState.setLanguageState(currentLanguage, { silent: true });
+    }
+    function emitLanguageChange() {
+        if (languageState && typeof languageState.setLanguageState === 'function') {
+            languageState.setLanguageState(currentLanguage);
+        }
+        else {
+            window.dispatchEvent(new CustomEvent(LANGUAGE_EVENT, { detail: { language: currentLanguage } }));
+        }
+    }
     let dateFormatter = new Intl.DateTimeFormat(currentLanguage, { month: 'long', year: 'numeric' });
     function translate(key, fallback = '') {
         const entry = TRANSLATIONS[key];
@@ -156,6 +169,7 @@
             const isDark = document.body.classList.contains('dark-theme');
             global.updateThemeButton(isDark);
         }
+        emitLanguageChange();
     }
     function initLanguageSelector() {
         const select = document.getElementById('language-select');

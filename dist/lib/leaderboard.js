@@ -149,6 +149,10 @@
         buttonElement.classList.add('active');
         renderLeaderboard();
     }
+    const LANGUAGE_EVENT = global.languageState?.LANGUAGE_EVENT || 'dashboard:languagechange';
+    global.addEventListener(LANGUAGE_EVENT, () => {
+        renderLeaderboard();
+    });
     global.renderLeaderboard = renderLeaderboard;
     global.populateDeptFilter = populateDeptFilter;
     global.setPeriodFilter = setPeriodFilter;

@@ -37,6 +37,33 @@
     });
   }
 
+  const defaultMonthFormatter = (date: Date): string =>
+    date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+  function formatMonthLabel(date: Date): string {
+    const formatter = typeof global.formatMonthYear === 'function' ? global.formatMonthYear : defaultMonthFormatter;
+    return formatter(date);
+  }
+
+  function updateCalendarHeader(elementId: string, date?: Date | null): void {
+    if (!date) return;
+    const headerEl = document.getElementById(elementId);
+    if (!headerEl) return;
+    headerEl.textContent = formatMonthLabel(date);
+  }
+
+  function getPrimaryCalendarDate(): Date | undefined {
+    if (global.currentDate instanceof Date) return global.currentDate;
+    if (typeof currentDate !== 'undefined') return currentDate;
+    return undefined;
+  }
+
+  function getActiveGreenDate(): Date | undefined {
+    if (typeof window.currentDateGreen !== 'undefined') return window.currentDateGreen;
+    if (typeof currentDateGreen !== 'undefined') return currentDateGreen;
+    return undefined;
+  }
+
   function switchTab(buttonElement: HTMLElement): void {
     const tabId = buttonElement.dataset.tab;
     if (!tabId) return;
@@ -171,13 +198,7 @@
         newMonth.style.position = '';
       }
 
-      const headerEl = document.getElementById('calendar-month-year');
-      if (headerEl) {
-      const formatter = typeof global.formatMonthYear === 'function'
-        ? global.formatMonthYear
-        : (date: Date) => date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-      headerEl.textContent = formatter(currentDate);
-      }
+      updateCalendarHeader('calendar-month-year', currentDate);
 
       clearInterval(scrollInterval);
       window.scrollTo(scrollX, scrollY);
@@ -307,14 +328,7 @@
         newMonth.style.position = '';
       }
 
-      const headerEl = document.getElementById('calendar-month-year-green');
-      if (headerEl) {
-        const activeGreenDate = typeof window.currentDateGreen !== 'undefined' ? window.currentDateGreen : (typeof currentDateGreen !== 'undefined' ? currentDateGreen : new Date());
-      const formatter = typeof global.formatMonthYear === 'function'
-        ? global.formatMonthYear
-        : (date: Date) => date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-      headerEl.textContent = formatter(activeGreenDate);
-      }
+      updateCalendarHeader('calendar-month-year-green', getActiveGreenDate() || new Date());
 
       clearInterval(scrollInterval);
       window.scrollTo(scrollX, scrollY);
@@ -330,6 +344,12 @@
 
     return true;
   }
+
+  const LANGUAGE_EVENT = global.languageState?.LANGUAGE_EVENT || 'dashboard:languagechange';
+  global.addEventListener(LANGUAGE_EVENT, () => {
+    updateCalendarHeader('calendar-month-year', getPrimaryCalendarDate());
+    updateCalendarHeader('calendar-month-year-green', getActiveGreenDate());
+  });
 
   function updateSaveStatus(message: string, type: 'saving' | 'success' | 'error' | 'info' = 'info'): void {
     const statusElement = document.getElementById('save-status');

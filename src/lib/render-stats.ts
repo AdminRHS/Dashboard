@@ -262,6 +262,14 @@
     ], typePlaceholder);
   }
 
+  const LANGUAGE_EVENT = global.languageState?.LANGUAGE_EVENT || 'dashboard:languagechange';
+  global.addEventListener(LANGUAGE_EVENT, () => {
+    renderStats();
+    renderTeamGrids();
+    renderModals();
+    renderGreenCardModals();
+  });
+
   global.renderAll = renderAll;
   global.renderStats = renderStats;
   global.renderTeamGrids = renderTeamGrids;

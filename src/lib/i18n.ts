@@ -1,5 +1,7 @@
 (function registerI18n(global: Window & typeof globalThis) {
   const KEYS = global.I18N_KEYS;
+  const languageState = global.languageState;
+  const LANGUAGE_EVENT = languageState?.LANGUAGE_EVENT || 'dashboard:languagechange';
 
   type TranslationEntry = Record<string, string>;
   type TranslationMap = Record<string, TranslationEntry>;
@@ -90,6 +92,17 @@
   }
 
   let currentLanguage: SupportedLang = getInitialLanguage();
+  if (languageState && typeof languageState.setLanguageState === 'function') {
+    languageState.setLanguageState(currentLanguage, { silent: true });
+  }
+
+  function emitLanguageChange(): void {
+    if (languageState && typeof languageState.setLanguageState === 'function') {
+      languageState.setLanguageState(currentLanguage);
+    } else {
+      window.dispatchEvent(new CustomEvent(LANGUAGE_EVENT, { detail: { language: currentLanguage } }));
+    }
+  }
   let dateFormatter = new Intl.DateTimeFormat(currentLanguage, { month: 'long', year: 'numeric' });
 
   function translate(key: string, fallback = ''): string {
@@ -170,6 +183,7 @@
       const isDark = document.body.classList.contains('dark-theme');
       global.updateThemeButton(isDark);
     }
+    emitLanguageChange();
   }
 
   function initLanguageSelector(): void {

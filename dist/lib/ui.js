@@ -35,6 +35,33 @@
             });
         });
     }
+    const defaultMonthFormatter = (date) => date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    function formatMonthLabel(date) {
+        const formatter = typeof global.formatMonthYear === 'function' ? global.formatMonthYear : defaultMonthFormatter;
+        return formatter(date);
+    }
+    function updateCalendarHeader(elementId, date) {
+        if (!date)
+            return;
+        const headerEl = document.getElementById(elementId);
+        if (!headerEl)
+            return;
+        headerEl.textContent = formatMonthLabel(date);
+    }
+    function getPrimaryCalendarDate() {
+        if (global.currentDate instanceof Date)
+            return global.currentDate;
+        if (typeof currentDate !== 'undefined')
+            return currentDate;
+        return undefined;
+    }
+    function getActiveGreenDate() {
+        if (typeof window.currentDateGreen !== 'undefined')
+            return window.currentDateGreen;
+        if (typeof currentDateGreen !== 'undefined')
+            return currentDateGreen;
+        return undefined;
+    }
     function switchTab(buttonElement) {
         const tabId = buttonElement.dataset.tab;
         if (!tabId)
@@ -145,13 +172,7 @@
                 container.style.height = '';
                 newMonth.style.position = '';
             }
-            const headerEl = document.getElementById('calendar-month-year');
-            if (headerEl) {
-                const formatter = typeof global.formatMonthYear === 'function'
-                    ? global.formatMonthYear
-                    : (date) => date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-                headerEl.textContent = formatter(currentDate);
-            }
+            updateCalendarHeader('calendar-month-year', currentDate);
             clearInterval(scrollInterval);
             window.scrollTo(scrollX, scrollY);
             requestAnimationFrame(() => {
@@ -258,14 +279,7 @@
                 container.style.height = '';
                 newMonth.style.position = '';
             }
-            const headerEl = document.getElementById('calendar-month-year-green');
-            if (headerEl) {
-                const activeGreenDate = typeof window.currentDateGreen !== 'undefined' ? window.currentDateGreen : (typeof currentDateGreen !== 'undefined' ? currentDateGreen : new Date());
-                const formatter = typeof global.formatMonthYear === 'function'
-                    ? global.formatMonthYear
-                    : (date) => date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-                headerEl.textContent = formatter(activeGreenDate);
-            }
+            updateCalendarHeader('calendar-month-year-green', getActiveGreenDate() || new Date());
             clearInterval(scrollInterval);
             window.scrollTo(scrollX, scrollY);
             requestAnimationFrame(() => {
@@ -278,6 +292,11 @@
         }, 400);
         return true;
     }
+    const LANGUAGE_EVENT = global.languageState?.LANGUAGE_EVENT || 'dashboard:languagechange';
+    global.addEventListener(LANGUAGE_EVENT, () => {
+        updateCalendarHeader('calendar-month-year', getPrimaryCalendarDate());
+        updateCalendarHeader('calendar-month-year-green', getActiveGreenDate());
+    });
     function updateSaveStatus(message, type = 'info') {
         const statusElement = document.getElementById('save-status');
         if (!statusElement)
