@@ -53,38 +53,49 @@
         const slideDirection = currentIndex !== -1 && targetIndex < currentIndex ? 'left' : 'right';
         if (currentActive) {
             const exitClass = slideDirection === 'right' ? 'sliding-out-left' : 'sliding-out-right';
-            currentActive.classList.remove('active', 'slide-from-left', 'slide-from-right');
+            currentActive.classList.remove('slide-from-left', 'slide-from-right', 'sliding-out-left', 'sliding-out-right');
             currentActive.classList.add(exitClass);
-            const handleTransitionEnd = (event) => {
-                if (event.propertyName !== 'transform')
+            let exitHandled = false;
+            const finalizeExit = () => {
+                if (exitHandled)
                     return;
+                exitHandled = true;
                 currentActive.classList.add('hidden');
                 currentActive.classList.remove(exitClass);
                 currentActive.removeEventListener('transitionend', handleTransitionEnd);
             };
+            const handleTransitionEnd = (event) => {
+                if (event.propertyName !== 'transform' && event.propertyName !== 'opacity')
+                    return;
+                finalizeExit();
+            };
             currentActive.addEventListener('transitionend', handleTransitionEnd);
-            window.setTimeout(() => {
-                currentActive.classList.add('hidden');
-                currentActive.classList.remove(exitClass);
-            }, TAB_TRANSITION_MS + 50);
+            requestAnimationFrame(() => {
+                currentActive.classList.remove('active');
+            });
+            window.setTimeout(finalizeExit, TAB_TRANSITION_MS + 100);
         }
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        targetTab.classList.remove('hidden');
+        targetTab.classList.remove('hidden', 'sliding-out-left', 'sliding-out-right');
         const enterClass = slideDirection === 'right' ? 'slide-from-right' : 'slide-from-left';
-        targetTab.classList.remove('sliding-out-left', 'sliding-out-right');
         targetTab.classList.add(enterClass);
         const activateTab = () => {
             targetTab.classList.add('active');
-            const cleanup = (event) => {
-                if (event.propertyName !== 'transform')
+            let enterHandled = false;
+            const finalizeEnter = () => {
+                if (enterHandled)
                     return;
+                enterHandled = true;
                 targetTab.classList.remove(enterClass);
                 targetTab.removeEventListener('transitionend', cleanup);
             };
+            const cleanup = (event) => {
+                if (event.propertyName !== 'transform' && event.propertyName !== 'opacity')
+                    return;
+                finalizeEnter();
+            };
             targetTab.addEventListener('transitionend', cleanup);
-            window.setTimeout(() => {
-                targetTab.classList.remove(enterClass);
-            }, TAB_TRANSITION_MS + 50);
+            window.setTimeout(finalizeEnter, TAB_TRANSITION_MS + 100);
         };
         requestAnimationFrame(() => requestAnimationFrame(activateTab));
         buttonElement.classList.add('active');
