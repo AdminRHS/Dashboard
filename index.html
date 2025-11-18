@@ -526,27 +526,6 @@
         .plinth-2 { height: 130px; }
         .plinth-3 { height: 90px; }
 
-        /* Interactive Shadow/Glow Effect */
-        .shadow-follow {
-            --glow-x: 50%;
-            --glow-y: 50%;
-            --glow-opacity: 0;
-            position: relative;
-            overflow: hidden;
-        }
-        .shadow-follow::after {
-            content: "";
-            position: absolute;
-            inset: -30%;
-            background: radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(79, 140, 255, 0.18), transparent 60%);
-            opacity: var(--glow-opacity);
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-        }
-        body.dark-theme .shadow-follow::after {
-            filter: blur(18px);
-        }
-
         .pedestal-number-circle {
             display: flex;
             align-items: center;
@@ -895,47 +874,7 @@
         // --- Theme Toggle Functions ---
         // theme helpers moved to external file: lib/theme.js
 
-        const SHADOW_TARGET_SELECTORS = [
-            'header',
-            'main section',
-            'section.bg-white',
-            '.stat-card',
-            '.detailed-stat-card-v2',
-            '.rule-card',
-            '.modal-content',
-            '.info-block',
-            '.calendar-container',
-            '.table',
-            '.max-w-7xl'
-        ];
-
-        function applyInteractiveShadows() {
-            const selector = SHADOW_TARGET_SELECTORS.join(',');
-            const elements = document.querySelectorAll(selector);
-
-            elements.forEach(element => {
-                if (!element.classList.contains('shadow-follow')) {
-                    element.classList.add('shadow-follow');
-                }
-                if (element.dataset.shadowInit === 'true') return;
-                element.dataset.shadowInit = 'true';
-
-                element.addEventListener('mousemove', (event) => {
-                    const rect = element.getBoundingClientRect();
-                    const x = ((event.clientX - rect.left) / rect.width) * 100;
-                    const y = ((event.clientY - rect.top) / rect.height) * 100;
-                    element.style.setProperty('--glow-x', `${x}%`);
-                    element.style.setProperty('--glow-y', `${y}%`);
-                    element.style.setProperty('--glow-opacity', '1');
-                });
-
-                element.addEventListener('mouseleave', () => {
-                    element.style.setProperty('--glow-opacity', '0');
-                });
-            });
-        }
-
-        window.applyInteractiveShadows = applyInteractiveShadows;
+        window.applyInteractiveShadows = function applyInteractiveShadows() {};
 
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', async () => {
@@ -957,7 +896,6 @@
             }
 
             renderAll();
-            applyInteractiveShadows();
 
             // Add single event listener for clickable rows
             const tableBodies = [
