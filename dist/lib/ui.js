@@ -36,6 +36,7 @@
         });
     }
     const TAB_SEQUENCE = ['overview', 'yellowcard', 'greencard', 'team', 'leaderboard'];
+    const TAB_TRANSITION_MS = 450;
     function switchTab(buttonElement) {
         const tabId = buttonElement.dataset.tab;
         if (!tabId)
@@ -65,7 +66,7 @@
             window.setTimeout(() => {
                 currentActive.classList.add('hidden');
                 currentActive.classList.remove(exitClass);
-            }, 500);
+            }, TAB_TRANSITION_MS + 50);
         }
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         targetTab.classList.remove('hidden');
@@ -83,7 +84,7 @@
             targetTab.addEventListener('transitionend', cleanup);
             window.setTimeout(() => {
                 targetTab.classList.remove(enterClass);
-            }, 500);
+            }, TAB_TRANSITION_MS + 50);
         };
         requestAnimationFrame(() => requestAnimationFrame(activateTab));
         buttonElement.classList.add('active');

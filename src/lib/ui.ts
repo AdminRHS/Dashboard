@@ -38,6 +38,7 @@
   }
 
   const TAB_SEQUENCE = ['overview', 'yellowcard', 'greencard', 'team', 'leaderboard'] as const;
+  const TAB_TRANSITION_MS = 450;
 
   function switchTab(buttonElement: HTMLElement): void {
     const tabId = buttonElement.dataset.tab;
@@ -72,7 +73,7 @@
       window.setTimeout(() => {
         currentActive.classList.add('hidden');
         currentActive.classList.remove(exitClass);
-      }, 500);
+      }, TAB_TRANSITION_MS + 50);
     }
 
     document.querySelectorAll<HTMLElement>('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -93,7 +94,7 @@
 
       window.setTimeout(() => {
         targetTab.classList.remove(enterClass);
-      }, 500);
+      }, TAB_TRANSITION_MS + 50);
     };
 
     requestAnimationFrame(() => requestAnimationFrame(activateTab));

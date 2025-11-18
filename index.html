@@ -139,19 +139,20 @@
             transform: translateX(0);
             transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
-            visibility: hidden;
+            will-change: transform, opacity;
         }
         .tab-content.active {
             opacity: 1;
             transform: translateX(0);
             pointer-events: auto;
-            visibility: visible;
         }
         .tab-content.slide-from-right {
             transform: translateX(60px);
+            opacity: 0;
         }
         .tab-content.slide-from-left {
             transform: translateX(-60px);
+            opacity: 0;
         }
         .tab-content.sliding-out-left {
             opacity: 0;
