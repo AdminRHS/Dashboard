@@ -542,7 +542,6 @@
             opacity: var(--glow-opacity);
             transition: opacity 0.4s ease;
             pointer-events: none;
-            z-index: 1;
         }
         body.dark-theme .shadow-follow::after {
             filter: blur(18px);
@@ -897,6 +896,8 @@
         // theme helpers moved to external file: lib/theme.js
 
         const SHADOW_TARGET_SELECTORS = [
+            'header',
+            'main section',
             'section.bg-white',
             '.stat-card',
             '.detailed-stat-card-v2',
@@ -905,8 +906,7 @@
             '.info-block',
             '.calendar-container',
             '.table',
-            '.max-w-7xl',
-            'header'
+            '.max-w-7xl'
         ];
 
         function applyInteractiveShadows() {
@@ -1071,27 +1071,6 @@
         .badge { padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; display: inline-block; margin: 2px 0;}
         .badge-new { background-color: #e0e7ff; color: #4338ca; }
         .badge-streak { background-color: #dcfce7; color: #166534; }
-        .shadow-follow {
-            position: relative;
-            transition: box-shadow 0.2s ease;
-            --glow-x: 50%;
-            --glow-y: 50%;
-            --glow-opacity: 0;
-        }
-        .shadow-follow::after {
-            content: '';
-            position: absolute;
-            inset: -20%;
-            background: radial-gradient(
-                circle at var(--glow-x) var(--glow-y),
-                rgba(0, 0, 0, 0.35),
-                transparent 55%
-            );
-            opacity: var(--glow-opacity);
-            transition: opacity 0.35s ease;
-            pointer-events: none;
-            z-index: -1;
-        }
     </style>
     <script src="dist/components/layout.js"></script>
     <script src="dist/lib/modals.js"></script>
