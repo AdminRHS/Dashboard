@@ -1,5 +1,80 @@
 import type { Employee as DomainEmployee, GreenCard as DomainGreenCard, Violation as DomainViolation } from './domain';
 
+type I18nKeyMap = {
+  header: { title: string };
+  nav: {
+    overview: string;
+    yellowCards: string;
+    yellowCardsShort: string;
+    greenCards: string;
+    greenCardsShort: string;
+    team: string;
+    leaderboard: string;
+    leaderboardShort: string;
+  };
+  theme: {
+    dark: string;
+    light: string;
+    darkShort: string;
+  };
+  section: {
+    dashboardOverview: string;
+    detailedBreakdown: string;
+    violationCategories: string;
+    currentMonthStatus: string;
+    greenCurrentStatus: string;
+    teamStructure: string;
+    positiveLeaderboard: string;
+    positiveLeaderboardDescription: string;
+    membersSuffix: string;
+  };
+  button: {
+    giveYellowCard: string;
+    giveGreenCard: string;
+    addEmployee: string;
+    removeEmployee: string;
+  };
+  filters: {
+    week: string;
+    month: string;
+    new: string;
+    allTime: string;
+  };
+  table: {
+    employee: string;
+    department: string;
+    cards: string;
+    violationTypes: string;
+    status: string;
+    greenCards: string;
+    cardTypes: string;
+    notes: string;
+    lastGreenCard: string;
+  };
+  input: {
+    searchPlaceholder: string;
+  };
+  stats: {
+    teamSizeLabel: string;
+    totalCardsLabel: string;
+    employeesSuffix: string;
+    totalEmployeesLabel: string;
+    complianceLabel: string;
+    atRiskLabel: string;
+    atRiskHint: string;
+    mostViolationsLabel: string;
+    greenCardsLabel: string;
+    yellowCardsLabel: string;
+    orangeCardsLabel: string;
+    redCardsLabel: string;
+  };
+  cards: {
+    documentation: string;
+    workflow: string;
+    communication: string;
+  };
+};
+
 type DepartmentColors = Record<string, string>;
 
 interface Lucide {
@@ -10,6 +85,7 @@ declare global {
   type Employee = DomainEmployee;
   type GreenCard = DomainGreenCard;
   type Violation = DomainViolation;
+  const I18N_KEYS: I18nKeyMap;
   const currentDate: Date;
   let currentDateGreen: Date;
   const employees: Employee[];
@@ -95,6 +171,7 @@ declare global {
     deleteGreenCard?: string;
   }
   interface Window {
+    I18N_KEYS: I18nKeyMap;
     currentDate: Date;
     currentDateGreen?: Date;
     employees: Employee[];

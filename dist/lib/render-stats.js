@@ -1,4 +1,5 @@
 (function registerRenderers(global) {
+    const I18N = global.I18N_KEYS;
     function renderAll() {
         employees.sort((a, b) => a.name.localeCompare(b.name));
         renderStats();
@@ -48,11 +49,11 @@
         });
         const teamSize = document.getElementById('team-size-stat');
         if (teamSize) {
-            teamSize.innerHTML = `<strong data-i18n-key="stats.teamSizeLabel">Team Size:</strong> ${totalEmployees} <span data-i18n-key="stats.employeesSuffix">employees</span>`;
+            teamSize.innerHTML = `<strong data-i18n-key="${I18N.stats.teamSizeLabel}">Team Size:</strong> ${totalEmployees} <span data-i18n-key="${I18N.stats.employeesSuffix}">employees</span>`;
         }
         const cardRatio = document.getElementById('card-ratio-stat');
         if (cardRatio) {
-            cardRatio.innerHTML = `<strong data-i18n-key="stats.totalCardsLabel">Total Cards:</strong> ${totalCards}`;
+            cardRatio.innerHTML = `<strong data-i18n-key="${I18N.stats.totalCardsLabel}">Total Cards:</strong> ${totalCards}`;
         }
         const overviewStats = document.getElementById('overview-stats');
         if (overviewStats) {
@@ -61,14 +62,14 @@
                 <div class="stat-icon bg-blue-100 text-blue-600"><i data-lucide="users"></i></div>
                 <div class="stat-info">
                     <div class="stat-number">${totalEmployees}</div>
-                    <div class="stat-label" data-i18n-key="stats.totalEmployeesLabel">Total Employees</div>
+                    <div class="stat-label" data-i18n-key="${I18N.stats.totalEmployeesLabel}">Total Employees</div>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon bg-green-100 text-green-600"><i data-lucide="shield-check"></i></div>
                 <div class="stat-info">
                     <div class="stat-number">${complianceRate}%</div>
-                    <div class="stat-label" data-i18n-key="stats.complianceLabel">Compliance</div>
+                    <div class="stat-label" data-i18n-key="${I18N.stats.complianceLabel}">Compliance</div>
                 </div>
             </div>
             <div class="stat-card">
@@ -76,9 +77,9 @@
                 <div class="stat-info">
                     <div class="flex items-baseline gap-2">
                         <div class="stat-number">${atRiskCount}</div>
-                        <div class="stat-label" style="text-transform: none; line-height: 1.1;" data-i18n-key="stats.atRiskLabel">AT RISK</div>
+                        <div class="stat-label" style="text-transform: none; line-height: 1.1;" data-i18n-key="${I18N.stats.atRiskLabel}">AT RISK</div>
                     </div>
-                    <div class="stat-sublabel" data-i18n-key="stats.atRiskHint">(5+ cards)</div>
+                    <div class="stat-sublabel" data-i18n-key="${I18N.stats.atRiskHint}">(5+ cards)</div>
                 </div>
             </div>
             <div class="stat-card">
@@ -86,7 +87,7 @@
                 <div class="stat-info">
                     <div class="flex items-baseline gap-2">
                         <div class="stat-number">${maxCount}</div>
-                        <div class="stat-label" style="text-transform: none; line-height: 1.1;" data-i18n-key="stats.mostViolationsLabel">MOST VIOL.</div>
+                        <div class="stat-label" style="text-transform: none; line-height: 1.1;" data-i18n-key="${I18N.stats.mostViolationsLabel}">MOST VIOL.</div>
                     </div>
                     <div class="stat-sublabel">${maxDept}</div>
                 </div>
@@ -128,28 +129,28 @@
             <div class="detailed-stat-card-v2 card-green">
                 <div>
                     <div class="stat-number">${totalGreenCards}</div>
-                    <div class="card-label" data-i18n-key="stats.greenCardsLabel">Green Cards</div>
+                    <div class="card-label" data-i18n-key="${I18N.stats.greenCardsLabel}">Green Cards</div>
                 </div>
                 ${renderCardStack(totalGreenCards)}
             </div>
             <div class="detailed-stat-card-v2 card-yellow">
                 <div>
                     <div class="stat-number">${totalCards}</div>
-                    <div class="card-label" data-i18n-key="stats.yellowCardsLabel">Yellow Cards</div>
+                    <div class="card-label" data-i18n-key="${I18N.stats.yellowCardsLabel}">Yellow Cards</div>
                 </div>
                 ${renderCardStack(totalCards)}
             </div>
             <div class="detailed-stat-card-v2 card-orange">
                 <div>
                     <div class="stat-number">${cardCounts[2]}</div>
-                    <div class="card-label" data-i18n-key="stats.orangeCardsLabel">Orange Cards</div>
+                    <div class="card-label" data-i18n-key="${I18N.stats.orangeCardsLabel}">Orange Cards</div>
                 </div>
                 ${renderCardStack(cardCounts[2])}
             </div>
             <div class="detailed-stat-card-v2 card-red">
                 <div>
                     <div class="stat-number">${cardCounts[3]}</div>
-                    <div class="card-label" data-i18n-key="stats.redCardsLabel">Red Cards</div>
+                    <div class="card-label" data-i18n-key="${I18N.stats.redCardsLabel}">Red Cards</div>
                 </div>
                 ${renderCardStack(cardCounts[3])}
             </div>
@@ -165,7 +166,7 @@
         if (heading) {
             const countLabel = document.getElementById('team-count-label');
             if (countLabel) {
-                const memberWord = typeof global.t === 'function' ? global.t('section.membersSuffix', 'Members') : 'Members';
+                const memberWord = typeof global.t === 'function' ? global.t(I18N.section.membersSuffix, 'Members') : 'Members';
                 countLabel.textContent = `(${employees.length} ${memberWord})`;
             }
         }

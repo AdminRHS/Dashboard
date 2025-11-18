@@ -1,29 +1,31 @@
 (function registerI18n(global: Window & typeof globalThis) {
+  const KEYS = global.I18N_KEYS;
+
   type TranslationEntry = Record<string, string>;
   type TranslationMap = Record<string, TranslationEntry>;
 
   const TRANSLATIONS: TranslationMap = {
-    'header.title': { en: 'Yellow Cards', uk: 'Жовті картки', ru: 'Жёлтые карточки', de: 'Gelbe Karten' },
-    'nav.overview': { en: 'Overview', uk: 'Огляд', ru: 'Обзор', de: 'Übersicht' },
-    'nav.yellowCards': { en: 'Yellow Cards', uk: 'Жовті картки', ru: 'Жёлтые карточки', de: 'Gelbe Karten' },
-    'nav.yellowCardsShort': { en: 'Yellow', uk: 'Жовті', ru: 'Жёлтые', de: 'Gelb' },
-    'nav.greenCards': { en: 'Green Cards', uk: 'Зелені картки', ru: 'Зелёные карточки', de: 'Grüne Karten' },
-    'nav.greenCardsShort': { en: 'Green', uk: 'Зелені', ru: 'Зелёные', de: 'Grün' },
-    'nav.team': { en: 'Team', uk: 'Команда', ru: 'Команда', de: 'Team' },
-    'nav.leaderboard': { en: 'Leaderboard', uk: 'Рейтинг', ru: 'Рейтинг', de: 'Bestenliste' },
-    'nav.leaderboardShort': { en: 'Board', uk: 'Рейтинг', ru: 'Рейт.', de: 'Liste' },
-    'theme.dark': { en: 'Dark Mode', uk: 'Темна тема', ru: 'Тёмная тема', de: 'Dunkler Modus' },
-    'theme.light': { en: 'Light Mode', uk: 'Світла тема', ru: 'Светлая тема', de: 'Heller Modus' },
-    'theme.darkShort': { en: 'Dark', uk: 'Темна', ru: 'Тёмная', de: 'Dunkel' },
-    'section.dashboardOverview': { en: 'Dashboard Overview', uk: 'Огляд панелі', ru: 'Обзор панели', de: 'Dashboard-Überblick' },
-    'section.detailedBreakdown': { en: 'Detailed Breakdown', uk: 'Детальний аналіз', ru: 'Детальный анализ', de: 'Detaillierte Analyse' },
-    'section.violationCategories': { en: 'Violation Categories', uk: 'Категорії порушень', ru: 'Категории нарушений', de: 'Verstoßkategorien' },
-    'section.currentMonthStatus': { en: 'Current Month Status', uk: 'Статус поточного місяця', ru: 'Статус текущего месяца', de: 'Status des laufenden Monats' },
-    'section.greenCurrentStatus': { en: 'Current Month Status', uk: 'Статус поточного місяця', ru: 'Статус текущего месяца', de: 'Status des laufenden Monats' },
-    'section.teamStructure': { en: 'Team Structure', uk: 'Структура команди', ru: 'Структура команды', de: 'Teamstruktur' },
-    'section.membersSuffix': { en: 'Members', uk: 'учасників', ru: 'участников', de: 'Mitglieder' },
-    'section.positiveLeaderboard': { en: 'Positive Leaderboard', uk: 'Позитивний рейтинг', ru: 'Позитивный рейтинг', de: 'Positive Bestenliste' },
-    'section.positiveLeaderboardDescription': {
+    [KEYS.header.title]: { en: 'Yellow Cards', uk: 'Жовті картки', ru: 'Жёлтые карточки', de: 'Gelbe Karten' },
+    [KEYS.nav.overview]: { en: 'Overview', uk: 'Огляд', ru: 'Обзор', de: 'Übersicht' },
+    [KEYS.nav.yellowCards]: { en: 'Yellow Cards', uk: 'Жовті картки', ru: 'Жёлтые карточки', de: 'Gelbe Karten' },
+    [KEYS.nav.yellowCardsShort]: { en: 'Yellow', uk: 'Жовті', ru: 'Жёлтые', de: 'Gelb' },
+    [KEYS.nav.greenCards]: { en: 'Green Cards', uk: 'Зелені картки', ru: 'Зелёные карточки', de: 'Grüne Karten' },
+    [KEYS.nav.greenCardsShort]: { en: 'Green', uk: 'Зелені', ru: 'Зелёные', de: 'Grün' },
+    [KEYS.nav.team]: { en: 'Team', uk: 'Команда', ru: 'Команда', de: 'Team' },
+    [KEYS.nav.leaderboard]: { en: 'Leaderboard', uk: 'Рейтинг', ru: 'Рейтинг', de: 'Bestenliste' },
+    [KEYS.nav.leaderboardShort]: { en: 'Board', uk: 'Рейтинг', ru: 'Рейт.', de: 'Liste' },
+    [KEYS.theme.dark]: { en: 'Dark Mode', uk: 'Темна тема', ru: 'Тёмная тема', de: 'Dunkler Modus' },
+    [KEYS.theme.light]: { en: 'Light Mode', uk: 'Світла тема', ru: 'Светлая тема', de: 'Heller Modus' },
+    [KEYS.theme.darkShort]: { en: 'Dark', uk: 'Темна', ru: 'Тёмная', de: 'Dunkel' },
+    [KEYS.section.dashboardOverview]: { en: 'Dashboard Overview', uk: 'Огляд панелі', ru: 'Обзор панели', de: 'Dashboard-Überblick' },
+    [KEYS.section.detailedBreakdown]: { en: 'Detailed Breakdown', uk: 'Детальний аналіз', ru: 'Детальный анализ', de: 'Detaillierte Analyse' },
+    [KEYS.section.violationCategories]: { en: 'Violation Categories', uk: 'Категорії порушень', ru: 'Категории нарушений', de: 'Verstoßkategorien' },
+    [KEYS.section.currentMonthStatus]: { en: 'Current Month Status', uk: 'Статус поточного місяця', ru: 'Статус текущего месяца', de: 'Status des laufenden Monats' },
+    [KEYS.section.greenCurrentStatus]: { en: 'Current Month Status', uk: 'Статус поточного місяця', ru: 'Статус текущего месяца', de: 'Status des laufenden Monats' },
+    [KEYS.section.teamStructure]: { en: 'Team Structure', uk: 'Структура команди', ru: 'Структура команды', de: 'Teamstruktur' },
+    [KEYS.section.membersSuffix]: { en: 'Members', uk: 'учасників', ru: 'участников', de: 'Mitglieder' },
+    [KEYS.section.positiveLeaderboard]: { en: 'Positive Leaderboard', uk: 'Позитивний рейтинг', ru: 'Позитивный рейтинг', de: 'Positive Bestenliste' },
+    [KEYS.section.positiveLeaderboardDescription]: {
       en: 'The leaderboard shows employees ranked by the number of green cards they have received.',
       uk: 'Рейтинг показує співробітників за кількістю отриманих зелених карток.',
       ru: 'Рейтинг показывает сотрудников по количеству полученных зелёных карточек.',

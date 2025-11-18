@@ -14,11 +14,15 @@
     lucide.createIcons();
   }
 
+  const themeKeys = global.I18N_KEYS?.theme;
+
   function updateThemeButton(isDark: boolean): void {
     const themeBtn = document.getElementById('theme-toggle-btn');
     if (!themeBtn) return;
     const iconName = isDark ? 'sun' : 'moon';
-    const labelKey = isDark ? 'theme.light' : 'theme.dark';
+    const labelKey = isDark
+      ? themeKeys?.light || 'theme.light'
+      : themeKeys?.dark || 'theme.dark';
     const label =
       typeof global.t === 'function'
         ? global.t(labelKey, isDark ? 'Light Mode' : 'Dark Mode')
