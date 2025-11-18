@@ -40,11 +40,44 @@
   function switchTab(buttonElement: HTMLElement): void {
     const tabId = buttonElement.dataset.tab;
     if (!tabId) return;
+
+    const targetTab = document.getElementById(tabId) as HTMLElement | null;
+    if (!targetTab) return;
+
     const pedestalContainer = document.getElementById('leaderboard-pedestal-container');
 
-    document.querySelectorAll<HTMLElement>('.tab-content').forEach(c => c.classList.add('hidden'));
+    const fadeOutTab = (tab: HTMLElement): void => {
+      const handleTransitionEnd = (event: TransitionEvent) => {
+        if (event.propertyName !== 'opacity') return;
+        tab.classList.add('hidden');
+        tab.removeEventListener('transitionend', handleTransitionEnd);
+      };
+
+      tab.addEventListener('transitionend', handleTransitionEnd);
+      tab.classList.remove('active');
+
+      window.setTimeout(() => {
+        if (tab.classList.contains('active')) return;
+        tab.classList.add('hidden');
+        tab.removeEventListener('transitionend', handleTransitionEnd);
+      }, 450);
+    };
+
+    document.querySelectorAll<HTMLElement>('.tab-content').forEach(tab => {
+      if (tab === targetTab) return;
+      if (!tab.classList.contains('hidden')) {
+        fadeOutTab(tab);
+      }
+    });
+
     document.querySelectorAll<HTMLElement>('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId)?.classList.remove('hidden');
+
+    targetTab.classList.remove('hidden');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        targetTab.classList.add('active');
+      });
+    });
     buttonElement.classList.add('active');
 
     lucide.createIcons();

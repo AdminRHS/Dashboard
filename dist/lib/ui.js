@@ -39,10 +39,40 @@
         const tabId = buttonElement.dataset.tab;
         if (!tabId)
             return;
+        const targetTab = document.getElementById(tabId);
+        if (!targetTab)
+            return;
         const pedestalContainer = document.getElementById('leaderboard-pedestal-container');
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        const fadeOutTab = (tab) => {
+            const handleTransitionEnd = (event) => {
+                if (event.propertyName !== 'opacity')
+                    return;
+                tab.classList.add('hidden');
+                tab.removeEventListener('transitionend', handleTransitionEnd);
+            };
+            tab.addEventListener('transitionend', handleTransitionEnd);
+            tab.classList.remove('active');
+            window.setTimeout(() => {
+                if (tab.classList.contains('active'))
+                    return;
+                tab.classList.add('hidden');
+                tab.removeEventListener('transitionend', handleTransitionEnd);
+            }, 450);
+        };
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            if (tab === targetTab)
+                return;
+            if (!tab.classList.contains('hidden')) {
+                fadeOutTab(tab);
+            }
+        });
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId)?.classList.remove('hidden');
+        targetTab.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                targetTab.classList.add('active');
+            });
+        });
         buttonElement.classList.add('active');
         lucide.createIcons();
         if (tabId === 'leaderboard') {

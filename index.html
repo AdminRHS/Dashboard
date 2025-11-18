@@ -134,6 +134,19 @@
         .tab-btn { background-color: white; color: var(--color-primary-main); border: 1px solid var(--color-primary-main); }
         .tab-btn:hover { background-color: rgba(66, 153, 225, 0.08); }
         .tab-btn.active { background-color: var(--color-primary-main); color: white; border-color: var(--color-primary-main); font-weight: 600; }
+        .tab-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+            visibility: hidden;
+        }
+        .tab-content.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            visibility: visible;
+        }
         
         /* Dark Theme Styles */
         body.dark-theme { background-color: #1a202c; color: #f7fafc; }
