@@ -136,16 +136,32 @@
         .tab-btn.active { background-color: var(--color-primary-main); color: white; border-color: var(--color-primary-main); font-weight: 600; }
         .tab-content {
             opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            transform: translateX(0);
+            transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
             visibility: hidden;
         }
         .tab-content.active {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateX(0);
             pointer-events: auto;
             visibility: visible;
+        }
+        .tab-content.slide-from-right {
+            transform: translateX(60px);
+        }
+        .tab-content.slide-from-left {
+            transform: translateX(-60px);
+        }
+        .tab-content.sliding-out-left {
+            opacity: 0;
+            transform: translateX(-60px);
+            pointer-events: none;
+        }
+        .tab-content.sliding-out-right {
+            opacity: 0;
+            transform: translateX(60px);
+            pointer-events: none;
         }
         
         /* Dark Theme Styles */

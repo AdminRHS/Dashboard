@@ -35,6 +35,7 @@
             });
         });
     }
+    const TAB_SEQUENCE = ['overview', 'yellowcard', 'greencard', 'team', 'leaderboard'];
     function switchTab(buttonElement) {
         const tabId = buttonElement.dataset.tab;
         if (!tabId)
@@ -42,37 +43,49 @@
         const targetTab = document.getElementById(tabId);
         if (!targetTab)
             return;
+        if (targetTab.classList.contains('active'))
+            return;
         const pedestalContainer = document.getElementById('leaderboard-pedestal-container');
-        const fadeOutTab = (tab) => {
+        const currentActive = document.querySelector('.tab-content.active');
+        const currentIndex = currentActive ? TAB_SEQUENCE.indexOf(currentActive.id) : -1;
+        const targetIndex = TAB_SEQUENCE.indexOf(tabId);
+        const slideDirection = currentIndex !== -1 && targetIndex < currentIndex ? 'left' : 'right';
+        if (currentActive) {
+            const exitClass = slideDirection === 'right' ? 'sliding-out-left' : 'sliding-out-right';
+            currentActive.classList.remove('active', 'slide-from-left', 'slide-from-right');
+            currentActive.classList.add(exitClass);
             const handleTransitionEnd = (event) => {
-                if (event.propertyName !== 'opacity')
+                if (event.propertyName !== 'transform')
                     return;
-                tab.classList.add('hidden');
-                tab.removeEventListener('transitionend', handleTransitionEnd);
+                currentActive.classList.add('hidden');
+                currentActive.classList.remove(exitClass);
+                currentActive.removeEventListener('transitionend', handleTransitionEnd);
             };
-            tab.addEventListener('transitionend', handleTransitionEnd);
-            tab.classList.remove('active');
+            currentActive.addEventListener('transitionend', handleTransitionEnd);
             window.setTimeout(() => {
-                if (tab.classList.contains('active'))
-                    return;
-                tab.classList.add('hidden');
-                tab.removeEventListener('transitionend', handleTransitionEnd);
-            }, 450);
-        };
-        document.querySelectorAll('.tab-content').forEach(tab => {
-            if (tab === targetTab)
-                return;
-            if (!tab.classList.contains('hidden')) {
-                fadeOutTab(tab);
-            }
-        });
+                currentActive.classList.add('hidden');
+                currentActive.classList.remove(exitClass);
+            }, 500);
+        }
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         targetTab.classList.remove('hidden');
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                targetTab.classList.add('active');
-            });
-        });
+        const enterClass = slideDirection === 'right' ? 'slide-from-right' : 'slide-from-left';
+        targetTab.classList.remove('sliding-out-left', 'sliding-out-right');
+        targetTab.classList.add(enterClass);
+        const activateTab = () => {
+            targetTab.classList.add('active');
+            const cleanup = (event) => {
+                if (event.propertyName !== 'transform')
+                    return;
+                targetTab.classList.remove(enterClass);
+                targetTab.removeEventListener('transitionend', cleanup);
+            };
+            targetTab.addEventListener('transitionend', cleanup);
+            window.setTimeout(() => {
+                targetTab.classList.remove(enterClass);
+            }, 500);
+        };
+        requestAnimationFrame(() => requestAnimationFrame(activateTab));
         buttonElement.classList.add('active');
         lucide.createIcons();
         if (tabId === 'leaderboard') {

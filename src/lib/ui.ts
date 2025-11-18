@@ -37,6 +37,8 @@
     });
   }
 
+  const TAB_SEQUENCE = ['overview', 'yellowcard', 'greencard', 'team', 'leaderboard'] as const;
+
   function switchTab(buttonElement: HTMLElement): void {
     const tabId = buttonElement.dataset.tab;
     if (!tabId) return;
@@ -44,40 +46,58 @@
     const targetTab = document.getElementById(tabId) as HTMLElement | null;
     if (!targetTab) return;
 
+    if (targetTab.classList.contains('active')) return;
+
     const pedestalContainer = document.getElementById('leaderboard-pedestal-container');
 
-    const fadeOutTab = (tab: HTMLElement): void => {
-      const handleTransitionEnd = (event: TransitionEvent) => {
-        if (event.propertyName !== 'opacity') return;
-        tab.classList.add('hidden');
-        tab.removeEventListener('transitionend', handleTransitionEnd);
-      };
+    const currentActive = document.querySelector<HTMLElement>('.tab-content.active');
+    const currentIndex = currentActive ? TAB_SEQUENCE.indexOf(currentActive.id as typeof TAB_SEQUENCE[number]) : -1;
+    const targetIndex = TAB_SEQUENCE.indexOf(tabId as typeof TAB_SEQUENCE[number]);
+    const slideDirection: 'left' | 'right' =
+      currentIndex !== -1 && targetIndex < currentIndex ? 'left' : 'right';
 
-      tab.addEventListener('transitionend', handleTransitionEnd);
-      tab.classList.remove('active');
+    if (currentActive) {
+      const exitClass = slideDirection === 'right' ? 'sliding-out-left' : 'sliding-out-right';
+      currentActive.classList.remove('active', 'slide-from-left', 'slide-from-right');
+      currentActive.classList.add(exitClass);
+
+      const handleTransitionEnd = (event: TransitionEvent) => {
+        if (event.propertyName !== 'transform') return;
+        currentActive.classList.add('hidden');
+        currentActive.classList.remove(exitClass);
+        currentActive.removeEventListener('transitionend', handleTransitionEnd);
+      };
+      currentActive.addEventListener('transitionend', handleTransitionEnd);
 
       window.setTimeout(() => {
-        if (tab.classList.contains('active')) return;
-        tab.classList.add('hidden');
-        tab.removeEventListener('transitionend', handleTransitionEnd);
-      }, 450);
-    };
-
-    document.querySelectorAll<HTMLElement>('.tab-content').forEach(tab => {
-      if (tab === targetTab) return;
-      if (!tab.classList.contains('hidden')) {
-        fadeOutTab(tab);
-      }
-    });
+        currentActive.classList.add('hidden');
+        currentActive.classList.remove(exitClass);
+      }, 500);
+    }
 
     document.querySelectorAll<HTMLElement>('.tab-btn').forEach(b => b.classList.remove('active'));
 
     targetTab.classList.remove('hidden');
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        targetTab.classList.add('active');
-      });
-    });
+    const enterClass = slideDirection === 'right' ? 'slide-from-right' : 'slide-from-left';
+    targetTab.classList.remove('sliding-out-left', 'sliding-out-right');
+    targetTab.classList.add(enterClass);
+
+    const activateTab = () => {
+      targetTab.classList.add('active');
+      const cleanup = (event: TransitionEvent) => {
+        if (event.propertyName !== 'transform') return;
+        targetTab.classList.remove(enterClass);
+        targetTab.removeEventListener('transitionend', cleanup);
+      };
+      targetTab.addEventListener('transitionend', cleanup);
+
+      window.setTimeout(() => {
+        targetTab.classList.remove(enterClass);
+      }, 500);
+    };
+
+    requestAnimationFrame(() => requestAnimationFrame(activateTab));
+
     buttonElement.classList.add('active');
 
     lucide.createIcons();
