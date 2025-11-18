@@ -43,8 +43,6 @@
         if (!targetTab)
             return;
         const pedestalContainer = document.getElementById('leaderboard-pedestal-container');
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        buttonElement.classList.add('active');
         document.querySelectorAll('.tab-content').forEach(c => {
             c.classList.add('hidden');
             c.classList.remove('active');
@@ -56,6 +54,8 @@
             c.style.removeProperty('transform');
             c.style.removeProperty('opacity');
         });
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        buttonElement.classList.add('active');
         targetTab.classList.remove('hidden');
         targetTab.classList.add('active');
         lucide.createIcons();
@@ -147,10 +147,10 @@
             }
             const headerEl = document.getElementById('calendar-month-year');
             if (headerEl) {
-                headerEl.textContent = currentDate.toLocaleDateString('en-US', {
-                    month: 'long',
-                    year: 'numeric'
-                });
+                const formatter = typeof global.formatMonthYear === 'function'
+                    ? global.formatMonthYear
+                    : (date) => date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                headerEl.textContent = formatter(currentDate);
             }
             clearInterval(scrollInterval);
             window.scrollTo(scrollX, scrollY);
@@ -261,10 +261,10 @@
             const headerEl = document.getElementById('calendar-month-year-green');
             if (headerEl) {
                 const activeGreenDate = typeof window.currentDateGreen !== 'undefined' ? window.currentDateGreen : (typeof currentDateGreen !== 'undefined' ? currentDateGreen : new Date());
-                headerEl.textContent = activeGreenDate.toLocaleDateString('en-US', {
-                    month: 'long',
-                    year: 'numeric'
-                });
+                const formatter = typeof global.formatMonthYear === 'function'
+                    ? global.formatMonthYear
+                    : (date) => date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                headerEl.textContent = formatter(activeGreenDate);
             }
             clearInterval(scrollInterval);
             window.scrollTo(scrollX, scrollY);

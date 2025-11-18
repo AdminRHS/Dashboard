@@ -1,5 +1,7 @@
 (function registerRenderers(global: Window & typeof globalThis) {
   const I18N = global.I18N_KEYS;
+  const translate = (key: string, fallback: string): string =>
+    typeof global.t === 'function' ? global.t(key, fallback) : fallback;
   function renderAll(): void {
     employees.sort((a, b) => a.name.localeCompare(b.name));
     renderStats();
@@ -212,17 +214,21 @@
 
   function renderModals(): void {
     const employeeOptions = employees.map(emp => ({ value: emp.name, text: `${emp.name} (${emp.dept})` }));
+    const employeePlaceholder = translate(I18N?.input?.selectEmployee || 'input.selectEmployee', 'Select an employee...');
+    const typePlaceholder = translate(I18N?.input?.selectType || 'input.selectType', 'Select a type...');
+    const removePlaceholder = translate(I18N?.input?.selectEmployeeRemove || 'input.selectEmployeeRemove', 'Select an employee to remove...');
+    const detailsPlaceholder = translate(I18N?.input?.addDetailsPlaceholder || 'input.addDetailsPlaceholder', 'Add specific details...');
 
     const giveCardModalContent = document.getElementById('giveCardModalContent');
     if (giveCardModalContent) {
-      giveCardModalContent.innerHTML = `<button class="close-btn" onclick="closeModal('giveCardModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Give Yellow Card</h2><label for="cardEmployeeDropdown" class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i>Employee:</label><div id="cardEmployeeDropdown" class="custom-dropdown"></div><label for="cardViolationTypeDropdown" class="flex items-center gap-2"><i data-lucide="alert-circle" class="w-4 h-4"></i>Violation Type:</label><div id="cardViolationTypeDropdown" class="custom-dropdown"></div><label for="cardComment" class="flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4"></i>Details:</label><textarea id="cardComment" rows="3" placeholder="Add specific details..." required></textarea><button class="action-button mt-2" onclick="submitYellowCard(this)"><i data-lucide="send" class="w-4 h-4"></i><span>Issue Yellow Card</span></button>`;
+      giveCardModalContent.innerHTML = `<button class="close-btn" onclick="closeModal('giveCardModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Give Yellow Card</h2><label for="cardEmployeeDropdown" class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i>Employee:</label><div id="cardEmployeeDropdown" class="custom-dropdown"></div><label for="cardViolationTypeDropdown" class="flex items-center gap-2"><i data-lucide="alert-circle" class="w-4 h-4"></i>Violation Type:</label><div id="cardViolationTypeDropdown" class="custom-dropdown"></div><label for="cardComment" class="flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4"></i>Details:</label><textarea id="cardComment" rows="3" placeholder="${detailsPlaceholder}" data-i18n-key="${I18N?.input?.addDetailsPlaceholder}" data-i18n-attr="placeholder" required></textarea><button class="action-button mt-2" onclick="submitYellowCard(this)"><i data-lucide="send" class="w-4 h-4"></i><span>Issue Yellow Card</span></button>`;
     }
-    createDropdown('cardEmployeeDropdown', employeeOptions, 'Select an employee...');
+    createDropdown('cardEmployeeDropdown', employeeOptions, employeePlaceholder);
     createDropdown('cardViolationTypeDropdown', [
       { value: 'Documentation', text: 'Documentation' },
       { value: 'Workflow', text: 'Workflow' },
       { value: 'Communication', text: 'Communication' }
-    ], 'Select a type...');
+    ], typePlaceholder);
 
     const addModal = document.getElementById('addEmployeeModalContent');
     if (addModal) {
@@ -233,24 +239,27 @@
     if (removeEmpModalContent) {
       removeEmpModalContent.innerHTML = `<button class="close-btn" onclick="closeModal('removeEmployeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Remove Employee</h2><label for="removeEmpDropdown" class="flex items-center gap-2"><i data-lucide="user-minus" class="w-4 h-4"></i> Select Employee:</label><div id="removeEmpDropdown" class="custom-dropdown"></div><p class="my-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-md">Warning: This action is permanent and cannot be undone.</p><button class="action-button-delete" onclick="removeEmployee(this)">Confirm Removal</button>`;
     }
-    createDropdown('removeEmpDropdown', employeeOptions, 'Select an employee to remove...');
+    createDropdown('removeEmpDropdown', employeeOptions, removePlaceholder);
   }
 
   function renderGreenCardModals(): void {
     const employeeOptions = employees.map(emp => ({ value: emp.name, text: `${emp.name} (${emp.dept})` }));
+    const employeePlaceholder = translate(I18N?.input?.selectEmployee || 'input.selectEmployee', 'Select an employee...');
+    const typePlaceholder = translate(I18N?.input?.selectType || 'input.selectType', 'Select a type...');
+    const detailsPlaceholder = translate(I18N?.input?.addDetailsPlaceholder || 'input.addDetailsPlaceholder', 'Add specific details...');
 
     const giveGreenCardModalContent = document.getElementById('giveGreenCardModalContent');
     if (giveGreenCardModalContent) {
-      giveGreenCardModalContent.innerHTML = `<button class="close-btn" onclick="closeModal('giveGreenCardModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Give Green Card</h2><label for="greenCardEmployeeDropdown" class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i>Employee:</label><div id="greenCardEmployeeDropdown" class="custom-dropdown"></div><label for="greenCardTypeDropdown" class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4"></i>Card Type:</label><div id="greenCardTypeDropdown" class="custom-dropdown"></div><label for="greenCardComment" class="flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4"></i>Details:</label><textarea id="greenCardComment" rows="3" placeholder="Add specific details..." required></textarea><button class="action-button-success mt-2" onclick="submitGreenCard(this)"><i data-lucide="send" class="w-4 h-4"></i><span>Issue Green Card</span></button>`;
+      giveGreenCardModalContent.innerHTML = `<button class="close-btn" onclick="closeModal('giveGreenCardModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-6">Give Green Card</h2><label for="greenCardEmployeeDropdown" class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i>Employee:</label><div id="greenCardEmployeeDropdown" class="custom-dropdown"></div><label for="greenCardTypeDropdown" class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4"></i>Card Type:</label><div id="greenCardTypeDropdown" class="custom-dropdown"></div><label for="greenCardComment" class="flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4"></i>Details:</label><textarea id="greenCardComment" rows="3" placeholder="${detailsPlaceholder}" data-i18n-key="${I18N?.input?.addDetailsPlaceholder}" data-i18n-attr="placeholder" required></textarea><button class="action-button-success mt-2" onclick="submitGreenCard(this)"><i data-lucide="send" class="w-4 h-4"></i><span>Issue Green Card</span></button>`;
     }
-    createDropdown('greenCardEmployeeDropdown', employeeOptions, 'Select an employee...');
+    createDropdown('greenCardEmployeeDropdown', employeeOptions, employeePlaceholder);
     createDropdown('greenCardTypeDropdown', [
       { value: 'Achievement', text: 'Achievement' },
       { value: 'Recognition', text: 'Recognition' },
       { value: 'Documentation', text: 'Documentation' },
       { value: 'Workflow', text: 'Workflow' },
       { value: 'Communication', text: 'Communication' }
-    ], 'Select a type...');
+    ], typePlaceholder);
   }
 
   global.renderAll = renderAll;

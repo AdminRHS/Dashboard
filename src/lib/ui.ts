@@ -173,10 +173,10 @@
 
       const headerEl = document.getElementById('calendar-month-year');
       if (headerEl) {
-        headerEl.textContent = currentDate.toLocaleDateString('en-US', {
-          month: 'long',
-          year: 'numeric'
-        });
+      const formatter = typeof global.formatMonthYear === 'function'
+        ? global.formatMonthYear
+        : (date: Date) => date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      headerEl.textContent = formatter(currentDate);
       }
 
       clearInterval(scrollInterval);
@@ -310,10 +310,10 @@
       const headerEl = document.getElementById('calendar-month-year-green');
       if (headerEl) {
         const activeGreenDate = typeof window.currentDateGreen !== 'undefined' ? window.currentDateGreen : (typeof currentDateGreen !== 'undefined' ? currentDateGreen : new Date());
-        headerEl.textContent = activeGreenDate.toLocaleDateString('en-US', {
-          month: 'long',
-          year: 'numeric'
-        });
+      const formatter = typeof global.formatMonthYear === 'function'
+        ? global.formatMonthYear
+        : (date: Date) => date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      headerEl.textContent = formatter(activeGreenDate);
       }
 
       clearInterval(scrollInterval);

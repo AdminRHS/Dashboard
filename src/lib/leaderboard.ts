@@ -1,4 +1,7 @@
 (function registerLeaderboard(global: Window & typeof globalThis) {
+  const I18N = global.I18N_KEYS;
+  const translate = (key: string, fallback: string): string =>
+    typeof global.t === 'function' ? global.t(key, fallback) : fallback;
   function renderLeaderboard(): void {
     const tableBody = document.getElementById('leaderboard-table-body');
     const pedestalContainer = document.getElementById('leaderboard-pedestal');
@@ -10,6 +13,17 @@
     const selectedDept = deptDropdown ? deptDropdown.dataset.value || '' : '';
     const periodBtn = document.querySelector('#leaderboard-period-filter .period-btn.active') as HTMLElement | null;
     const selectedPeriod = periodBtn ? periodBtn.dataset.period || 'all' : 'all';
+    const badgeTexts = {
+      new: translate(I18N?.badges?.new || 'badges.new', 'New'),
+      streak3: translate(I18N?.badges?.streak3 || 'badges.streak3', '⭐ 3+ cards'),
+      streak5: translate(I18N?.badges?.streak5 || 'badges.streak5', '⭐ 5+ cards'),
+      streak10: translate(I18N?.badges?.streak10 || 'badges.streak10', '⭐ 10+ cards')
+    };
+    const neverText = translate(I18N?.table?.never || 'table.never', 'Never');
+    const noResultsText = translate(I18N?.table?.noResults || 'table.noResults', 'No employees match the selected filters.');
+    const formatDateLocalized = typeof global.formatDateLong === 'function'
+      ? global.formatDateLong
+      : (date: Date) => date.toLocaleDateString();
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -36,20 +50,17 @@
         }
 
         if (!Number.isNaN(dateObj.getTime())) {
-          const year = dateObj.getFullYear();
-          const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-          const day = String(dateObj.getDate()).padStart(2, '0');
-          lastGreenCardDate = `${year}-${month}-${day}`;
+          lastGreenCardDate = formatDateLocalized(dateObj);
         }
       }
 
       const daysInSystem = Math.floor((today.getTime() - new Date(emp.joinDate || today).getTime()) / (1000 * 60 * 60 * 24));
 
       const badges: Array<{ type: string; text: string }> = [];
-      if (daysInSystem < 14) badges.push({ type: 'new', text: 'New' });
-      if (greenCardsCount >= 10) badges.push({ type: 'streak', text: '⭐ 10+ cards' });
-      else if (greenCardsCount >= 5) badges.push({ type: 'streak', text: '⭐ 5+ cards' });
-      else if (greenCardsCount >= 3) badges.push({ type: 'streak', text: '⭐ 3+ cards' });
+      if (daysInSystem < 14) badges.push({ type: 'new', text: badgeTexts.new });
+      if (greenCardsCount >= 10) badges.push({ type: 'streak', text: badgeTexts.streak10 });
+      else if (greenCardsCount >= 5) badges.push({ type: 'streak', text: badgeTexts.streak5 });
+      else if (greenCardsCount >= 3) badges.push({ type: 'streak', text: badgeTexts.streak3 });
 
       return { ...emp, greenCardsCount, lastGreenCardDate, daysInSystem, badges };
     });
@@ -117,13 +128,13 @@
     }).sort((a, b) => b.greenCardsCount - a.greenCardsCount || a.name.localeCompare(b.name));
 
     if (filteredData.length === 0) {
-      tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-8">No employees match the selected filters.</td></tr>';
+      tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-500 py-8">${noResultsText}</td></tr>`;
     } else {
       tableBody.innerHTML = filteredData.map(emp => `
                 <tr class="cursor-pointer" data-employee-name="${emp.name}">
                     <td>${emp.name}</td>
                     <td>${emp.dept}</td>
-                    <td>${emp.lastGreenCardDate || 'Never'}</td>
+                    <td>${emp.lastGreenCardDate || neverText}</td>
                     <td class="font-bold text-lg text-green-600">${emp.greenCardsCount}</td>
                     <td>${emp.badges.map(b => `<span class="badge badge-${b.type}">${b.text}</span>`).join(' ')}</td>
                 </tr>

@@ -1,4 +1,35 @@
 (function registerModals(global: Window & typeof globalThis) {
+  const I18N = global.I18N_KEYS;
+  const translate = (key: string, fallback: string): string =>
+    typeof global.t === 'function' ? global.t(key, fallback) : fallback;
+  const translateArgs = (key: string, replacements: Record<string, string>, fallback: string): string =>
+    typeof global.translateWithArgs === 'function'
+      ? global.translateWithArgs(key, replacements, fallback)
+      : fallback.replace(/\{(\w+)\}/g, (_, token) => replacements[token] ?? '');
+  const formatDisplayDate = (raw: unknown): { iso: string; label: string } => {
+    let dateObj: Date | null = null;
+    let iso = '';
+    if (typeof raw === 'string') {
+      iso = raw.includes('T') ? raw.split('T')[0] : raw;
+      const parsed = new Date(iso);
+      if (!Number.isNaN(parsed.getTime())) dateObj = parsed;
+    } else if (raw instanceof Date) {
+      dateObj = raw;
+    } else if (raw) {
+      const parsed = new Date(raw as any);
+      if (!Number.isNaN(parsed.getTime())) dateObj = parsed;
+    }
+    if (!iso && dateObj) {
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      iso = `${year}-${month}-${day}`;
+    }
+    const label = dateObj
+      ? (typeof global.formatDateLong === 'function' ? global.formatDateLong(dateObj) : dateObj.toLocaleDateString())
+      : iso || '';
+    return { iso: iso || label, label: label || iso };
+  };
   function showEmployeeModal(data: Record<string, any>): void {
     const employee = employees.find(e => e.name === data.name);
     if (!employee) {
@@ -56,49 +87,31 @@
       violationIndicatorColor = 'var(--color-error-main)';
     }
 
+    const violationsHeading = translate(I18N?.modals?.violationsHeading || 'modals.violationsHeading', 'Violations:');
+    const greenHeading = translate(I18N?.modals?.greenCardsHeading || 'modals.greenCardsHeading', 'Green Cards:');
+    const noCommentText = translate(I18N?.modals?.noComment || 'modals.noComment', 'No comment');
+
     const violationsList = (employee.violations && employee.violations.length > 0)
-      ? `<div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"><h4 class="font-semibold mb-2">Violations:</h4><ul class="space-y-2 text-sm text-gray-600">${
+      ? `<div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"><h4 class="font-semibold mb-2">${violationsHeading}</h4><ul class="space-y-2 text-sm text-gray-600">${
         employee.violations.filter(v => v).map(v => {
-          const raw = v.date;
-          let displayDate = '';
-          if (typeof raw === 'string') {
-            displayDate = raw.includes('T') ? raw.split('T')[0] : raw;
-          } else if (raw instanceof Date) {
-            displayDate = `${raw.getFullYear()}-${String(raw.getMonth() + 1).padStart(2, '0')}-${String(raw.getDate()).padStart(2, '0')}`;
-          } else {
-            const d = new Date(raw);
-            if (!Number.isNaN(d.getTime())) {
-              displayDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-            }
-          }
+          const { iso, label } = formatDisplayDate(v.date);
           return `<li class="flex items-start gap-3">
                                     <div class="w-3 h-3 mt-1 rounded-sm flex-shrink-0" style="background-color:${violationIndicatorColor}"></div>
-                                    <div class="flex-1"><strong>${displayDate} [${v.type}]</strong>: ${v.comment || 'No comment'}</div>
-                                    <button class="ml-2 text-red-600 hover:text-red-700 js-delete-violation" data-context="employee" data-violation-id="${(v && Number.isFinite(v.id)) ? v.id : ''}" data-employee-name="${employee.name.replace(/"/g, '&quot;')}" data-date="${displayDate}" data-type="${v?.type || ''}" data-comment="${(v?.comment || '').replace(/"/g, '&quot;')}" title="Remove card"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                    <div class="flex-1"><strong>${label} [${v.type}]</strong>: ${v.comment || noCommentText}</div>
+                                    <button class="ml-2 text-red-600 hover:text-red-700 js-delete-violation" data-context="employee" data-violation-id="${(v && Number.isFinite(v.id)) ? v.id : ''}" data-employee-name="${employee.name.replace(/"/g, '&quot;')}" data-date="${iso}" data-type="${v?.type || ''}" data-comment="${(v?.comment || '').replace(/"/g, '&quot;')}" title="Remove card"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                 </li>`;
         }).join('')
       }</ul></div>`
       : '';
 
     const greenCardsList = (employee.greenCards && employee.greenCards.length > 0)
-      ? `<div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"><h4 class="font-semibold mb-2">Green Cards:</h4><ul class="space-y-2 text-sm text-gray-600">${
+      ? `<div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"><h4 class="font-semibold mb-2">${greenHeading}</h4><ul class="space-y-2 text-sm text-gray-600">${
         employee.greenCards.filter(gc => gc).map(gc => {
-          const raw = gc.date;
-          let displayDate = '';
-          if (typeof raw === 'string') {
-            displayDate = raw.includes('T') ? raw.split('T')[0] : raw;
-          } else if (raw instanceof Date) {
-            displayDate = `${raw.getFullYear()}-${String(raw.getMonth() + 1).padStart(2, '0')}-${String(raw.getDate()).padStart(2, '0')}`;
-          } else {
-            const d = new Date(raw);
-            if (!Number.isNaN(d.getTime())) {
-              displayDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-            }
-          }
+          const { iso, label } = formatDisplayDate(gc.date);
           return `<li class="flex items-start gap-3">
                                     <div class="w-3 h-3 mt-1 rounded-sm flex-shrink-0" style="background-color:#22c55e;"></div>
-                                    <div class="flex-1"><strong>${displayDate} [${gc.type}]</strong>: ${gc.comment || 'No comment'}</div>
-                                    <button class="ml-2 text-red-600 hover:text-red-700 js-delete-green-card" data-context="employee" data-green-card-id="${(gc && Number.isFinite(gc.id)) ? gc.id : ''}" data-employee-name="${employee.name.replace(/"/g, '&quot;')}" data-date="${displayDate}" data-type="${gc?.type || ''}" data-comment="${(gc?.comment || '').replace(/"/g, '&quot;')}" title="Remove green card"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                    <div class="flex-1"><strong>${label} [${gc.type}]</strong>: ${gc.comment || noCommentText}</div>
+                                    <button class="ml-2 text-red-600 hover:text-red-700 js-delete-green-card" data-context="employee" data-green-card-id="${(gc && Number.isFinite(gc.id)) ? gc.id : ''}" data-employee-name="${employee.name.replace(/"/g, '&quot;')}" data-date="${iso}" data-type="${gc?.type || ''}" data-comment="${(gc?.comment || '').replace(/"/g, '&quot;')}" title="Remove green card"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                 </li>`;
         }).join('')
       }</ul></div>`
@@ -199,7 +212,19 @@
         .filter(v => v.type);
     });
 
-    let content = `<button class="close-btn" onclick="closeModal('dayDetailsModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-4">Violations on ${clickedDate.toLocaleDateString()}</h2>`;
+    const formatDate = typeof global.formatDateLong === 'function'
+      ? global.formatDateLong
+      : (date: Date) => date.toLocaleDateString();
+
+    const dayTitle = translateArgs(
+      I18N?.modals?.dayTitle || 'modals.dayTitle',
+      { date: formatDate(clickedDate) },
+      `Violations on ${formatDate(clickedDate)}`
+    );
+    const noViolationsText = translate(I18N?.modals?.noViolations || 'modals.noViolations', 'No violations recorded for this day.');
+    const noCommentText = translate(I18N?.modals?.noComment || 'modals.noComment', 'No comment');
+
+    let content = `<button class="close-btn" onclick="closeModal('dayDetailsModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-4">${dayTitle}</h2>`;
     if (violationsOnDay.length > 0) {
       content += '<div class="space-y-3">';
       violationsOnDay.forEach(v => {
@@ -216,7 +241,7 @@
                         <div class="flex items-start gap-3">
                             <div class="w-3 h-3 mt-1.5 rounded-sm ${colorClass} flex-shrink-0"></div>
                             <div class="text-gray-700">
-                                <strong>${v.name} (${v.type}):</strong> ${v.comment || 'No comment'}
+                                <strong>${v.name} (${v.type}):</strong> ${v.comment || noCommentText}
                             </div>
                             <button class="ml-2 text-red-600 hover:text-red-700 js-delete-violation" data-context="day" data-violation-id="${(v && Number.isFinite(v.id)) ? v.id : ''}" data-employee-name="${(v?.name || '').replace(/"/g, '&quot;')}" data-date="${dateStr}" data-type="${v?.type || ''}" data-comment="${(v?.comment || '').replace(/"/g, '&quot;')}" title="Remove card"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </div>
@@ -224,7 +249,7 @@
       });
       content += '</div>';
     } else {
-      content += '<p>No violations recorded for this day.</p>';
+      content += `<p>${noViolationsText}</p>`;
     }
 
     const modalContent = document.getElementById('dayDetailsModalContent');

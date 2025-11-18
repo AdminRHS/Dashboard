@@ -50,10 +50,29 @@
             greenCards: 'table.greenCards',
             cardTypes: 'table.cardTypes',
             notes: 'table.notes',
-            lastGreenCard: 'table.lastGreenCard'
+            lastGreenCard: 'table.lastGreenCard',
+            never: 'table.never',
+            noResults: 'table.noResults'
         },
         input: {
-            searchPlaceholder: 'input.searchPlaceholder'
+            searchPlaceholder: 'input.searchPlaceholder',
+            selectEmployee: 'input.selectEmployee',
+            selectType: 'input.selectType',
+            selectEmployeeRemove: 'input.selectEmployeeRemove',
+            addDetailsPlaceholder: 'input.addDetailsPlaceholder'
+        },
+        modals: {
+            violationsHeading: 'modals.violationsHeading',
+            greenCardsHeading: 'modals.greenCardsHeading',
+            dayTitle: 'modals.dayTitle',
+            noViolations: 'modals.noViolations',
+            noComment: 'modals.noComment'
+        },
+        badges: {
+            new: 'badges.new',
+            streak3: 'badges.streak3',
+            streak5: 'badges.streak5',
+            streak10: 'badges.streak10'
         },
         stats: {
             teamSizeLabel: 'stats.teamSizeLabel',
@@ -77,4 +96,4 @@
     };
     global.I18N_KEYS = I18N_KEYS;
 })(window);
-
+//# sourceMappingURL=i18n-keys.js.map

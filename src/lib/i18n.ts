@@ -48,7 +48,13 @@
     'table.cardTypes': { en: 'Card Types', uk: 'Типи карток', ru: 'Типы карточек', de: 'Kartentypen' },
     'table.notes': { en: 'Notes/Badges', uk: 'Нотатки/Відзнаки', ru: 'Заметки/Значки', de: 'Notizen/Auszeichnungen' },
     'table.lastGreenCard': { en: 'Last Green Card', uk: 'Остання зелена картка', ru: 'Последняя зелёная карточка', de: 'Letzte grüne Karte' },
+    'table.never': { en: 'Never', uk: 'Ніколи', ru: 'Никогда', de: 'Nie' },
+    'table.noResults': { en: 'No employees match the selected filters.', uk: 'Немає співробітників за обраними фільтрами.', ru: 'Нет сотрудников, соответствующих выбранным фильтрам.', de: 'Keine Mitarbeitenden passen zu den Filtern.' },
     'input.searchPlaceholder': { en: 'Search by name...', uk: 'Пошук за ім’ям...', ru: 'Поиск по имени...', de: 'Nach Namen suchen...' },
+    'input.selectEmployee': { en: 'Select an employee...', uk: 'Виберіть співробітника...', ru: 'Выберите сотрудника...', de: 'Mitarbeiter auswählen...' },
+    'input.selectType': { en: 'Select a type...', uk: 'Виберіть тип...', ru: 'Выберите тип...', de: 'Typ auswählen...' },
+    'input.selectEmployeeRemove': { en: 'Select an employee to remove...', uk: 'Виберіть співробітника для видалення...', ru: 'Выберите сотрудника для удаления...', de: 'Mitarbeiter zum Entfernen wählen...' },
+    'input.addDetailsPlaceholder': { en: 'Add specific details...', uk: 'Додайте конкретні деталі...', ru: 'Добавьте подробности...', de: 'Details hinzufügen...' },
     'stats.teamSizeLabel': { en: 'Team Size:', uk: 'Розмір команди:', ru: 'Размер команды:', de: 'Teamgröße:' },
     'stats.totalCardsLabel': { en: 'Total Cards:', uk: 'Всього карток:', ru: 'Всего карточек:', de: 'Gesamtzahl Karten:' },
     'stats.employeesSuffix': { en: 'employees', uk: 'співробітників', ru: 'сотрудников', de: 'Mitarbeiter' },
@@ -63,7 +69,16 @@
     'stats.redCardsLabel': { en: 'Red Cards', uk: 'Червоні картки', ru: 'Красные карточки', de: 'Rote Karten' },
     'cards.documentation': { en: 'Documentation', uk: 'Документація', ru: 'Документация', de: 'Dokumentation' },
     'cards.workflow': { en: 'Workflow', uk: 'Робочий процес', ru: 'Рабочий процесс', de: 'Workflow' },
-    'cards.communication': { en: 'Communication', uk: 'Комунікація', ru: 'Коммуникация', de: 'Kommunikation' }
+    'cards.communication': { en: 'Communication', uk: 'Комунікація', ru: 'Коммуникация', de: 'Kommunikation' },
+    'modals.violationsHeading': { en: 'Violations:', uk: 'Порушення:', ru: 'Нарушения:', de: 'Verstöße:' },
+    'modals.greenCardsHeading': { en: 'Green Cards:', uk: 'Зелені картки:', ru: 'Зелёные карточки:', de: 'Grüne Karten:' },
+    'modals.dayTitle': { en: 'Violations on {date}', uk: 'Порушення за {date}', ru: 'Нарушения за {date}', de: 'Verstöße am {date}' },
+    'modals.noViolations': { en: 'No violations recorded for this day.', uk: 'На цей день порушень не зафіксовано.', ru: 'На этот день нарушений не зарегистрировано.', de: 'Keine Verstöße für diesen Tag.' },
+    'modals.noComment': { en: 'No comment', uk: 'Без коментаря', ru: 'Без комментария', de: 'Kein Kommentar' },
+    'badges.new': { en: 'New', uk: 'Новий', ru: 'Новый', de: 'Neu' },
+    'badges.streak3': { en: '⭐ 3+ cards', uk: '⭐ 3+ карток', ru: '⭐ 3+ карточки', de: '⭐ 3+ Karten' },
+    'badges.streak5': { en: '⭐ 5+ cards', uk: '⭐ 5+ карток', ru: '⭐ 5+ карточек', de: '⭐ 5+ Karten' },
+    'badges.streak10': { en: '⭐ 10+ cards', uk: '⭐ 10+ карток', ru: '⭐ 10+ карточек', de: '⭐ 10+ Karten' }
   };
 
   const SUPPORTED_LANGS = ['en', 'uk', 'ru', 'de'] as const;
@@ -75,6 +90,7 @@
   }
 
   let currentLanguage: SupportedLang = getInitialLanguage();
+  let dateFormatter = new Intl.DateTimeFormat(currentLanguage, { month: 'long', year: 'numeric' });
 
   function translate(key: string, fallback = ''): string {
     const entry = TRANSLATIONS[key];
@@ -82,6 +98,26 @@
       return entry[currentLanguage] || entry.en || fallback || key;
     }
     return fallback || key;
+  }
+
+  function translateWithArgs(key: string, replacements: Record<string, string>, fallback = ''): string {
+    const template = translate(key, fallback);
+    return template.replace(/\{(\w+)\}/g, (match, token) => {
+      return Object.prototype.hasOwnProperty.call(replacements, token) ? replacements[token] : match;
+    });
+  }
+
+  function formatMonthYear(date: Date): string {
+    return dateFormatter.format(date);
+  }
+
+  function formatDateLong(date: Date): string {
+    const formatter = new Intl.DateTimeFormat(currentLanguage, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    return formatter.format(date);
   }
 
   function setElementContent(element: Element, key: string): void {
@@ -127,6 +163,7 @@
     if (!SUPPORTED_LANGS.includes(normalized) || normalized === currentLanguage) return;
     currentLanguage = normalized;
     localStorage.setItem('dashboard-language', currentLanguage);
+    dateFormatter = new Intl.DateTimeFormat(currentLanguage, { month: 'long', year: 'numeric' });
     applyTranslations();
     updateLanguageSelect();
     if (typeof global.updateThemeButton === 'function') {
@@ -164,6 +201,9 @@
   global.applyTranslations = applyTranslations;
   global.setLanguage = setLanguage;
   global.getCurrentLanguage = () => currentLanguage;
+  global.formatMonthYear = formatMonthYear;
+  global.formatDateLong = formatDateLong;
+  global.translateWithArgs = translateWithArgs;
 })(window);
 
 

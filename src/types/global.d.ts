@@ -50,9 +50,28 @@ type I18nKeyMap = {
     cardTypes: string;
     notes: string;
     lastGreenCard: string;
+    never: string;
+    noResults: string;
   };
   input: {
     searchPlaceholder: string;
+    selectEmployee: string;
+    selectType: string;
+    selectEmployeeRemove: string;
+    addDetailsPlaceholder: string;
+  };
+  modals: {
+    violationsHeading: string;
+    greenCardsHeading: string;
+    dayTitle: string;
+    noViolations: string;
+    noComment: string;
+  };
+  badges: {
+    new: string;
+    streak3: string;
+    streak5: string;
+    streak10: string;
   };
   stats: {
     teamSizeLabel: string;
@@ -161,6 +180,11 @@ declare global {
   function setLanguage(lang: string): void;
   function getCurrentLanguage(): string;
   function applyTranslations(root?: Element | DocumentFragment | Document): void;
+  function formatMonthYear(date: Date): string;
+  function formatDateLong(date: Date): string;
+  function translateWithArgs(key: string, replacements: Record<string, string>, fallback?: string): string;
+  function formatMonthYear(date: Date): string;
+  function formatDateLong(date: Date): string;
   function serializeData(): string;
   interface ApiConfig {
     baseUrl?: string;
@@ -231,6 +255,9 @@ declare global {
     copyToClipboard: typeof copyToClipboard;
     createDropdown: typeof createDropdown;
     applyInteractiveShadows: typeof applyInteractiveShadows;
+    formatMonthYear: typeof formatMonthYear;
+    formatDateLong: typeof formatDateLong;
+    translateWithArgs: typeof translateWithArgs;
     API_CONFIG?: ApiConfig;
   }
 }
