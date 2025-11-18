@@ -37,10 +37,6 @@
     });
   }
 
-  const TAB_SEQUENCE = ['overview', 'yellowcard', 'greencard', 'team', 'leaderboard'] as const;
-  const TAB_TRANSITION_MS = 450;
-  let isTabAnimating = false;
-
   function switchTab(buttonElement: HTMLElement): void {
     const tabId = buttonElement.dataset.tab;
     if (!tabId) return;
@@ -48,89 +44,24 @@
     const targetTab = document.getElementById(tabId) as HTMLElement | null;
     if (!targetTab) return;
 
-    if (targetTab.classList.contains('active') || isTabAnimating) return;
-
-    const tabContainer = document.querySelector('main');
     const pedestalContainer = document.getElementById('leaderboard-pedestal-container');
-    const currentActive = document.querySelector<HTMLElement>('.tab-content.active');
-    const currentIndex = currentActive ? TAB_SEQUENCE.indexOf(currentActive.id as typeof TAB_SEQUENCE[number]) : -1;
-    const targetIndex = TAB_SEQUENCE.indexOf(tabId as typeof TAB_SEQUENCE[number]);
 
-    if (!tabContainer || !currentActive || targetIndex === -1) {
-      document.querySelectorAll<HTMLElement>('.tab-content').forEach(c => c.classList.add('hidden'));
-      targetTab.classList.remove('hidden');
-      targetTab.classList.add('active');
-      document.querySelectorAll<HTMLElement>('.tab-btn').forEach(b => b.classList.remove('active'));
-      buttonElement.classList.add('active');
-      return;
-    }
-
-    const direction: 'left' | 'right' =
-      currentIndex !== -1 && targetIndex < currentIndex ? 'left' : 'right';
-
-    isTabAnimating = true;
-
-    const prepareLayer = (element: HTMLElement): void => {
-      element.style.position = 'absolute';
-      element.style.left = '0';
-      element.style.top = '0';
-      element.style.width = '100%';
-      element.style.pointerEvents = 'none';
-    };
-
-    const resetLayer = (element: HTMLElement): void => {
-      element.style.position = '';
-      element.style.left = '';
-      element.style.top = '';
-      element.style.width = '';
-      element.style.pointerEvents = '';
-      element.style.transform = '';
-      element.style.opacity = '';
-    };
-
-    targetTab.classList.remove('hidden');
-    targetTab.classList.remove('active');
-
-    const currentHeight = currentActive.offsetHeight;
-    const targetHeight = targetTab.offsetHeight;
-    const heightToUse = Math.max(currentHeight, targetHeight, 0);
-    if (heightToUse > 0) {
-      tabContainer.style.height = `${heightToUse}px`;
-    }
-    tabContainer.classList.add('tab-transitioning');
-
-    prepareLayer(currentActive);
-    prepareLayer(targetTab);
-
-    targetTab.style.opacity = '0';
-    targetTab.style.transform = `translateX(${direction === 'right' ? '100%' : '-100%'})`;
-    currentActive.style.transform = 'translateX(0)';
-    currentActive.style.opacity = '1';
-
+    document.querySelectorAll<HTMLElement>('.tab-content').forEach(c => {
+      c.classList.add('hidden');
+      c.classList.remove('active');
+      c.style.removeProperty('position');
+      c.style.removeProperty('left');
+      c.style.removeProperty('top');
+      c.style.removeProperty('width');
+      c.style.removeProperty('pointer-events');
+      c.style.removeProperty('transform');
+      c.style.removeProperty('opacity');
+    });
     document.querySelectorAll<HTMLElement>('.tab-btn').forEach(b => b.classList.remove('active'));
     buttonElement.classList.add('active');
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        currentActive.style.transform = `translateX(${direction === 'right' ? '-100%' : '100%'})`;
-        currentActive.style.opacity = '0';
-        targetTab.style.transform = 'translateX(0)';
-        targetTab.style.opacity = '1';
-      });
-    });
-
-    window.setTimeout(() => {
-      currentActive.classList.add('hidden');
-      currentActive.classList.remove('active');
-      resetLayer(currentActive);
-
-      targetTab.classList.add('active');
-      resetLayer(targetTab);
-
-      tabContainer.style.height = '';
-      tabContainer.classList.remove('tab-transitioning');
-      isTabAnimating = false;
-    }, TAB_TRANSITION_MS);
+    targetTab.classList.remove('hidden');
+    targetTab.classList.add('active');
 
     lucide.createIcons();
 
