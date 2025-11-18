@@ -39,6 +39,7 @@
 
   const TAB_SEQUENCE = ['overview', 'yellowcard', 'greencard', 'team', 'leaderboard'] as const;
   const TAB_TRANSITION_MS = 450;
+  let isTabAnimating = false;
 
   function switchTab(buttonElement: HTMLElement): void {
     const tabId = buttonElement.dataset.tab;
@@ -47,74 +48,89 @@
     const targetTab = document.getElementById(tabId) as HTMLElement | null;
     if (!targetTab) return;
 
-    if (targetTab.classList.contains('active')) return;
+    if (targetTab.classList.contains('active') || isTabAnimating) return;
 
+    const tabContainer = document.querySelector('main');
     const pedestalContainer = document.getElementById('leaderboard-pedestal-container');
-
     const currentActive = document.querySelector<HTMLElement>('.tab-content.active');
     const currentIndex = currentActive ? TAB_SEQUENCE.indexOf(currentActive.id as typeof TAB_SEQUENCE[number]) : -1;
     const targetIndex = TAB_SEQUENCE.indexOf(tabId as typeof TAB_SEQUENCE[number]);
-    const slideDirection: 'left' | 'right' =
-      currentIndex !== -1 && targetIndex < currentIndex ? 'left' : 'right';
 
-    if (currentActive) {
-      const exitClass = slideDirection === 'right' ? 'sliding-out-left' : 'sliding-out-right';
-      currentActive.classList.remove('slide-from-left', 'slide-from-right', 'sliding-out-left', 'sliding-out-right');
-      currentActive.classList.add(exitClass);
-
-      let exitHandled = false;
-      const finalizeExit = () => {
-        if (exitHandled) return;
-        exitHandled = true;
-        currentActive.classList.add('hidden');
-        currentActive.classList.remove(exitClass);
-        currentActive.removeEventListener('transitionend', handleTransitionEnd);
-      };
-
-      const handleTransitionEnd = (event: TransitionEvent) => {
-        if (event.propertyName !== 'transform' && event.propertyName !== 'opacity') return;
-        finalizeExit();
-      };
-      currentActive.addEventListener('transitionend', handleTransitionEnd);
-
-      requestAnimationFrame(() => {
-        currentActive.classList.remove('active');
-      });
-
-      window.setTimeout(finalizeExit, TAB_TRANSITION_MS + 100);
+    if (!tabContainer || !currentActive || targetIndex === -1) {
+      document.querySelectorAll<HTMLElement>('.tab-content').forEach(c => c.classList.add('hidden'));
+      targetTab.classList.remove('hidden');
+      targetTab.classList.add('active');
+      document.querySelectorAll<HTMLElement>('.tab-btn').forEach(b => b.classList.remove('active'));
+      buttonElement.classList.add('active');
+      return;
     }
 
-    document.querySelectorAll<HTMLElement>('.tab-btn').forEach(b => b.classList.remove('active'));
+    const direction: 'left' | 'right' =
+      currentIndex !== -1 && targetIndex < currentIndex ? 'left' : 'right';
 
-    targetTab.classList.remove('hidden', 'sliding-out-left', 'sliding-out-right');
-    const enterClass = slideDirection === 'right' ? 'slide-from-right' : 'slide-from-left';
-    targetTab.classList.remove('sliding-out-left', 'sliding-out-right');
-    targetTab.classList.add(enterClass);
+    isTabAnimating = true;
 
-    const activateTab = () => {
-      targetTab.classList.add('active');
-
-      let enterHandled = false;
-      const finalizeEnter = () => {
-        if (enterHandled) return;
-        enterHandled = true;
-        targetTab.classList.remove(enterClass);
-        targetTab.removeEventListener('transitionend', cleanup);
-      };
-
-      const cleanup = (event: TransitionEvent) => {
-        if (event.propertyName !== 'transform' && event.propertyName !== 'opacity') return;
-        finalizeEnter();
-      };
-
-      targetTab.addEventListener('transitionend', cleanup);
-
-      window.setTimeout(finalizeEnter, TAB_TRANSITION_MS + 100);
+    const prepareLayer = (element: HTMLElement): void => {
+      element.style.position = 'absolute';
+      element.style.left = '0';
+      element.style.top = '0';
+      element.style.width = '100%';
+      element.style.pointerEvents = 'none';
     };
 
-    requestAnimationFrame(() => requestAnimationFrame(activateTab));
+    const resetLayer = (element: HTMLElement): void => {
+      element.style.position = '';
+      element.style.left = '';
+      element.style.top = '';
+      element.style.width = '';
+      element.style.pointerEvents = '';
+      element.style.transform = '';
+      element.style.opacity = '';
+    };
 
+    targetTab.classList.remove('hidden');
+    targetTab.classList.remove('active');
+
+    const currentHeight = currentActive.offsetHeight;
+    const targetHeight = targetTab.offsetHeight;
+    const heightToUse = Math.max(currentHeight, targetHeight, 0);
+    if (heightToUse > 0) {
+      tabContainer.style.height = `${heightToUse}px`;
+    }
+    tabContainer.classList.add('tab-transitioning');
+
+    prepareLayer(currentActive);
+    prepareLayer(targetTab);
+
+    targetTab.style.opacity = '0';
+    targetTab.style.transform = `translateX(${direction === 'right' ? '100%' : '-100%'})`;
+    currentActive.style.transform = 'translateX(0)';
+    currentActive.style.opacity = '1';
+
+    document.querySelectorAll<HTMLElement>('.tab-btn').forEach(b => b.classList.remove('active'));
     buttonElement.classList.add('active');
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        currentActive.style.transform = `translateX(${direction === 'right' ? '-100%' : '100%'})`;
+        currentActive.style.opacity = '0';
+        targetTab.style.transform = 'translateX(0)';
+        targetTab.style.opacity = '1';
+      });
+    });
+
+    window.setTimeout(() => {
+      currentActive.classList.add('hidden');
+      currentActive.classList.remove('active');
+      resetLayer(currentActive);
+
+      targetTab.classList.add('active');
+      resetLayer(targetTab);
+
+      tabContainer.style.height = '';
+      tabContainer.classList.remove('tab-transitioning');
+      isTabAnimating = false;
+    }, TAB_TRANSITION_MS);
 
     lucide.createIcons();
 
