@@ -17,7 +17,10 @@
         if (!themeBtn)
             return;
         const iconName = isDark ? 'sun' : 'moon';
-        const label = isDark ? 'Light Mode' : 'Dark Mode';
+        const labelKey = isDark ? 'theme.light' : 'theme.dark';
+        const label = typeof global.t === 'function'
+            ? global.t(labelKey, isDark ? 'Light Mode' : 'Dark Mode')
+            : (isDark ? 'Light Mode' : 'Dark Mode');
         themeBtn.innerHTML = `<i data-lucide="${iconName}" class="inline w-4 h-4 mr-2"></i><span id="theme-toggle-text">${label}</span>`;
         lucide.createIcons();
     }

@@ -81,6 +81,10 @@ declare global {
     onChange?: () => void
   ): void;
   function applyInteractiveShadows(): void;
+  function t(key: string, fallback?: string): string;
+  function setLanguage(lang: string): void;
+  function getCurrentLanguage(): string;
+  function applyTranslations(root?: Element | DocumentFragment | Document): void;
   function serializeData(): string;
   interface ApiConfig {
     baseUrl?: string;

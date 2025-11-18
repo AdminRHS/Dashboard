@@ -134,6 +134,26 @@
         .tab-btn { background-color: white; color: var(--color-primary-main); border: 1px solid var(--color-primary-main); }
         .tab-btn:hover { background-color: rgba(66, 153, 225, 0.08); }
         .tab-btn.active { background-color: var(--color-primary-main); color: white; border-color: var(--color-primary-main); font-weight: 600; }
+        .language-select {
+            border: 1px solid var(--color-primary-main);
+            border-radius: 9999px;
+            background: white;
+            color: var(--color-primary-main);
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            appearance: none;
+            min-width: 130px;
+        }
+        body.dark-theme .language-select {
+            background-color: #1f2937;
+            color: var(--color-primary-light);
+            border-color: var(--color-primary-light);
+        }
+        .language-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
+        }
         /* Dark Theme Styles */
         body.dark-theme { background-color: #1a202c; color: #f7fafc; }
         
@@ -597,7 +617,7 @@
                 
                 <div class="flex items-center gap-2 text-gray-800 order-2 sm:order-none">
                     <i data-lucide="alert-triangle" class="w-6 h-6 sm:w-8 sm:h-8 text-orange-500"></i>
-                    <h1 class="text-xl sm:text-3xl lg:text-4xl font-bold">Yellow Cards</h1>
+                    <h1 class="text-xl sm:text-3xl lg:text-4xl font-bold" data-i18n-key="header.title">Yellow Cards</h1>
                 </div>
 
                 <div class="flex flex-wrap items-center justify-center sm:justify-end gap-x-3 sm:gap-x-6 gap-y-2 text-gray-600 text-sm sm:text-base w-full sm:w-auto order-3 sm:order-none">
@@ -612,24 +632,30 @@
             <div class="nav-tabs flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
                 <div class="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start">
                     <button class="tab-btn active px-3 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all" data-tab="overview" onclick="switchTab(this)">
-                        <i data-lucide="layout-dashboard" class="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"></i><span class="hidden sm:inline">Overview</span><span class="sm:hidden">Overview</span>
+                        <i data-lucide="layout-dashboard" class="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"></i><span class="hidden sm:inline" data-i18n-key="nav.overview">Overview</span><span class="sm:hidden" data-i18n-key="nav.overview">Overview</span>
                 </button>
                     <button class="tab-btn px-3 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all" data-tab="yellowcard" onclick="switchTab(this)">
-                        <i data-lucide="alert-circle" class="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"></i><span class="hidden sm:inline">Yellow Cards</span><span class="sm:hidden">Yellow</span>
+                        <i data-lucide="alert-circle" class="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"></i><span class="hidden sm:inline" data-i18n-key="nav.yellowCards">Yellow Cards</span><span class="sm:hidden" data-i18n-key="nav.yellowCardsShort">Yellow</span>
                 </button>
                     <button class="tab-btn px-3 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all" data-tab="greencard" onclick="switchTab(this)">
-                        <i data-lucide="check-circle" class="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"></i><span class="hidden sm:inline">Green Cards</span><span class="sm:hidden">Green</span>
+                        <i data-lucide="check-circle" class="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"></i><span class="hidden sm:inline" data-i18n-key="nav.greenCards">Green Cards</span><span class="sm:hidden" data-i18n-key="nav.greenCardsShort">Green</span>
                 </button>
                     <button class="tab-btn px-3 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all" data-tab="team" onclick="switchTab(this)">
-                         <i data-lucide="users" class="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"></i><span>Team</span>
+                         <i data-lucide="users" class="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"></i><span data-i18n-key="nav.team">Team</span>
                 </button>
                     <button class="tab-btn px-3 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all" data-tab="leaderboard" onclick="switchTab(this)">
-                         <i data-lucide="trophy" class="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"></i><span class="hidden sm:inline">Leaderboard</span><span class="sm:hidden">Board</span>
+                         <i data-lucide="trophy" class="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"></i><span class="hidden sm:inline" data-i18n-key="nav.leaderboard">Leaderboard</span><span class="sm:hidden" data-i18n-key="nav.leaderboardShort">Board</span>
                 </button>
             </div>
                 <div class="flex items-center justify-center sm:justify-end gap-2">
+                    <select id="language-select" class="language-select" aria-label="Select language">
+                        <option value="en">English</option>
+                        <option value="uk">Українська</option>
+                        <option value="ru">Русский</option>
+                        <option value="de">Deutsch</option>
+                    </select>
                     <button id="theme-toggle-btn" class="tab-btn px-3 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all" onclick="toggleTheme()">
-                        <i data-lucide="moon" class="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"></i><span id="theme-toggle-text" class="hidden sm:inline">Dark Mode</span><span class="sm:hidden">Dark</span>
+                        <i data-lucide="moon" class="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"></i><span id="theme-toggle-text" class="hidden sm:inline">Dark Mode</span><span class="sm:hidden" data-i18n-key="theme.darkShort">Dark</span>
                     </button>
                 </div>
             </div>
@@ -642,18 +668,18 @@
         <main>
             <div id="overview" class="tab-content active space-y-4">
                 <section class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
-                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 pb-3 border-b border-gray-200">Dashboard Overview</h2>
+                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 pb-3 border-b border-gray-200" data-i18n-key="section.dashboardOverview">Dashboard Overview</h2>
                     <div id="overview-stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"></div>
                 </section>
                 <section class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
-                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 pb-3 border-b border-gray-200">Detailed Breakdown</h2>
+                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 pb-3 border-b border-gray-200" data-i18n-key="section.detailedBreakdown">Detailed Breakdown</h2>
                     <div id="detailed-stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"></div>
                 </section>
                 <section class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
-                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 pb-3 border-b border-gray-200">Violation Categories</h2>
+                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 pb-3 border-b border-gray-200" data-i18n-key="section.violationCategories">Violation Categories</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         <div class="rule-card bg-gray-50 p-6 rounded-lg">
-                            <h4 class="font-bold text-lg mb-4 flex items-center gap-2" style="color: var(--color-primary-main);"><i data-lucide="file-text" class="w-5 h-5"></i>Documentation</h4>
+                            <h4 class="font-bold text-lg mb-4 flex items-center gap-2" style="color: var(--color-primary-main);"><i data-lucide="file-text" class="w-5 h-5"></i><span data-i18n-key="cards.documentation">Documentation</span></h4>
                             <ul class="space-y-2">
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">No Daily file for working day</li>
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">Insufficient detail (<3 sentences)</li>
@@ -662,7 +688,7 @@
                             </ul>
                             </div>
                         <div class="rule-card bg-gray-50 p-6 rounded-lg">
-                            <h4 class="font-bold text-lg mb-4 flex items-center gap-2" style="color: var(--color-warning-main);"><i data-lucide="git-pull-request" class="w-5 h-5"></i>Workflow</h4>
+                            <h4 class="font-bold text-lg mb-4 flex items-center gap-2" style="color: var(--color-warning-main);"><i data-lucide="git-pull-request" class="w-5 h-5"></i><span data-i18n-key="cards.workflow">Workflow</span></h4>
                             <ul class="space-y-2">
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-warning-main);">Call without Whisper recording</li>
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-warning-main);">No Plans from Daily</li>
@@ -671,7 +697,7 @@
                             </ul>
                         </div>
                         <div class="rule-card bg-gray-50 p-6 rounded-lg">
-                            <h4 class="font-bold text-lg mb-4 flex items-center gap-2" style="color: var(--color-error-main);"><i data-lucide="message-square" class="w-5 h-5"></i>Communication</h4>
+                            <h4 class="font-bold text-lg mb-4 flex items-center gap-2" style="color: var(--color-error-main);"><i data-lucide="message-square" class="w-5 h-5"></i><span data-i18n-key="cards.communication">Communication</span></h4>
                             <ul class="space-y-2">
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-error-main);">Not responding to Calls</li>
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-error-main);">Not reading pinned rules</li>
@@ -695,17 +721,17 @@
                 </section>
                 <section class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6 pb-3 border-b border-gray-200">
-                        <h2 class="text-xl sm:text-2xl font-bold text-gray-800">Current Month Status</h2>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-800" data-i18n-key="section.currentMonthStatus">Current Month Status</h2>
                         <button class="action-button w-full sm:w-auto" onclick="openGiveCardModal()">
                             <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-                            <span>Give Yellow Card</span>
+                            <span data-i18n-key="button.giveYellowCard">Give Yellow Card</span>
                         </button>
                             </div>
                     <div class="overflow-x-auto">
                         <table class="table w-full">
                             <thead>
                                 <tr>
-                                    <th>Employee</th><th>Department</th><th>Cards</th><th>Violation Types</th><th>Status</th>
+                                    <th data-i18n-key="table.employee">Employee</th><th data-i18n-key="table.department">Department</th><th data-i18n-key="table.cards">Cards</th><th data-i18n-key="table.violationTypes">Violation Types</th><th data-i18n-key="table.status">Status</th>
                                 </tr>
                             </thead>
                             <tbody id="yellow-card-table-body"></tbody>
@@ -727,17 +753,17 @@
                 </section>
                 <section class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6 pb-3 border-b border-gray-200">
-                        <h2 class="text-xl sm:text-2xl font-bold text-gray-800">Current Month Status</h2>
+                        <h2 class="text-xl sm:text-2xl font-bold text-gray-800" data-i18n-key="section.greenCurrentStatus">Current Month Status</h2>
                         <button class="action-button-success w-full sm:w-auto" onclick="openGiveGreenCardModal()">
                             <i data-lucide="check-circle" class="w-4 h-4"></i>
-                            <span>Give Green Card</span>
+                            <span data-i18n-key="button.giveGreenCard">Give Green Card</span>
                         </button>
                             </div>
                     <div class="overflow-x-auto">
                         <table class="table w-full">
                             <thead>
                                 <tr>
-                                    <th>Employee</th><th>Department</th><th>Green Cards</th><th>Card Types</th><th>Status</th>
+                                    <th data-i18n-key="table.employee">Employee</th><th data-i18n-key="table.department">Department</th><th data-i18n-key="table.greenCards">Green Cards</th><th data-i18n-key="table.cardTypes">Card Types</th><th data-i18n-key="table.status">Status</th>
                                 </tr>
                             </thead>
                             <tbody id="green-card-table-body"></tbody>
@@ -749,15 +775,15 @@
             <div id="team" class="tab-content hidden">
                 <section class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6 pb-3 border-b border-gray-200">
-                        <h2 id="team-structure-heading" class="text-xl sm:text-2xl font-bold text-gray-800">Team Structure</h2>
+                        <h2 id="team-structure-heading" class="text-xl sm:text-2xl font-bold text-gray-800"><span data-i18n-key="section.teamStructure">Team Structure</span> <span id="team-count-label" class="text-sm text-gray-500"></span></h2>
                         <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
                             <button class="action-button-success w-full sm:w-auto" onclick="openAddEmployeeModal()">
                                 <i data-lucide="user-plus" class="w-4 h-4"></i>
-                                <span>Add Employee</span>
+                                <span data-i18n-key="button.addEmployee">Add Employee</span>
                             </button>
                             <button class="action-button-delete w-full sm:w-auto" onclick="openRemoveEmployeeModal()">
                                 <i data-lucide="user-minus" class="w-4 h-4"></i>
-                                <span>Remove Employee</span>
+                                <span data-i18n-key="button.removeEmployee">Remove Employee</span>
                             </button>
                         </div>
                     </div>
@@ -767,21 +793,21 @@
 
             <div id="leaderboard" class="tab-content hidden">
                 <section class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
-                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Positive Leaderboard</h2>
-                    <p class="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">The leaderboard shows employees ranked by the number of green cards they have received.</p>
+                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2" data-i18n-key="section.positiveLeaderboard">Positive Leaderboard</h2>
+                    <p class="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6" data-i18n-key="section.positiveLeaderboardDescription">The leaderboard shows employees ranked by the number of green cards they have received.</p>
                     
                     <div class="leaderboard-filters flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                         <div class="search-input-container w-full sm:flex-grow">
-                            <input type="text" id="leaderboard-search" oninput="renderLeaderboard()" placeholder="Search by name..." class="w-full">
+                            <input type="text" id="leaderboard-search" oninput="renderLeaderboard()" placeholder="Search by name..." class="w-full" data-i18n-key="input.searchPlaceholder" data-i18n-attr="placeholder">
                             <i data-lucide="search" class="search-icon w-5 h-5"></i>
                         </div>
                         <div id="leaderboard-dept-filter-container" class="custom-dropdown w-full sm:w-auto" style="flex-grow: 0;"></div>
 
                         <div id="leaderboard-period-filter" class="flex items-center gap-2 flex-wrap w-full sm:w-auto justify-center sm:justify-start">
-                             <button class="period-btn text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2" data-period="7" onclick="setPeriodFilter(this)">Week</button>
-                             <button class="period-btn text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2" data-period="30" onclick="setPeriodFilter(this)">Month</button>
-                             <button class="period-btn text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2" data-period="new" onclick="setPeriodFilter(this)">New</button>
-                             <button class="period-btn active text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2" data-period="all" onclick="setPeriodFilter(this)">All Time</button>
+                             <button class="period-btn text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2" data-period="7" onclick="setPeriodFilter(this)" data-i18n-key="filters.week">Week</button>
+                             <button class="period-btn text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2" data-period="30" onclick="setPeriodFilter(this)" data-i18n-key="filters.month">Month</button>
+                             <button class="period-btn text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2" data-period="new" onclick="setPeriodFilter(this)" data-i18n-key="filters.new">New</button>
+                             <button class="period-btn active text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2" data-period="all" onclick="setPeriodFilter(this)" data-i18n-key="filters.allTime">All Time</button>
                         </div>
                     </div>
                 
@@ -789,7 +815,7 @@
                         <table class="table w-full">
                             <thead>
                                 <tr>
-                                    <th>Employee</th><th>Department</th><th>Last Green Card</th><th>Green Cards</th><th>Notes/Badges</th>
+                                    <th data-i18n-key="table.employee">Employee</th><th data-i18n-key="table.department">Department</th><th data-i18n-key="table.lastGreenCard">Last Green Card</th><th data-i18n-key="table.greenCards">Green Cards</th><th data-i18n-key="table.notes">Notes/Badges</th>
                             </tr>
                         </thead>
                             <tbody id="leaderboard-table-body"></tbody>
@@ -809,6 +835,129 @@
     <div id="removeEmployeeModal" class="modal"> <div class="modal-content" id="removeEmployeeModalContent"></div> </div>
     </template>
 
+    <script>
+        (function() {
+            const TRANSLATIONS = {
+                'header.title': { en: 'Yellow Cards', uk: 'Жовті картки', ru: 'Жёлтые карточки', de: 'Gelbe Karten' },
+                'nav.overview': { en: 'Overview', uk: 'Огляд', ru: 'Обзор', de: 'Übersicht' },
+                'nav.yellowCards': { en: 'Yellow Cards', uk: 'Жовті картки', ru: 'Жёлтые карточки', de: 'Gelbe Karten' },
+                'nav.yellowCardsShort': { en: 'Yellow', uk: 'Жовті', ru: 'Жёлтые', de: 'Gelb' },
+                'nav.greenCards': { en: 'Green Cards', uk: 'Зелені картки', ru: 'Зелёные карточки', de: 'Grüne Karten' },
+                'nav.greenCardsShort': { en: 'Green', uk: 'Зелені', ru: 'Зелёные', de: 'Grün' },
+                'nav.team': { en: 'Team', uk: 'Команда', ru: 'Команда', de: 'Team' },
+                'nav.leaderboard': { en: 'Leaderboard', uk: 'Рейтинг', ru: 'Рейтинг', de: 'Bestenliste' },
+                'nav.leaderboardShort': { en: 'Board', uk: 'Рейтинг', ru: 'Рейт.', de: 'Liste' },
+                'theme.dark': { en: 'Dark Mode', uk: 'Темна тема', ru: 'Тёмная тема', de: 'Dunkler Modus' },
+                'theme.light': { en: 'Light Mode', uk: 'Світла тема', ru: 'Светлая тема', de: 'Heller Modus' },
+                'theme.darkShort': { en: 'Dark', uk: 'Темна', ru: 'Тёмная', de: 'Dunkel' },
+                'section.dashboardOverview': { en: 'Dashboard Overview', uk: 'Огляд панелі', ru: 'Обзор панели', de: 'Dashboard-Überblick' },
+                'section.detailedBreakdown': { en: 'Detailed Breakdown', uk: 'Детальний аналіз', ru: 'Детальный анализ', de: 'Detaillierte Analyse' },
+                'section.violationCategories': { en: 'Violation Categories', uk: 'Категорії порушень', ru: 'Категории нарушений', de: 'Verstoßkategorien' },
+                'section.currentMonthStatus': { en: 'Current Month Status', uk: 'Статус поточного місяця', ru: 'Статус текущего месяца', de: 'Status des laufenden Monats' },
+                'section.greenCurrentStatus': { en: 'Current Month Status', uk: 'Статус поточного місяця', ru: 'Статус текущего месяца', de: 'Status des laufenden Monats' },
+                'section.teamStructure': { en: 'Team Structure', uk: 'Структура команди', ru: 'Структура команды', de: 'Teamstruktur' },
+                'section.membersSuffix': { en: 'Members', uk: 'учасників', ru: 'участников', de: 'Mitglieder' },
+                'section.positiveLeaderboard': { en: 'Positive Leaderboard', uk: 'Позитивний рейтинг', ru: 'Позитивный рейтинг', de: 'Positive Bestenliste' },
+                'section.positiveLeaderboardDescription': { en: 'The leaderboard shows employees ranked by the number of green cards they have received.', uk: 'Рейтинг показує співробітників за кількістю отриманих зелених карток.', ru: 'Рейтинг показивает сотрудников по количеству полученных зелёных карточек.', de: 'Die Bestenliste zeigt Mitarbeitende nach der Anzahl ihrer grünen Karten.' },
+                'button.giveYellowCard': { en: 'Give Yellow Card', uk: 'Видати жовту картку', ru: 'Выдать жёлтую карточку', de: 'Gelbe Karte vergeben' },
+                'button.giveGreenCard': { en: 'Give Green Card', uk: 'Видати зелену картку', ru: 'Выдать зелёную карточку', de: 'Grüne Karte vergeben' },
+                'button.addEmployee': { en: 'Add Employee', uk: 'Додати співробітника', ru: 'Добавить сотрудника', de: 'Mitarbeiter hinzufügen' },
+                'button.removeEmployee': { en: 'Remove Employee', uk: 'Видалити співробітника', ru: 'Удалить сотрудника', de: 'Mitarbeiter entfernen' },
+                'filters.week': { en: 'Week', uk: 'Тиждень', ru: 'Неделя', de: 'Woche' },
+                'filters.month': { en: 'Month', uk: 'Місяць', ru: 'Месяц', de: 'Monat' },
+                'filters.new': { en: 'New', uk: 'Нові', ru: 'Новые', de: 'Neu' },
+                'filters.allTime': { en: 'All Time', uk: 'Увесь час', ru: 'За всё время', de: 'Gesamte Zeit' },
+                'table.employee': { en: 'Employee', uk: 'Співробітник', ru: 'Сотрудник', de: 'Mitarbeiter' },
+                'table.department': { en: 'Department', uk: 'Відділ', ru: 'Отдел', de: 'Abteilung' },
+                'table.cards': { en: 'Cards', uk: 'Картки', ru: 'Карточки', de: 'Karten' },
+                'table.violationTypes': { en: 'Violation Types', uk: 'Типи порушень', ru: 'Типы нарушений', de: 'Verstoßarten' },
+                'table.status': { en: 'Status', uk: 'Статус', ru: 'Статус', de: 'Status' },
+                'table.greenCards': { en: 'Green Cards', uk: 'Зелені картки', ru: 'Зелёные карточки', de: 'Grüne Karten' },
+                'table.cardTypes': { en: 'Card Types', uk: 'Типи карток', ru: 'Типы карточек', de: 'Kartentypen' },
+                'table.notes': { en: 'Notes/Badges', uk: 'Нотатки/Відзнаки', ru: 'Заметки/Значки', de: 'Notizen/Auszeichnungen' },
+                'table.lastGreenCard': { en: 'Last Green Card', uk: 'Остання зелена картка', ru: 'Последняя зелёная карточка', de: 'Letzte grüne Karte' },
+                'input.searchPlaceholder': { en: 'Search by name...', uk: 'Пошук за ім’ям...', ru: 'Поиск по имени...', de: 'Nach Namen suchen...' },
+                'stats.teamSizeLabel': { en: 'Team Size:', uk: 'Розмір команди:', ru: 'Размер команды:', de: 'Teamgröße:' },
+                'stats.totalCardsLabel': { en: 'Total Cards:', uk: 'Всього карток:', ru: 'Всего карточек:', de: 'Gesamtzahl Karten:' },
+                'stats.employeesSuffix': { en: 'employees', uk: 'співробітників', ru: 'сотрудников', de: 'Mitarbeiter' },
+                'stats.totalEmployeesLabel': { en: 'Total Employees', uk: 'Загальна кількість співробітників', ru: 'Всего сотрудников', de: 'Gesamtmitarbeiter' },
+                'stats.complianceLabel': { en: 'Compliance', uk: 'Відповідність', ru: 'Соблюдение', de: 'Compliance' },
+                'stats.atRiskLabel': { en: 'AT RISK', uk: 'У ГРУПІ РИЗИКУ', ru: 'В ГРУППЕ РИСКА', de: 'RISIKO' },
+                'stats.atRiskHint': { en: '(5+ cards)', uk: '(5+ карток)', ru: '(5+ карточек)', de: '(5+ Karten)' },
+                'stats.mostViolationsLabel': { en: 'MOST VIOL.', uk: 'НАЙБІЛЬШ ПОРУШ.', ru: 'БОЛЬШЕ ВСЕГО НАРУШ.', de: 'MEISTE VERST.' },
+                'stats.greenCardsLabel': { en: 'Green Cards', uk: 'Зелені картки', ru: 'Зелёные карточки', de: 'Grüne Karten' },
+                'stats.yellowCardsLabel': { en: 'Yellow Cards', uk: 'Жовті картки', ru: 'Жёлтые карточки', de: 'Gelbe Karten' },
+                'stats.orangeCardsLabel': { en: 'Orange Cards', uk: 'Помаранчеві картки', ru: 'Оранжевые карточки', de: 'Orange Karten' },
+                'stats.redCardsLabel': { en: 'Red Cards', uk: 'Червоні картки', ru: 'Красные карточки', de: 'Rote Karten' },
+                'cards.documentation': { en: 'Documentation', uk: 'Документація', ru: 'Документация', de: 'Dokumentation' },
+                'cards.workflow': { en: 'Workflow', uk: 'Робочий процес', ru: 'Рабочий процесс', de: 'Workflow' },
+                'cards.communication': { en: 'Communication', uk: 'Комунікація', ru: 'Коммуникация', de: 'Kommunikation' }
+            };
+
+            const SUPPORTED_LANGS = ['en', 'uk', 'ru', 'de'];
+            let currentLanguage = (localStorage.getItem('dashboard-language') || document.documentElement.lang || 'en').toLowerCase();
+            if (!SUPPORTED_LANGS.includes(currentLanguage)) currentLanguage = 'en';
+
+            function translate(key, fallback = '') {
+                const entry = TRANSLATIONS[key];
+                if (entry) {
+                    return entry[currentLanguage] || entry.en || fallback || key;
+                }
+                return fallback || key;
+            }
+
+            function applyTranslations(root) {
+                const scope = root instanceof Element || root instanceof DocumentFragment ? root : document;
+                scope.querySelectorAll('[data-i18n-key]').forEach(el => {
+                    const key = el.getAttribute('data-i18n-key');
+                    if (!key) return;
+                    const attr = el.getAttribute('data-i18n-attr');
+                    const translated = translate(key, el.textContent || '');
+                    if (attr) {
+                        if (attr === 'placeholder' && 'placeholder' in el) {
+                            el.setAttribute('placeholder', translated);
+                        } else {
+                            el.setAttribute(attr, translated);
+                        }
+                    } else {
+                        el.textContent = translated;
+                    }
+                });
+                document.documentElement.lang = currentLanguage;
+            }
+
+            function setLanguage(lang) {
+                if (!SUPPORTED_LANGS.includes(lang)) return;
+                currentLanguage = lang;
+                localStorage.setItem('dashboard-language', lang);
+                applyTranslations();
+                if (typeof window.updateThemeButton === 'function') {
+                    const isDark = document.body.classList.contains('dark-theme');
+                    window.updateThemeButton(isDark);
+                }
+            }
+
+            function initLanguageSelector() {
+                const select = document.getElementById('language-select');
+                if (!select) return;
+                select.value = currentLanguage;
+                select.addEventListener('change', event => {
+                    const value = event.target.value;
+                    setLanguage(value);
+                });
+            }
+
+            window.t = translate;
+            window.applyTranslations = applyTranslations;
+            window.setLanguage = setLanguage;
+            window.getCurrentLanguage = () => currentLanguage;
+
+            document.addEventListener('DOMContentLoaded', () => {
+                initLanguageSelector();
+                applyTranslations();
+            });
+        })();
+    </script>
     <script>
         // Data and State
         let currentDate = new Date();
