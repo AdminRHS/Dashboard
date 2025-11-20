@@ -131,9 +131,34 @@
         }
         .tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
         .stat-sublabel { font-size: 0.9em; color: var(--color-text-secondary); margin-top: 2px; }
-        .tab-btn { background-color: white; color: var(--color-primary-main); border: 1px solid var(--color-primary-main); }
+        .tab-btn { 
+            background-color: white; 
+            color: var(--color-primary-main); 
+            border: 1px solid rgba(66, 153, 225, 0.4); 
+            position: relative;
+            z-index: 1;
+        }
         .tab-btn:hover { background-color: rgba(66, 153, 225, 0.08); }
-        .tab-btn.active { background-color: var(--color-primary-main); color: white; border-color: var(--color-primary-main); font-weight: 600; }
+        .tab-btn.active { background-color: var(--color-primary-main); color: white; border-color: transparent; font-weight: 600; }
+        .tab-buttons {
+            position: relative;
+        }
+        .tab-border-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border: 2px solid var(--color-primary-main);
+            border-radius: 9999px;
+            pointer-events: none;
+            transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease, border-color 0.3s ease, opacity 0.2s ease;
+            z-index: 0;
+            opacity: 0;
+            box-sizing: border-box;
+            background-color: rgba(66, 153, 225, 0.08);
+        }
+        .tab-buttons.has-tab-indicator .tab-btn {
+            border-color: transparent;
+        }
         .language-select {
             border: 1px solid var(--color-primary-main);
             border-radius: 9999px;
@@ -212,9 +237,13 @@
         body.dark-theme .bg-gray-700 { background-color: #4b5563 !important; } /* Lighter modal avatar background */
         body.dark-theme .border-gray-200 { border-color: #374151 !important; }
         body.dark-theme .border-gray-300 { border-color: #4b5563 !important; }
-        body.dark-theme .tab-btn { background-color: #1f2937; color: var(--color-primary-light); border-color: var(--color-primary-light); }
+        body.dark-theme .tab-btn { background-color: #1f2937; color: var(--color-primary-light); border-color: rgba(99, 179, 237, 0.4); }
         body.dark-theme .tab-btn:hover { background-color: rgba(99, 179, 237, 0.15); }
         body.dark-theme .tab-btn.active { background-color: var(--color-primary-main); color: white; }
+        body.dark-theme .tab-border-indicator {
+            border-color: var(--color-primary-light);
+            background-color: rgba(99, 179, 237, 0.15);
+        }
         body.dark-theme .calendar-header { background-color: #374151; color: var(--color-primary-light); }
         body.dark-theme .team-member { background-color: #1f2937; border-color: #374151; }
         body.dark-theme .team-member:hover { border-color: var(--color-primary-light); }
@@ -630,7 +659,7 @@
 
         <div class="mb-4">
             <div class="nav-tabs flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
-                <div class="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start">
+                <div class="tab-buttons flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start">
                     <button class="tab-btn active px-3 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all" data-tab="overview" onclick="switchTab(this)">
                         <i data-lucide="layout-dashboard" class="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"></i><span class="hidden sm:inline" data-i18n-key="nav.overview">Overview</span><span class="sm:hidden" data-i18n-key="nav.overview">Overview</span>
                 </button>
@@ -646,6 +675,7 @@
                     <button class="tab-btn px-3 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all" data-tab="leaderboard" onclick="switchTab(this)">
                          <i data-lucide="trophy" class="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"></i><span class="hidden sm:inline" data-i18n-key="nav.leaderboard">Leaderboard</span><span class="sm:hidden" data-i18n-key="nav.leaderboardShort">Board</span>
                 </button>
+                    <span id="tab-border-indicator" class="tab-border-indicator" aria-hidden="true"></span>
             </div>
                 <div class="flex items-center justify-center sm:justify-end gap-2">
                     <select id="language-select" class="language-select" aria-label="Select language">

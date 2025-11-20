@@ -86,6 +86,7 @@
         targetTab.classList.remove('hidden');
         targetTab.classList.add('active');
         lucide.createIcons();
+        requestAnimationFrame(() => updateTabIndicator(buttonElement));
         if (tabId === 'leaderboard') {
             renderLeaderboard();
             pedestalContainer?.classList.remove('hidden');
@@ -99,6 +100,9 @@
         }
     }
     let isCalendarAnimating = false;
+    const TAB_CONTAINER_SELECTOR = '.tab-buttons';
+    const TAB_INDICATOR_ID = 'tab-border-indicator';
+    let tabIndicatorInitialized = false;
     function changeMonth(direction, event) {
         if (event) {
             event.preventDefault();
@@ -292,10 +296,56 @@
         }, 400);
         return true;
     }
+    function getTabIndicatorElements() {
+        const container = document.querySelector(TAB_CONTAINER_SELECTOR);
+        const indicator = document.getElementById(TAB_INDICATOR_ID);
+        return { container, indicator };
+    }
+    function updateTabIndicator(targetButton) {
+        const { container, indicator } = getTabIndicatorElements();
+        if (!container || !indicator)
+            return;
+        const activeButton = targetButton || container.querySelector('.tab-btn.active');
+        if (!activeButton) {
+            indicator.style.opacity = '0';
+            return;
+        }
+        const containerRect = container.getBoundingClientRect();
+        const buttonRect = activeButton.getBoundingClientRect();
+        const offsetX = buttonRect.left - containerRect.left + container.scrollLeft;
+        const offsetY = buttonRect.top - containerRect.top + container.scrollTop;
+        indicator.style.width = `${buttonRect.width}px`;
+        indicator.style.height = `${buttonRect.height}px`;
+        indicator.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        indicator.style.opacity = '1';
+    }
+    function initTabIndicator() {
+        if (tabIndicatorInitialized)
+            return;
+        const { container, indicator } = getTabIndicatorElements();
+        if (!container || !indicator)
+            return;
+        container.classList.add('has-tab-indicator');
+        tabIndicatorInitialized = true;
+        requestAnimationFrame(() => {
+            const activeButton = container.querySelector('.tab-btn.active');
+            updateTabIndicator(activeButton);
+        });
+    }
     const LANGUAGE_EVENT = global.languageState?.LANGUAGE_EVENT || 'dashboard:languagechange';
     global.addEventListener(LANGUAGE_EVENT, () => {
         updateCalendarHeader('calendar-month-year', getPrimaryCalendarDate());
         updateCalendarHeader('calendar-month-year-green', getActiveGreenDate());
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+        initTabIndicator();
+        requestAnimationFrame(() => updateTabIndicator());
+    });
+    global.addEventListener('resize', () => {
+        updateTabIndicator();
+    });
+    global.addEventListener('dashboard:rendered', () => {
+        updateTabIndicator();
     });
     function updateSaveStatus(message, type = 'info') {
         const statusElement = document.getElementById('save-status');
