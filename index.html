@@ -458,6 +458,37 @@
             --stack-dark: rgba(0,0,0,0.15);
             --stack-medium: rgba(0,0,0,0.1);
             --stack-light: rgba(0,0,0,0.05);
+            --card-highlight: rgba(255, 255, 255, 0.35);
+        }
+        .detailed-stat-card-v2::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            border: 2px solid transparent;
+            background: linear-gradient(var(--card-highlight), var(--card-highlight)) padding-box,
+                        linear-gradient(180deg, transparent 0%, var(--card-highlight) 50%, transparent 100%) border-box;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .detailed-stat-card-v2:hover::after {
+            opacity: 1;
+            animation: card-border-flow 1.4s linear infinite;
+        }
+        @keyframes card-border-flow {
+            0% {
+                background-size: 100% 300%;
+                background-position: 50% 0%;
+            }
+            50% {
+                background-size: 100% 300%;
+                background-position: 50% 100%;
+            }
+            100% {
+                background-size: 100% 300%;
+                background-position: 50% 0%;
+            }
         }
         .detailed-stat-card-v2 .stat-number { font-size: 4.5rem; font-weight: 500; line-height: 1; z-index: 10; }
         .detailed-stat-card-v2 .card-label {
@@ -479,6 +510,7 @@
             --stack-dark: #22C55E;
             --stack-medium: #4ADE80;
             --stack-light: #86EFAC;
+            --card-highlight: #86efac;
         }
         .card-yellow { 
             background-color: #FEFCE8; 
@@ -486,6 +518,7 @@
             --stack-dark: #FACC15;
             --stack-medium: #FCD34D;
             --stack-light: #FEF9C3;
+            --card-highlight: #fde047;
         }
         .card-orange { 
             background-color: #FFF7ED; 
@@ -493,6 +526,7 @@
             --stack-dark: #F97316;
             --stack-medium: #FB923C;
             --stack-light: #FFD8B4;
+            --card-highlight: #fb923c;
         }
         .card-red { 
             background-color: #FEF2F2; 
@@ -500,6 +534,7 @@
             --stack-dark: #EF4444;
             --stack-medium: #F87171;
             --stack-light: #FCA5A5;
+            --card-highlight: #f87171;
         }
 
         /* --- STYLES FOR MODAL CARD DISPLAY --- */
