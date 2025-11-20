@@ -90,9 +90,11 @@
         if (tabId === 'leaderboard') {
             renderLeaderboard();
             pedestalContainer?.classList.remove('hidden');
+            requestAnimationFrame(() => updatePeriodIndicator());
         }
         else {
             pedestalContainer?.classList.add('hidden');
+            requestAnimationFrame(() => updatePeriodIndicator());
         }
         if (tabId === 'greencard') {
             renderGreenCardCalendar();
@@ -102,7 +104,10 @@
     let isCalendarAnimating = false;
     const TAB_CONTAINER_SELECTOR = '.tab-buttons';
     const TAB_INDICATOR_ID = 'tab-border-indicator';
+    const PERIOD_CONTAINER_SELECTOR = '#leaderboard-period-filter';
+    const PERIOD_INDICATOR_ID = 'period-border-indicator';
     let tabIndicatorInitialized = false;
+    let periodIndicatorInitialized = false;
     function changeMonth(direction, event) {
         if (event) {
             event.preventDefault();
@@ -332,6 +337,42 @@
             updateTabIndicator(activeButton);
         });
     }
+    function getPeriodIndicatorElements() {
+        const container = document.querySelector(PERIOD_CONTAINER_SELECTOR);
+        const indicator = document.getElementById(PERIOD_INDICATOR_ID);
+        return { container, indicator };
+    }
+    function updatePeriodIndicator(targetButton) {
+        const { container, indicator } = getPeriodIndicatorElements();
+        if (!container || !indicator)
+            return;
+        const activeButton = targetButton || container.querySelector('.period-btn.active');
+        if (!activeButton) {
+            indicator.style.opacity = '0';
+            return;
+        }
+        const containerRect = container.getBoundingClientRect();
+        const buttonRect = activeButton.getBoundingClientRect();
+        const offsetX = buttonRect.left - containerRect.left + container.scrollLeft;
+        const offsetY = buttonRect.top - containerRect.top + container.scrollTop;
+        indicator.style.width = `${buttonRect.width}px`;
+        indicator.style.height = `${buttonRect.height}px`;
+        indicator.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        indicator.style.opacity = container.offsetParent ? '1' : '0';
+    }
+    function initPeriodIndicator() {
+        if (periodIndicatorInitialized)
+            return;
+        const { container, indicator } = getPeriodIndicatorElements();
+        if (!container || !indicator)
+            return;
+        container.classList.add('has-period-indicator');
+        periodIndicatorInitialized = true;
+        requestAnimationFrame(() => {
+            const activeButton = container.querySelector('.period-btn.active');
+            updatePeriodIndicator(activeButton);
+        });
+    }
     const LANGUAGE_EVENT = global.languageState?.LANGUAGE_EVENT || 'dashboard:languagechange';
     global.addEventListener(LANGUAGE_EVENT, () => {
         updateCalendarHeader('calendar-month-year', getPrimaryCalendarDate());
@@ -339,13 +380,24 @@
     });
     document.addEventListener('DOMContentLoaded', () => {
         initTabIndicator();
-        requestAnimationFrame(() => updateTabIndicator());
+        initPeriodIndicator();
+        requestAnimationFrame(() => {
+            updateTabIndicator();
+            updatePeriodIndicator();
+        });
     });
     global.addEventListener('resize', () => {
         updateTabIndicator();
+        updatePeriodIndicator();
     });
     global.addEventListener('dashboard:rendered', () => {
         updateTabIndicator();
+        updatePeriodIndicator();
+    });
+    global.addEventListener('dashboard:periodfilterchange', (event) => {
+        const detail = event.detail;
+        const button = detail?.button || null;
+        requestAnimationFrame(() => updatePeriodIndicator(button));
     });
     function updateSaveStatus(message, type = 'info') {
         const statusElement = document.getElementById('save-status');

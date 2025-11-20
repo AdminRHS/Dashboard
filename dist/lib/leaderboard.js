@@ -1,4 +1,5 @@
 (function registerLeaderboard(global) {
+    const PERIOD_FILTER_EVENT = 'dashboard:periodfilterchange';
     const I18N = global.I18N_KEYS;
     const translate = (key, fallback) => typeof global.t === 'function' ? global.t(key, fallback) : fallback;
     function renderLeaderboard() {
@@ -148,6 +149,7 @@
         document.querySelectorAll('#leaderboard-period-filter .period-btn').forEach(btn => btn.classList.remove('active'));
         buttonElement.classList.add('active');
         renderLeaderboard();
+        global.dispatchEvent(new CustomEvent(PERIOD_FILTER_EVENT, { detail: { button: buttonElement } }));
     }
     const LANGUAGE_EVENT = global.languageState?.LANGUAGE_EVENT || 'dashboard:languagechange';
     global.addEventListener(LANGUAGE_EVENT, () => {

@@ -143,6 +143,27 @@
         .tab-buttons {
             position: relative;
         }
+        .period-btn {
+            background-color: transparent;
+            color: var(--color-primary-main);
+            border: 1px solid rgba(66, 153, 225, 0.4);
+            border-radius: 9999px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+        }
+        .period-btn:hover {
+            background-color: rgba(66, 153, 225, 0.08);
+        }
+        .period-btn.active {
+            background-color: var(--color-primary-main);
+            color: white;
+            border-color: transparent;
+        }
+        .period-buttons {
+            position: relative;
+        }
         .tab-border-indicator {
             position: absolute;
             top: 0;
@@ -157,6 +178,22 @@
             background-color: rgba(66, 153, 225, 0.08);
         }
         .tab-buttons.has-tab-indicator .tab-btn {
+            border-color: transparent;
+        }
+        .period-border-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border: 2px solid var(--color-primary-main);
+            border-radius: 9999px;
+            pointer-events: none;
+            transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease, border-color 0.3s ease, opacity 0.2s ease;
+            z-index: 0;
+            opacity: 0;
+            box-sizing: border-box;
+            background-color: rgba(66, 153, 225, 0.08);
+        }
+        .period-buttons.has-period-indicator .period-btn {
             border-color: transparent;
         }
         .language-select {
@@ -241,6 +278,22 @@
         body.dark-theme .tab-btn:hover { background-color: rgba(99, 179, 237, 0.15); }
         body.dark-theme .tab-btn.active { background-color: var(--color-primary-main); color: white; }
         body.dark-theme .tab-border-indicator {
+            border-color: var(--color-primary-light);
+            background-color: rgba(99, 179, 237, 0.15);
+        }
+        body.dark-theme .period-btn {
+            background-color: transparent;
+            color: var(--color-primary-light);
+            border-color: rgba(99, 179, 237, 0.4);
+        }
+        body.dark-theme .period-btn:hover {
+            background-color: rgba(99, 179, 237, 0.15);
+        }
+        body.dark-theme .period-btn.active {
+            background-color: var(--color-primary-main);
+            color: white;
+        }
+        body.dark-theme .period-border-indicator {
             border-color: var(--color-primary-light);
             background-color: rgba(99, 179, 237, 0.15);
         }
@@ -833,11 +886,12 @@
                         </div>
                         <div id="leaderboard-dept-filter-container" class="custom-dropdown w-full sm:w-auto" style="flex-grow: 0;"></div>
 
-                        <div id="leaderboard-period-filter" class="flex items-center gap-2 flex-wrap w-full sm:w-auto justify-center sm:justify-start">
+                        <div id="leaderboard-period-filter" class="period-buttons flex items-center gap-2 flex-wrap w-full sm:w-auto justify-center sm:justify-start">
                              <button class="period-btn text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2" data-period="7" onclick="setPeriodFilter(this)" data-i18n-key="filters.week">Week</button>
                              <button class="period-btn text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2" data-period="30" onclick="setPeriodFilter(this)" data-i18n-key="filters.month">Month</button>
                              <button class="period-btn text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2" data-period="new" onclick="setPeriodFilter(this)" data-i18n-key="filters.new">New</button>
                              <button class="period-btn active text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2" data-period="all" onclick="setPeriodFilter(this)" data-i18n-key="filters.allTime">All Time</button>
+                             <span id="period-border-indicator" class="period-border-indicator" aria-hidden="true"></span>
                         </div>
                     </div>
                 
