@@ -12,11 +12,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        @property --card-border-angle {
-            syntax: '<angle>';
-            inherits: false;
-            initial-value: 0deg;
-        }
         /* Custom styles from the design system */
         :root {
             --color-primary-main: #4299e1;
@@ -464,32 +459,13 @@
             --stack-medium: rgba(0,0,0,0.1);
             --stack-light: rgba(0,0,0,0.05);
             --card-highlight: rgba(255, 255, 255, 0.35);
-            --card-border-angle: 0deg;
-        }
-        .detailed-stat-card-v2::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
             border: 2px solid transparent;
-            background: linear-gradient(#0000, #0000) padding-box,
-                        conic-gradient(from var(--card-border-angle),
-                            transparent 0deg,
-                            var(--card-highlight) 50deg,
-                            transparent 90deg,
-                            transparent 360deg) border-box;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
         }
-        .detailed-stat-card-v2:hover::after {
-            opacity: 1;
-            animation: card-border-rotate 1.8s linear infinite;
-        }
-        @keyframes card-border-rotate {
-            to {
-                --card-border-angle: 360deg;
-            }
+        .detailed-stat-card-v2:hover {
+            border-color: var(--card-highlight);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15), 0 0 12px var(--card-highlight);
+            transform: translateY(-2px);
         }
         .detailed-stat-card-v2 .stat-number { font-size: 4.5rem; font-weight: 500; line-height: 1; z-index: 10; }
         .detailed-stat-card-v2 .card-label {
