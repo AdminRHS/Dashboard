@@ -76,12 +76,19 @@
             const place = pedestalData[index];
             const initials = emp.name.split(' ').map(n => n[0]).join('').toUpperCase();
             let deptColor = departmentColors[emp.dept] || departmentColors.default;
+            const isFirstPlace = place.rank === 1;
+            const crown = isFirstPlace ? '<div class="pedestal-crown" aria-hidden="true">👑</div>' : '';
+            const pedestalClasses = ['pedestal-item-v2', 'cursor-pointer'];
+            if (isFirstPlace) {
+                pedestalClasses.push('pedestal-first');
+            }
             if (isDarkMode && deptColor === '#8e1c1c') {
                 deptColor = '#be3535';
             }
             return `
-                <div class="pedestal-item-v2 cursor-pointer" style="order: ${place.order};" onclick="navigateToEmployee('${emp.name}')">
+                <div class="${pedestalClasses.join(' ')}" style="order: ${place.order};" onclick="navigateToEmployee('${emp.name}')">
                     <div class="pedestal-card" style="border-color: ${deptColor}; width: 200px;">
+                        ${crown}
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
                                 <span class="font-bold text-gray-500 text-sm">${initials}</span>

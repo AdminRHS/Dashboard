@@ -605,6 +605,8 @@
             margin-bottom: 1rem;
             z-index: 2;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: visible;
         }
         body.dark-theme .pedestal-card {
             background-color: #1f2937 !important; /* Force background */
@@ -637,6 +639,34 @@
             border: 3px solid;
             font-size: 1.5rem;
             font-weight: bold;
+        }
+        .pedestal-item-v2.pedestal-first .pedestal-card {
+            filter: drop-shadow(0 8px 20px rgba(250, 204, 21, 0.25));
+        }
+        .pedestal-crown {
+            position: absolute;
+            top: -32px;
+            left: 50%;
+            transform: translate(-50%, 10px);
+            font-size: 2.25rem;
+            opacity: 0;
+            transition: transform 0.35s ease, opacity 0.35s ease;
+            pointer-events: none;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+        }
+        .pedestal-item-v2.pedestal-first:hover .pedestal-crown,
+        .pedestal-item-v2.pedestal-first:focus-within .pedestal-crown {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+        .pedestal-item-v2.pedestal-first .pedestal-plinth {
+            border: 2px solid transparent;
+            transition: border-color 0.35s ease, box-shadow 0.35s ease;
+        }
+        .pedestal-item-v2.pedestal-first:hover .pedestal-plinth,
+        .pedestal-item-v2.pedestal-first:focus-within .pedestal-plinth {
+            border-color: rgba(250, 204, 21, 0.9);
+            box-shadow: 0 0 24px rgba(250, 204, 21, 0.45);
         }
 
         /* Modal Info Blocks */
