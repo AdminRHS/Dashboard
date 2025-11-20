@@ -77,10 +77,18 @@
             const initials = emp.name.split(' ').map(n => n[0]).join('').toUpperCase();
             let deptColor = departmentColors[emp.dept] || departmentColors.default;
             const isFirstPlace = place.rank === 1;
+            const isSecondPlace = place.rank === 2;
+            const isThirdPlace = place.rank === 3;
             const crown = isFirstPlace ? '<div class="pedestal-crown" aria-hidden="true">👑</div>' : '';
             const pedestalClasses = ['pedestal-item-v2', 'cursor-pointer'];
             if (isFirstPlace) {
                 pedestalClasses.push('pedestal-first');
+            }
+            else if (isSecondPlace) {
+                pedestalClasses.push('pedestal-second');
+            }
+            else if (isThirdPlace) {
+                pedestalClasses.push('pedestal-third');
             }
             if (isDarkMode && deptColor === '#8e1c1c') {
                 deptColor = '#be3535';
