@@ -2,31 +2,98 @@
   const I18N = global.I18N_KEYS;
   const translate = (key: string, fallback: string): string =>
     typeof global.t === 'function' ? global.t(key, fallback) : fallback;
-  function renderAll(): void {
-    employees.sort((a, b) => a.name.localeCompare(b.name));
-    renderStats();
 
-    const calendarContainer = document.getElementById('calendar-month-current');
-    if (calendarContainer) {
-      calendarContainer.style.position = 'relative';
-      renderCalendar();
-    } else {
-      console.warn('Calendar container not found, skipping calendar render');
+  type RenderTargets = {
+    stats?: boolean;
+    calendar?: boolean;
+    greenCalendar?: boolean;
+    yellowTable?: boolean;
+    greenTable?: boolean;
+    team?: boolean;
+    leaderboard?: boolean;
+    modals?: boolean;
+    greenModals?: boolean;
+  };
+
+  const FULL_RENDER: RenderTargets = {
+    stats: true,
+    calendar: true,
+    greenCalendar: true,
+    yellowTable: true,
+    greenTable: true,
+    team: true,
+    leaderboard: true,
+    modals: true,
+    greenModals: true
+  };
+
+  let pendingTargets: RenderTargets | null = null;
+  let rafId: number | null = null;
+  let employeesDirty = true;
+
+  function queueDashboardRender(targets: RenderTargets = FULL_RENDER): void {
+    pendingTargets = { ...(pendingTargets || {}), ...targets };
+    if (rafId === null) {
+      rafId = requestAnimationFrame(flushRenderQueue);
+    }
+  }
+
+  function flushRenderQueue(): void {
+    if (!pendingTargets) {
+      rafId = null;
+      return;
+    }
+    const targets = pendingTargets;
+    pendingTargets = null;
+    rafId = null;
+
+    if (employeesDirty) {
+      employees.sort((a, b) => a.name.localeCompare(b.name));
+      employeesDirty = false;
     }
 
-    const greenCalendarContainer = document.getElementById('calendar-month-current-green');
-    if (greenCalendarContainer) {
-      greenCalendarContainer.style.position = 'relative';
-      renderGreenCardCalendar();
+    if (targets.stats) {
+      renderStats();
     }
 
-    renderYellowCardTable();
-    renderGreenCardTable();
-    renderTeamGrids();
-    populateDeptFilter();
-    renderLeaderboard();
-    renderModals();
-    renderGreenCardModals();
+    if (targets.calendar) {
+      const calendarContainer = document.getElementById('calendar-month-current');
+      if (calendarContainer) {
+        calendarContainer.style.position = 'relative';
+        renderCalendar();
+      } else if (targets.calendar) {
+        console.warn('Calendar container not found, skipping calendar render');
+      }
+    }
+
+    if (targets.greenCalendar) {
+      const greenCalendarContainer = document.getElementById('calendar-month-current-green');
+      if (greenCalendarContainer) {
+        greenCalendarContainer.style.position = 'relative';
+        renderGreenCardCalendar();
+      }
+    }
+
+    if (targets.yellowTable) {
+      renderYellowCardTable();
+    }
+    if (targets.greenTable) {
+      renderGreenCardTable();
+    }
+    if (targets.team) {
+      renderTeamGrids();
+    }
+    if (targets.leaderboard) {
+      populateDeptFilter();
+      renderLeaderboard();
+    }
+    if (targets.modals) {
+      renderModals();
+    }
+    if (targets.greenModals) {
+      renderGreenCardModals();
+    }
+
     lucide.createIcons();
     if (typeof global.applyInteractiveShadows === 'function') {
       global.applyInteractiveShadows();
@@ -270,7 +337,17 @@
     renderGreenCardModals();
   });
 
+  function renderAll(): void {
+    queueDashboardRender(FULL_RENDER);
+  }
+
+  function markEmployeesDirty(): void {
+    employeesDirty = true;
+  }
+
   global.renderAll = renderAll;
+  global.queueDashboardRender = queueDashboardRender;
+  global.markEmployeesDirty = markEmployeesDirty;
   global.renderStats = renderStats;
   global.renderTeamGrids = renderTeamGrids;
   global.renderModals = renderModals;

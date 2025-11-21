@@ -1,7 +1,24 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  build: { outDir: 'dist', emptyOutDir: true },
+  css: {
+    devSourcemap: true,
+  },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+    cssCodeSplit: false,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+          return undefined;
+        }
+      }
+    }
+  },
   server: {
     proxy: {
       '/api': {

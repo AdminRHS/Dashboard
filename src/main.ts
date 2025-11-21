@@ -1,3 +1,4 @@
+import './styles/app.css';
 import './components/layout';
 import './lib/language-state';
 import './lib/i18n-keys';
@@ -8,6 +9,7 @@ import './lib/calendar';
 import './lib/leaderboard';
 import './lib/tables';
 import './lib/modals';
+import './lib/perf-metrics';
 import './lib/frontend-api';
 import './lib/actions';
 import './lib/render-stats';

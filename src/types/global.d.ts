@@ -142,7 +142,26 @@ declare global {
   function saveViaAPI(): Promise<boolean>;
   function loadEmployeesFromAPI(): Promise<Employee[]>;
   function persistIfPossible(): Promise<void>;
+  interface DashboardRenderTargets {
+    stats?: boolean;
+    calendar?: boolean;
+    greenCalendar?: boolean;
+    yellowTable?: boolean;
+    greenTable?: boolean;
+    team?: boolean;
+    leaderboard?: boolean;
+    modals?: boolean;
+    greenModals?: boolean;
+  }
   function renderAll(): void;
+  function queueDashboardRender(targets?: DashboardRenderTargets): void;
+  function markEmployeesDirty(): void;
+  function getPerfMetrics(): {
+    fcp?: number;
+    lcp?: number;
+    cls: number;
+    fid?: number;
+  };
   function renderCalendar(container?: HTMLElement | null, date?: Date | null): void;
   function renderGreenCardCalendar(container?: HTMLElement | null, date?: Date | null): void;
   function renderYellowCardTable(): void;
@@ -237,6 +256,9 @@ declare global {
     loadEmployeesFromAPI: typeof loadEmployeesFromAPI;
     persistIfPossible: typeof persistIfPossible;
     renderAll: typeof renderAll;
+    queueDashboardRender: typeof queueDashboardRender;
+    markEmployeesDirty: typeof markEmployeesDirty;
+    getPerfMetrics: typeof getPerfMetrics;
     renderCalendar: typeof renderCalendar;
     renderGreenCardCalendar: typeof renderGreenCardCalendar;
     renderYellowCardTable: typeof renderYellowCardTable;

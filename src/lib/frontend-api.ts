@@ -2,6 +2,7 @@
   const EMPLOYEE_CACHE_KEY = 'yellow-card-dashboard:employees-cache';
   const EMPLOYEE_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
   let inflightLoadPromise: Promise<Employee[]> | null = null;
+  let backgroundRefreshTimer: number | null = null;
 
   function getApiConfig(): ApiConfig | null {
     if (typeof global.API_CONFIG !== 'undefined' && global.API_CONFIG) return global.API_CONFIG;
@@ -41,6 +42,18 @@
     } catch (error) {
       console.warn('Failed to invalidate employees cache', error);
     }
+  }
+
+  function scheduleBackgroundRefresh(delay = 750): void {
+    if (backgroundRefreshTimer !== null) {
+      return;
+    }
+    backgroundRefreshTimer = window.setTimeout(() => {
+      backgroundRefreshTimer = null;
+      executeNetworkLoad().catch((error) => {
+        console.warn('Background refresh failed', error);
+      });
+    }, delay);
   }
 
   function requireConfigEndpoint<K extends keyof ApiConfig>(key: K): string {
@@ -124,25 +137,15 @@
     }
   }
 
-  async function loadEmployeesFromAPI(forceRefresh = false): Promise<Employee[]> {
-    if (!forceRefresh) {
-      const cached = readEmployeesCache();
-      if (cached) {
-        return cached;
-      }
-      if (inflightLoadPromise) {
-        return inflightLoadPromise;
-      }
-    } else {
-      invalidateEmployeesCache();
+  function executeNetworkLoad(): Promise<Employee[]> {
+    if (inflightLoadPromise) {
+      return inflightLoadPromise;
     }
 
-    const fetchPromise = (async () => {
+    inflightLoadPromise = (async () => {
       try {
         const endpoint = requireConfigEndpoint('getEmployees');
-        const response = await fetch(endpoint, {
-          headers: { 'Cache-Control': 'no-cache' }
-        });
+        const response = await fetch(endpoint, { headers: { 'Cache-Control': 'no-cache' } });
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -161,14 +164,28 @@
         }
         return [];
       } finally {
-        if (inflightLoadPromise === fetchPromise) {
-          inflightLoadPromise = null;
-        }
+        inflightLoadPromise = null;
       }
     })();
 
-    inflightLoadPromise = fetchPromise;
-    return fetchPromise;
+    return inflightLoadPromise;
+  }
+
+  async function loadEmployeesFromAPI(forceRefresh = false): Promise<Employee[]> {
+    if (!forceRefresh) {
+      const cached = readEmployeesCache();
+      if (cached) {
+        scheduleBackgroundRefresh();
+        return cached;
+      }
+      if (inflightLoadPromise) {
+        return inflightLoadPromise;
+      }
+    } else {
+      invalidateEmployeesCache();
+    }
+
+    return executeNetworkLoad();
   }
 
   async function persistIfPossible(): Promise<void> {
