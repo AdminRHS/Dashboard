@@ -4,70 +4,77 @@ const sql = postgres(process.env.DATABASE_URL);
 
 export default async function handler(req, res) {
   try {
-    // Get all employees
-    const result = await sql`
-      SELECT id, name, role, dept, email, discord_id, join_date
-      FROM employees
-      ORDER BY name
+    // detect whether green_cards table exists once per request
+    const [{ exists: greenCardsExists }] = await sql`
+      SELECT to_regclass('public.green_cards') IS NOT NULL AS exists
     `;
 
-    const employees = result || [];
+    const employees = await sql`
+      SELECT
+        e.id,
+        e.name,
+        e.role,
+        e.dept,
+        e.email,
+        e.discord_id,
+        e.join_date,
+        COALESCE(
+          (
+            SELECT json_agg(
+              json_build_object(
+                'id', v.id,
+                'date', v.date,
+                'type', v.type,
+                'comment', v.comment
+              )
+              ORDER BY v.date DESC
+            )
+            FROM violations v
+            WHERE v.employee_id = e.id
+          ),
+          '[]'::json
+        ) AS violations,
+        ${
+          greenCardsExists
+            ? sql`
+                COALESCE(
+                  (
+                    SELECT json_agg(
+                      json_build_object(
+                        'id', gc.id,
+                        'date', gc.date,
+                        'type', gc.type,
+                        'comment', gc.comment
+                      )
+                      ORDER BY gc.date DESC
+                    )
+                    FROM green_cards gc
+                    WHERE gc.employee_id = e.id
+                  ),
+                  '[]'::json
+                )`
+            : sql`'[]'::json`
+        } AS green_cards
+      FROM employees e
+      ORDER BY e.name
+    `;
 
-    // Get violations and green cards for each employee
-    const employeesWithViolations = await Promise.all(
-      employees.map(async (employee) => {
-        const violationsResult = await sql`
-          SELECT id, date, type, comment
-          FROM violations
-          WHERE employee_id = ${employee.id}
-          ORDER BY date DESC
-        `;
+    const normalized = employees.map(emp => ({
+      id: emp.id,
+      name: emp.name,
+      role: emp.role,
+      dept: emp.dept,
+      email: emp.email,
+      discordId: emp.discord_id,
+      joinDate: emp.join_date,
+      violations: Array.isArray(emp.violations) ? emp.violations : [],
+      greenCards: Array.isArray(emp.green_cards) ? emp.green_cards : []
+    }));
 
-        // Get green cards (check if table exists, if not return empty array)
-        let greenCardsResult = [];
-        try {
-          greenCardsResult = await sql`
-            SELECT id, date, type, comment
-            FROM green_cards
-            WHERE employee_id = ${employee.id}
-            ORDER BY date DESC
-          `;
-        } catch (error) {
-          // Table might not exist yet, return empty array
-          console.log('Green cards table not found, returning empty array');
-        }
-
-        const violations = violationsResult || [];
-        const greenCards = greenCardsResult || [];
-
-        return {
-          id: employee.id,
-          name: employee.name,
-          role: employee.role,
-          dept: employee.dept,
-          email: employee.email,
-          discordId: employee.discord_id,
-          joinDate: employee.join_date,
-          violations: violations.map(v => ({
-            id: v.id,
-            date: v.date,
-            type: v.type,
-            comment: v.comment
-          })),
-          greenCards: greenCards.map(gc => ({
-            id: gc.id,
-            date: gc.date,
-            type: gc.type,
-            comment: gc.comment
-          }))
-        };
-      })
-    );
-
-    res.status(200).json(employeesWithViolations);
+    res.status(200).json(normalized);
   } catch (error) {
     console.error('Error fetching employees:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message,
       details: 'Check Vercel logs for more information'
     });
