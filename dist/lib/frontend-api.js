@@ -1,10 +1,50 @@
 (function registerFrontendApi(global) {
+    const EMPLOYEE_CACHE_KEY = 'yellow-card-dashboard:employees-cache';
+    const EMPLOYEE_CACHE_TTL = 5 * 60 * 1000;
+    let inflightLoadPromise = null;
     function getApiConfig() {
         if (typeof global.API_CONFIG !== 'undefined' && global.API_CONFIG)
             return global.API_CONFIG;
         if (typeof API_CONFIG !== 'undefined' && API_CONFIG)
             return API_CONFIG;
         return null;
+    }
+    function readEmployeesCache(options = {}) {
+        const { allowStale = false } = options;
+        try {
+            const raw = localStorage.getItem(EMPLOYEE_CACHE_KEY);
+            if (!raw)
+                return null;
+            const parsed = JSON.parse(raw);
+            if (!Array.isArray(parsed?.data))
+                return null;
+            if (!allowStale && parsed?.timestamp && Date.now() - parsed.timestamp > EMPLOYEE_CACHE_TTL) {
+                return null;
+            }
+            return parsed.data;
+        }
+        catch (error) {
+            console.warn('Failed to read employees cache', error);
+            return null;
+        }
+    }
+    function writeEmployeesCache(data) {
+        try {
+            const payload = JSON.stringify({ data, timestamp: Date.now() });
+            localStorage.setItem(EMPLOYEE_CACHE_KEY, payload);
+        }
+        catch (error) {
+            console.warn('Failed to persist employees cache', error);
+        }
+    }
+    function invalidateEmployeesCache() {
+        inflightLoadPromise = null;
+        try {
+            localStorage.removeItem(EMPLOYEE_CACHE_KEY);
+        }
+        catch (error) {
+            console.warn('Failed to invalidate employees cache', error);
+        }
     }
     async function addViolationViaAPI(employeeId, violation) {
         try {
@@ -26,6 +66,9 @@
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const result = await response.json();
+            if (result.success) {
+                invalidateEmployeesCache();
+            }
             return !!result.success;
         }
         catch (error) {
@@ -56,6 +99,9 @@
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const result = await response.json();
+            if (result.success) {
+                invalidateEmployeesCache();
+            }
             return !!result.success;
         }
         catch (error) {
@@ -63,23 +109,55 @@
             return false;
         }
     }
-    async function loadEmployeesFromAPI() {
-        try {
-            const cfg = getApiConfig();
-            if (!cfg || !cfg.getEmployees) {
-                throw new Error('API_CONFIG.getEmployees is not defined');
+    async function loadEmployeesFromAPI(forceRefresh = false) {
+        if (!forceRefresh) {
+            const cached = readEmployeesCache();
+            if (cached) {
+                return cached;
             }
-            const response = await fetch(cfg.getEmployees);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            if (inflightLoadPromise) {
+                return inflightLoadPromise;
             }
-            const result = await response.json();
-            return result;
         }
-        catch (error) {
-            console.error('Failed to load employees from API:', error);
-            return [];
+        else {
+            invalidateEmployeesCache();
         }
+        const fetchPromise = async () => {
+            try {
+                const cfg = getApiConfig();
+                if (!cfg || !cfg.getEmployees) {
+                    throw new Error('API_CONFIG.getEmployees is not defined');
+                }
+                const response = await fetch(cfg.getEmployees, {
+                    headers: { 'Cache-Control': 'no-cache' }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const result = await response.json();
+                if (Array.isArray(result)) {
+                    writeEmployeesCache(result);
+                    return result;
+                }
+                return [];
+            }
+            catch (error) {
+                console.error('Failed to load employees from API:', error);
+                const stale = readEmployeesCache({ allowStale: true });
+                if (stale?.length) {
+                    console.warn('Using stale employees cache');
+                    return stale;
+                }
+                return [];
+            }
+            finally {
+                if (inflightLoadPromise === fetchPromise) {
+                    inflightLoadPromise = null;
+                }
+            }
+        };
+        inflightLoadPromise = fetchPromise();
+        return inflightLoadPromise;
     }
     async function persistIfPossible() {
         updateSaveStatus('Saving...', 'saving');
@@ -88,6 +166,7 @@
             if (success) {
                 console.log('Data saved via PostgreSQL API');
                 updateSaveStatus('✓ Saved', 'success');
+                invalidateEmployeesCache();
             }
             else {
                 console.error('Failed to save via PostgreSQL API');
@@ -112,6 +191,9 @@
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const result = await response.json();
+            if (result.success) {
+                invalidateEmployeesCache();
+            }
             return !!result.success;
         }
         catch (err) {
@@ -133,6 +215,9 @@
                 const message = result?.details || result?.error || `HTTP error! status: ${response.status}`;
                 throw new Error(message);
             }
+            if (result.employee) {
+                invalidateEmployeesCache();
+            }
             return result.employee || null;
         }
         catch (err) {
@@ -153,6 +238,9 @@
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const result = await response.json();
+            if (result.success) {
+                invalidateEmployeesCache();
+            }
             return !!result.success;
         }
         catch (err) {
@@ -177,6 +265,9 @@
             if (!response.ok) {
                 const errorMsg = result?.error || result?.details || `HTTP error! status: ${response.status}`;
                 throw new Error(errorMsg);
+            }
+            if (result.success) {
+                invalidateEmployeesCache();
             }
             return !!result.success;
         }
@@ -205,6 +296,7 @@
             }
             const result = await response.json();
             if (result.success) {
+                invalidateEmployeesCache();
                 return result;
             }
             return false;
@@ -227,6 +319,9 @@
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const result = await response.json();
+            if (result.success) {
+                invalidateEmployeesCache();
+            }
             return !!result.success;
         }
         catch (err) {
