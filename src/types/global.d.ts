@@ -66,6 +66,8 @@ type I18nKeyMap = {
     dayTitle: string;
     noViolations: string;
     noComment: string;
+    greenDayTitle: string;
+    noGreenCards: string;
   };
   badges: {
     new: string;
@@ -177,6 +179,7 @@ declare global {
   function showEmployeeModal(data: Record<string, unknown>): void;
   function showDayDetailsModal(year: number, month: number, day: number): void;
   function showDayDetailsModalGreen(year: number, month: number, day: number): void;
+  function showDayDetailsModalGreen(year: number, month: number, day: number): void;
   function copyToClipboard(text: string, sourceElement?: HTMLElement): void;
   function createDropdown(
     containerId: string,
@@ -262,6 +265,7 @@ declare global {
     navigateToEmployee: typeof navigateToEmployee;
     showEmployeeModal: typeof showEmployeeModal;
     showDayDetailsModal: typeof showDayDetailsModal;
+    showDayDetailsModalGreen: typeof showDayDetailsModalGreen;
     showDayDetailsModalGreen: typeof showDayDetailsModalGreen;
     copyToClipboard: typeof copyToClipboard;
     createDropdown: typeof createDropdown;
