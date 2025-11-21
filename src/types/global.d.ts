@@ -176,6 +176,7 @@ declare global {
   function navigateToEmployee(name: string): void;
   function showEmployeeModal(data: Record<string, unknown>): void;
   function showDayDetailsModal(year: number, month: number, day: number): void;
+  function showDayDetailsModalGreen(year: number, month: number, day: number): void;
   function copyToClipboard(text: string, sourceElement?: HTMLElement): void;
   function createDropdown(
     containerId: string,
@@ -261,6 +262,7 @@ declare global {
     navigateToEmployee: typeof navigateToEmployee;
     showEmployeeModal: typeof showEmployeeModal;
     showDayDetailsModal: typeof showDayDetailsModal;
+    showDayDetailsModalGreen: typeof showDayDetailsModalGreen;
     copyToClipboard: typeof copyToClipboard;
     createDropdown: typeof createDropdown;
     applyInteractiveShadows: typeof applyInteractiveShadows;

@@ -4,6 +4,21 @@
     const translateArgs = (key, replacements, fallback) => typeof global.translateWithArgs === 'function'
         ? global.translateWithArgs(key, replacements, fallback)
         : fallback.replace(/\{(\w+)\}/g, (_, token) => replacements[token] ?? '');
+    const normalizeDateInput = (raw) => {
+        if (!raw)
+            return null;
+        if (typeof raw === 'string') {
+            return raw.includes('T') ? raw.split('T')[0] : raw;
+        }
+        if (raw instanceof Date) {
+            return `${raw.getFullYear()}-${String(raw.getMonth() + 1).padStart(2, '0')}-${String(raw.getDate()).padStart(2, '0')}`;
+        }
+        const parsed = new Date(raw);
+        if (!Number.isNaN(parsed.getTime())) {
+            return `${parsed.getFullYear()}-${String(parsed.getMonth() + 1).padStart(2, '0')}-${String(parsed.getDate()).padStart(2, '0')}`;
+        }
+        return null;
+    };
     const formatDisplayDate = (raw) => {
         let dateObj = null;
         let iso = '';
@@ -189,23 +204,7 @@
                 return [];
             return e.violations
                 .filter(v => v && v.date)
-                .filter(v => {
-                const raw = v.date;
-                let vDateStr = '';
-                if (typeof raw === 'string') {
-                    vDateStr = raw.includes('T') ? raw.split('T')[0] : raw;
-                }
-                else if (raw instanceof Date) {
-                    vDateStr = `${raw.getFullYear()}-${String(raw.getMonth() + 1).padStart(2, '0')}-${String(raw.getDate()).padStart(2, '0')}`;
-                }
-                else {
-                    const d = new Date(raw);
-                    if (!Number.isNaN(d.getTime())) {
-                        vDateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-                    }
-                }
-                return vDateStr === dateStr;
-            })
+                .filter(v => normalizeDateInput(v.date) === dateStr)
                 .map(v => ({ id: v?.id, name: e.name, type: v?.type, comment: v?.comment }))
                 .filter(v => v.type);
         });
@@ -244,6 +243,57 @@
         }
         else {
             content += `<p>${noViolationsText}</p>`;
+        }
+        const modalContent = document.getElementById('dayDetailsModalContent');
+        if (!modalContent)
+            return;
+        modalContent.innerHTML = content;
+        openModal('dayDetailsModal');
+        lucide.createIcons();
+    }
+    function showDayDetailsModalGreen(year, month, day) {
+        const clickedDate = new Date(year, month, day);
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const greenCardsOnDay = employees.flatMap(e => {
+            if (!e || !Array.isArray(e.greenCards))
+                return [];
+            return e.greenCards
+                .filter(gc => gc && gc.date)
+                .filter(gc => normalizeDateInput(gc.date) === dateStr)
+                .map(gc => ({
+                id: gc?.id,
+                name: e.name,
+                type: gc?.type,
+                comment: gc?.comment
+            }))
+                .filter(gc => gc.type);
+        });
+        const formatDate = typeof global.formatDateLong === 'function'
+            ? global.formatDateLong
+            : (date) => date.toLocaleDateString();
+        const dayTitle = translateArgs(I18N?.modals?.greenDayTitle || 'modals.greenDayTitle', { date: formatDate(clickedDate) }, `Green cards on ${formatDate(clickedDate)}`);
+        const noCardsText = translate(I18N?.modals?.noGreenCards || 'modals.noGreenCards', 'No green cards recorded for this day.');
+        const noCommentText = translate(I18N?.modals?.noComment || 'modals.noComment', 'No comment');
+        let content = `<button class="close-btn" onclick="closeModal('dayDetailsModal')"><i data-lucide="x" class="w-6 h-6"></i></button><h2 class="text-2xl font-bold text-gray-800 mb-4">${dayTitle}</h2>`;
+        if (greenCardsOnDay.length > 0) {
+            content += '<div class="space-y-3">';
+            greenCardsOnDay.forEach(gc => {
+                const safeComment = (gc?.comment || '').replace(/"/g, '&quot;');
+                const safeName = (gc?.name || '').replace(/"/g, '&quot;');
+                content += `
+                        <div class="flex items-start gap-3">
+                            <div class="w-3 h-3 mt-1.5 rounded-sm bg-green-500 flex-shrink-0"></div>
+                            <div class="text-gray-700">
+                                <strong>${gc.name} (${gc.type}):</strong> ${gc.comment || noCommentText}
+                            </div>
+                            <button class="ml-2 text-red-600 hover:text-red-700 js-delete-green-card" data-context="day" data-green-card-id="${(gc && Number.isFinite(gc.id)) ? gc.id : ''}" data-employee-name="${safeName}" data-date="${dateStr}" data-type="${gc?.type || ''}" data-comment="${safeComment}" title="Remove green card"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    `;
+            });
+            content += '</div>';
+        }
+        else {
+            content += `<p>${noCardsText}</p>`;
         }
         const modalContent = document.getElementById('dayDetailsModalContent');
         if (!modalContent)
@@ -344,6 +394,7 @@
     }
     global.showEmployeeModal = showEmployeeModal;
     global.showDayDetailsModal = showDayDetailsModal;
+    global.showDayDetailsModalGreen = showDayDetailsModalGreen;
     global.openEditEmployeeModal = openEditEmployeeModal;
     global.closeModal = closeModal;
     global.openModal = openModal;

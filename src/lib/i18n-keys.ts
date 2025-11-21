@@ -66,7 +66,9 @@
       greenCardsHeading: 'modals.greenCardsHeading',
       dayTitle: 'modals.dayTitle',
       noViolations: 'modals.noViolations',
-      noComment: 'modals.noComment'
+      noComment: 'modals.noComment',
+      greenDayTitle: 'modals.greenDayTitle',
+      noGreenCards: 'modals.noGreenCards'
     },
     badges: {
       new: 'badges.new',

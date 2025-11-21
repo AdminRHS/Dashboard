@@ -73,6 +73,8 @@
         'modals.dayTitle': { en: 'Violations on {date}', uk: 'Порушення за {date}', ru: 'Нарушения за {date}', de: 'Verstöße am {date}' },
         'modals.noViolations': { en: 'No violations recorded for this day.', uk: 'На цей день порушень не зафіксовано.', ru: 'На этот день нарушений не зарегистрировано.', de: 'Keine Verstöße für diesen Tag.' },
         'modals.noComment': { en: 'No comment', uk: 'Без коментаря', ru: 'Без комментария', de: 'Kein Kommentar' },
+        'modals.greenDayTitle': { en: 'Green cards on {date}', uk: 'Зелені картки за {date}', ru: 'Зелёные карточки за {date}', de: 'Grüne Karten am {date}' },
+        'modals.noGreenCards': { en: 'No green cards recorded for this day.', uk: 'На цей день зелених карток не зафіксовано.', ru: 'На этот день зелёных карточек не зарегистрировано.', de: 'Keine grünen Karten für diesen Tag.' },
         'badges.new': { en: 'New', uk: 'Новий', ru: 'Новый', de: 'Neu' },
         'badges.streak3': { en: '⭐ 3+ cards', uk: '⭐ 3+ карток', ru: '⭐ 3+ карточки', de: '⭐ 3+ Karten' },
         'badges.streak5': { en: '⭐ 5+ cards', uk: '⭐ 5+ карток', ru: '⭐ 5+ карточек', de: '⭐ 5+ Karten' },

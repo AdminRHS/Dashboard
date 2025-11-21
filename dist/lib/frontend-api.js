@@ -1,6 +1,6 @@
 (function registerFrontendApi(global) {
     const EMPLOYEE_CACHE_KEY = 'yellow-card-dashboard:employees-cache';
-    const EMPLOYEE_CACHE_TTL = 5 * 60 * 1000;
+    const EMPLOYEE_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
     let inflightLoadPromise = null;
     function getApiConfig() {
         if (typeof global.API_CONFIG !== 'undefined' && global.API_CONFIG)
@@ -16,9 +16,9 @@
             if (!raw)
                 return null;
             const parsed = JSON.parse(raw);
-            if (!Array.isArray(parsed?.data))
+            if (!Array.isArray(parsed.data))
                 return null;
-            if (!allowStale && parsed?.timestamp && Date.now() - parsed.timestamp > EMPLOYEE_CACHE_TTL) {
+            if (!allowStale && parsed.timestamp && Date.now() - parsed.timestamp > EMPLOYEE_CACHE_TTL) {
                 return null;
             }
             return parsed.data;
@@ -134,7 +134,7 @@
         else {
             invalidateEmployeesCache();
         }
-        const fetchPromise = async () => {
+        const fetchPromise = (async () => {
             try {
                 const endpoint = requireConfigEndpoint('getEmployees');
                 const response = await fetch(endpoint, {
@@ -153,7 +153,7 @@
             catch (error) {
                 console.error('Failed to load employees from API:', error);
                 const stale = readEmployeesCache({ allowStale: true });
-                if (stale?.length) {
+                if (stale && stale.length > 0) {
                     console.warn('Using stale employees cache');
                     return stale;
                 }
@@ -164,9 +164,9 @@
                     inflightLoadPromise = null;
                 }
             }
-        };
-        inflightLoadPromise = fetchPromise();
-        return inflightLoadPromise;
+        })();
+        inflightLoadPromise = fetchPromise;
+        return fetchPromise;
     }
     async function persistIfPossible() {
         updateSaveStatus('Saving...', 'saving');

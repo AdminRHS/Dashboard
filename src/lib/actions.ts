@@ -350,6 +350,16 @@
         } else {
           closeModal('employeeModal');
         }
+      } else if (meta && meta.context === 'day' && meta.date) {
+        const parts = meta.date.split('-');
+        if (parts.length === 3) {
+          const year = parseInt(parts[0], 10);
+          const month = parseInt(parts[1], 10) - 1;
+          const day = parseInt(parts[2], 10);
+          if (!Number.isNaN(year) && !Number.isNaN(month) && !Number.isNaN(day)) {
+            showDayDetailsModalGreen(year, month, day);
+          }
+        }
       }
     } else {
       updateSaveStatus('✗ Failed to remove green card', 'error');
