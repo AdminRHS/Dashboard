@@ -115,7 +115,7 @@ declare global {
   type Violation = DomainViolation;
   const I18N_KEYS: I18nKeyMap;
   const languageState: LanguageState;
-  const currentDate: Date;
+  let currentDate: Date;
   let currentDateGreen: Date;
   const employees: Employee[];
   const departmentColors: DepartmentColors;
@@ -178,6 +178,7 @@ declare global {
   function navigateToEmployee(name: string): void;
   function showEmployeeModal(data: Record<string, unknown>): void;
   function showDayDetailsModal(year: number, month: number, day: number): void;
+  function showDayDetailsModalGreen(year: number, month: number, day: number): void;
   function showDayDetailsModalGreen(year: number, month: number, day: number): void;
   function showDayDetailsModalGreen(year: number, month: number, day: number): void;
   function copyToClipboard(text: string, sourceElement?: HTMLElement): void;
@@ -265,6 +266,7 @@ declare global {
     navigateToEmployee: typeof navigateToEmployee;
     showEmployeeModal: typeof showEmployeeModal;
     showDayDetailsModal: typeof showDayDetailsModal;
+    showDayDetailsModalGreen: typeof showDayDetailsModalGreen;
     showDayDetailsModalGreen: typeof showDayDetailsModalGreen;
     showDayDetailsModalGreen: typeof showDayDetailsModalGreen;
     copyToClipboard: typeof copyToClipboard;

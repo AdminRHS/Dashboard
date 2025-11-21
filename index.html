@@ -834,7 +834,7 @@
                             <h4 class="font-bold text-lg mb-4 flex items-center gap-2" style="color: var(--color-primary-main);"><i data-lucide="file-text" class="w-5 h-5"></i><span data-i18n-key="cards.documentation">Documentation</span></h4>
                             <ul class="space-y-2">
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">No Daily file for working day</li>
-                                <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">Insufficient detail (<3 sentences)</li>
+                                <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">Insufficient detail (&lt;3 sentences)</li>
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">No links to work outputs</li>
                                 <li class="bg-white p-3 rounded-md text-gray-600 border-l-4" style="border-color: var(--color-primary-main);">Wrong folder structure</li>
                             </ul>
@@ -1336,18 +1336,6 @@
         .badge-new { background-color: #e0e7ff; color: #4338ca; }
         .badge-streak { background-color: #dcfce7; color: #166534; }
     </style>
-    <script src="dist/lib/i18n-keys.js"></script>
-    <script src="dist/lib/language-state.js"></script>
-    <script src="dist/lib/i18n.js"></script>
-    <script src="dist/components/layout.js"></script>
-    <script src="dist/lib/modals.js"></script>
-    <script src="dist/lib/calendar.js"></script>
-    <script src="dist/lib/tables.js"></script>
-    <script src="dist/lib/leaderboard.js"></script>
-    <script src="dist/lib/render-stats.js"></script>
-    <script src="dist/lib/frontend-api.js"></script>
-    <script src="dist/lib/actions.js"></script>
-    <script src="dist/lib/ui.js"></script>
-    <script src="dist/lib/theme.js"></script>
+    <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

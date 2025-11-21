@@ -5,7 +5,6 @@
 
   function getApiConfig(): ApiConfig | null {
     if (typeof global.API_CONFIG !== 'undefined' && global.API_CONFIG) return global.API_CONFIG;
-    if (typeof API_CONFIG !== 'undefined' && API_CONFIG) return API_CONFIG;
     return null;
   }
 
