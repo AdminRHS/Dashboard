@@ -44,13 +44,30 @@
     }
   }
 
+  function requireConfigEndpoint<K extends keyof ApiConfig>(key: K): string {
+    const cfg = getApiConfig();
+    const endpoint = cfg?.[key];
+    if (typeof endpoint !== 'string' || !endpoint.length) {
+      throw new Error(`API_CONFIG.${String(key)} is not defined`);
+    }
+    return endpoint;
+  }
+
+  function buildApiUrl(path: string): string {
+    const cfg = getApiConfig();
+    const baseUrl = cfg?.baseUrl;
+    if (baseUrl) {
+      const normalizedBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+      const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+      return `${normalizedBase}${normalizedPath}`;
+    }
+    return path;
+  }
+
   async function addViolationViaAPI(employeeId: number, violation: Violation): Promise<boolean> {
     try {
-      const cfg = getApiConfig();
-      if (!cfg || !cfg.addViolation) {
-        throw new Error('API_CONFIG.addViolation is not defined');
-      }
-      const response = await fetch(cfg.addViolation, {
+      const endpoint = requireConfigEndpoint('addViolation');
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,14 +95,11 @@
 
   async function saveViaAPI(): Promise<boolean> {
     try {
-      const cfg = getApiConfig();
-      if (!cfg || !cfg.updateData) {
-        throw new Error('API_CONFIG.updateData is not defined');
-      }
+      const endpoint = requireConfigEndpoint('updateData');
       const payloadData = typeof global.serializeData === 'function'
         ? global.serializeData()
         : JSON.stringify((typeof global.employees !== 'undefined' ? global.employees : []), null, 2);
-      const response = await fetch(cfg.updateData, {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -126,11 +140,8 @@
 
     const fetchPromise = (async () => {
       try {
-        const cfg = getApiConfig();
-        if (!cfg || !cfg.getEmployees) {
-          throw new Error('API_CONFIG.getEmployees is not defined');
-        }
-        const response = await fetch(cfg.getEmployees, {
+        const endpoint = requireConfigEndpoint('getEmployees');
+        const response = await fetch(endpoint, {
           headers: { 'Cache-Control': 'no-cache' }
         });
         if (!response.ok) {
@@ -181,9 +192,7 @@
 
   async function deleteViolation(input: Record<string, unknown>): Promise<boolean> {
     try {
-      const cfg = getApiConfig();
-      const url = (cfg && cfg.baseUrl) ? `${cfg.baseUrl}/delete-violation` : '/api/delete-violation';
-      const response = await fetch(url, {
+      const response = await fetch(buildApiUrl('/delete-violation'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input)
@@ -204,9 +213,7 @@
 
   async function createEmployeeRemote(employee: Employee): Promise<Employee | null> {
     try {
-      const cfg = getApiConfig();
-      const url = (cfg && cfg.baseUrl) ? `${cfg.baseUrl}/add-employee` : '/api/add-employee';
-      const response = await fetch(url, {
+      const response = await fetch(buildApiUrl('/add-employee'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(employee)
@@ -228,9 +235,7 @@
 
   async function removeEmployeeRemote(id: number): Promise<boolean> {
     try {
-      const cfg = getApiConfig();
-      const url = (cfg && cfg.baseUrl) ? `${cfg.baseUrl}/remove-employee` : '/api/remove-employee';
-      const response = await fetch(url, {
+      const response = await fetch(buildApiUrl('/remove-employee'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id })
@@ -251,15 +256,12 @@
 
   async function updateEmployeeRemote(employee: Employee): Promise<boolean> {
     try {
-      const cfg = getApiConfig();
-      const url = (cfg && cfg.baseUrl) ? `${cfg.baseUrl}/update-employee` : '/api/update-employee';
-
       const payload = {
         ...employee,
         id: typeof employee.id === 'string' ? parseInt(employee.id, 10) : employee.id
       };
 
-      const response = await fetch(url, {
+      const response = await fetch(buildApiUrl('/update-employee'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -284,9 +286,7 @@
 
   async function addGreenCardViaAPI(employeeId: number, greenCard: GreenCard): Promise<{ success: boolean; id?: number } | false> {
     try {
-      const cfg = getApiConfig();
-      const url = (cfg && cfg.baseUrl) ? `${cfg.baseUrl}/add-green-card` : '/api/add-green-card';
-      const response = await fetch(url, {
+      const response = await fetch(buildApiUrl('/add-green-card'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -316,9 +316,7 @@
 
   async function deleteGreenCard(input: Record<string, unknown>): Promise<boolean> {
     try {
-      const cfg = getApiConfig();
-      const url = (cfg && cfg.baseUrl) ? `${cfg.baseUrl}/delete-green-card` : '/api/delete-green-card';
-      const response = await fetch(url, {
+      const response = await fetch(buildApiUrl('/delete-green-card'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(input)
