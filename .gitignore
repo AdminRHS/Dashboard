@@ -6,4 +6,9 @@ npm-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Docker та Environment files
+.env.production
+.env.local
+postgres-data/
+
 

@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: yellowcard-dashboard
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://yellowcard_user:${DB_PASSWORD}@postgres:5432/yellowcard_db
+      - PORT=${PORT:-3000}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - traefik-public
+      - internal
+    labels:
+      # Увімкнути Traefik для цього контейнера
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-public"
+
+      # HTTP Router (port 80) - редирект на HTTPS
+      - "traefik.http.routers.yellowcard-http.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.yellowcard-http.entrypoints=web"
+      - "traefik.http.routers.yellowcard-http.middlewares=https-redirect"
+
+      # HTTPS Router (port 443) - головний роутер
+      - "traefik.http.routers.yellowcard-https.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.yellowcard-https.entrypoints=websecure"
+      - "traefik.http.routers.yellowcard-https.tls=true"
+      - "traefik.http.routers.yellowcard-https.tls.certresolver=letsencrypt"
+
+      # Service - вказуємо внутрішній порт контейнера
+      - "traefik.http.services.yellowcard.loadbalancer.server.port=${PORT:-3000}"
+
+      # Middleware для HTTP → HTTPS redirect
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: yellowcard-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=yellowcard_user
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=yellowcard_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      # Розкоментуйте наступний рядок для автоматичного створення таблиць при першому запуску:
+      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U yellowcard_user -d yellowcard_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    # Розкоментуйте наступні рядки для локального доступу до PostgreSQL (для debugging):
+    # ports:
+    #   - "5432:5432"
+
+networks:
+  # External network для Traefik
+  # Має бути створена заздалегідь: docker network create traefik-public
+  traefik-public:
+    external: true
+
+  # Internal network для комунікації app <-> postgres
+  internal:
+    driver: bridge
+
+volumes:
+  # Named volume для PostgreSQL persistent storage
+  postgres-data:
+    driver: local
