@@ -20,8 +20,9 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Встановити тільки production dependencies
-RUN npm install express@4.18.2 postgres@3.4.3 cors@2.8.5
+# Створити package.json для ES modules та встановити dependencies
+RUN echo '{"type":"module"}' > package.json && \
+    npm install express@4.18.2 postgres@3.4.3 cors@2.8.5
 
 # Копіювати зібраний frontend зі stage 1
 COPY --from=builder /app/dist ./dist

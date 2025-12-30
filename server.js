@@ -1,7 +1,11 @@
-const express = require('express');
-const path = require('path');
-const fs = require('fs');
-const cors = require('cors');
+import express from 'express';
+import path from 'path';
+import fs from 'fs';
+import cors from 'cors';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -34,29 +38,28 @@ const apiFiles = fs.readdirSync(apiDir).filter(f => f.endsWith('.js'));
 
 console.log(`\nFound ${apiFiles.length} API endpoints:`);
 
-apiFiles.forEach(file => {
-  const routeName = file.replace('.js', ''); // delete-violation.js → delete-violation
+// Асинхронне завантаження endpoints
+for (const file of apiFiles) {
+  const routeName = file.replace('.js', '');
   const apiPath = `/api/${routeName}`;
 
   try {
-    // Динамічний import Vercel handler
-    // Vercel Functions експортують: export default async function handler(req, res)
-    const handlerModule = require(path.join(apiDir, file));
+    // Динамічний import для ES modules
+    const apiFilePath = path.join(apiDir, file);
+    const handlerModule = await import(`file://${apiFilePath}`);
     const handler = handlerModule.default || handlerModule;
 
     if (typeof handler !== 'function') {
       console.warn(`⚠ Warning: ${file} does not export a handler function`);
-      return;
+      continue;
     }
 
     // Adapter для Vercel-style handler → Express middleware
-    // Vercel handler сумісний з Express req/res, тому просто передаємо їх
     app.all(apiPath, async (req, res) => {
       try {
         await handler(req, res);
       } catch (error) {
         console.error(`Error in ${apiPath}:`, error);
-        // Перевіряємо чи response вже відправлено
         if (!res.headersSent) {
           res.status(500).json({
             error: 'Internal server error',
@@ -70,7 +73,7 @@ apiFiles.forEach(file => {
   } catch (error) {
     console.error(`  ✗ Failed to load ${file}:`, error.message);
   }
-});
+}
 
 // Обслуговування статичних файлів з dist/
 const distDir = path.join(__dirname, 'dist');
@@ -84,14 +87,11 @@ if (!fs.existsSync(distDir)) {
 console.log('\nServing static files from: dist/');
 app.use(express.static(distDir));
 
-// SPA fallback: всі невідомі роути → index.html
-// Це потрібно для HTML5 History API (client-side routing)
+// SPA fallback
 app.get('*', (req, res) => {
-  // Ігноруємо API роути
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'API endpoint not found' });
   }
-
   res.sendFile(path.join(distDir, 'index.html'));
 });
 
