@@ -16,27 +16,12 @@ services:
       - traefik-public
       - internal
     labels:
-      # Увімкнути Traefik для цього контейнера
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik-public"
-
-      # HTTP Router (port 80) - редирект на HTTPS
-      - "traefik.http.routers.yellowcard-http.rule=Host(`${DOMAIN}`)"
-      - "traefik.http.routers.yellowcard-http.entrypoints=web"
-      - "traefik.http.routers.yellowcard-http.middlewares=https-redirect"
-
-      # HTTPS Router (port 443) - головний роутер
-      - "traefik.http.routers.yellowcard-https.rule=Host(`${DOMAIN}`)"
-      - "traefik.http.routers.yellowcard-https.entrypoints=websecure"
-      - "traefik.http.routers.yellowcard-https.tls=true"
-      - "traefik.http.routers.yellowcard-https.tls.certresolver=letsencrypt"
-
-      # Service - вказуємо внутрішній порт контейнера
-      - "traefik.http.services.yellowcard.loadbalancer.server.port=${PORT:-3000}"
-
-      # Middleware для HTTP → HTTPS redirect
-      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
+      - "traefik.http.routers.yellowcard-dashboard.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.yellowcard-dashboard.entrypoints=https"
+      - "traefik.http.routers.yellowcard-dashboard.tls=true"
+      - "traefik.http.routers.yellowcard-dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.services.yellowcard-dashboard.loadbalancer.server.port=${PORT:-3000}"
 
   postgres:
     image: postgres:15-alpine
