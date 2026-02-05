@@ -1,60 +1,14 @@
 (function registerFrontendApi(global: Window & typeof globalThis) {
-  const EMPLOYEE_CACHE_KEY = 'yellow-card-dashboard:employees-cache';
-  const EMPLOYEE_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
   let inflightLoadPromise: Promise<Employee[]> | null = null;
-  let backgroundRefreshTimer: number | null = null;
 
   function getApiConfig(): ApiConfig | null {
     if (typeof global.API_CONFIG !== 'undefined' && global.API_CONFIG) return global.API_CONFIG;
     return null;
   }
 
-  function readEmployeesCache(options: { allowStale?: boolean } = {}): Employee[] | null {
-    const { allowStale = false } = options;
-    try {
-      const raw = localStorage.getItem(EMPLOYEE_CACHE_KEY);
-      if (!raw) return null;
-      const parsed = JSON.parse(raw) as { data?: Employee[]; timestamp?: number };
-      if (!Array.isArray(parsed.data)) return null;
-      if (!allowStale && parsed.timestamp && Date.now() - parsed.timestamp > EMPLOYEE_CACHE_TTL) {
-        return null;
-      }
-      return parsed.data;
-    } catch (error) {
-      console.warn('Failed to read employees cache', error);
-      return null;
-    }
-  }
 
-  function writeEmployeesCache(data: Employee[]): void {
-    try {
-      const payload = JSON.stringify({ data, timestamp: Date.now() });
-      localStorage.setItem(EMPLOYEE_CACHE_KEY, payload);
-    } catch (error) {
-      console.warn('Failed to persist employees cache', error);
-    }
-  }
 
-  function invalidateEmployeesCache(): void {
-    inflightLoadPromise = null;
-    try {
-      localStorage.removeItem(EMPLOYEE_CACHE_KEY);
-    } catch (error) {
-      console.warn('Failed to invalidate employees cache', error);
-    }
-  }
 
-  function scheduleBackgroundRefresh(delay = 750): void {
-    if (backgroundRefreshTimer !== null) {
-      return;
-    }
-    backgroundRefreshTimer = window.setTimeout(() => {
-      backgroundRefreshTimer = null;
-      executeNetworkLoad().catch((error) => {
-        console.warn('Background refresh failed', error);
-      });
-    }, delay);
-  }
 
   function requireConfigEndpoint<K extends keyof ApiConfig>(key: K): string {
     const cfg = getApiConfig();
@@ -96,8 +50,7 @@
 
       const result = await response.json();
       if (result.success) {
-        invalidateEmployeesCache();
-      }
+        }
       return !!result.success;
     } catch (error) {
       console.error('API add violation failed:', error);
@@ -128,8 +81,7 @@
 
       const result = await response.json();
       if (result.success) {
-        invalidateEmployeesCache();
-      }
+        }
       return !!result.success;
     } catch (error) {
       console.error('API save error:', error);
@@ -151,17 +103,11 @@
         }
         const result = await response.json();
         if (Array.isArray(result)) {
-          writeEmployeesCache(result);
           return result;
         }
         return [];
       } catch (error) {
         console.error('Failed to load employees from API:', error);
-        const stale = readEmployeesCache({ allowStale: true });
-        if (stale && stale.length > 0) {
-          console.warn('Using stale employees cache');
-          return stale;
-        }
         return [];
       } finally {
         inflightLoadPromise = null;
@@ -172,19 +118,9 @@
   }
 
   async function loadEmployeesFromAPI(forceRefresh = false): Promise<Employee[]> {
-    if (!forceRefresh) {
-      const cached = readEmployeesCache();
-      if (cached) {
-        scheduleBackgroundRefresh();
-        return cached;
-      }
-      if (inflightLoadPromise) {
-        return inflightLoadPromise;
-      }
-    } else {
-      invalidateEmployeesCache();
+    if (inflightLoadPromise) {
+      return inflightLoadPromise;
     }
-
     return executeNetworkLoad();
   }
 
@@ -195,8 +131,7 @@
       if (success) {
         console.log('Data saved via PostgreSQL API');
         updateSaveStatus('✓ Saved', 'success');
-        invalidateEmployeesCache();
-      } else {
+        } else {
         console.error('Failed to save via PostgreSQL API');
         updateSaveStatus('✗ Failed to save', 'error');
       }
@@ -218,8 +153,7 @@
       }
       const result = await response.json();
       if (result.success) {
-        invalidateEmployeesCache();
-      }
+        }
       return !!result.success;
     } catch (err) {
       console.error('Failed to delete violation:', err);
@@ -240,8 +174,7 @@
         throw new Error(message);
       }
       if (result.employee) {
-        invalidateEmployeesCache();
-      }
+        }
       return result.employee || null;
     } catch (err) {
       console.error('Failed to create employee:', err);
@@ -261,8 +194,7 @@
       }
       const result = await response.json();
       if (result.success) {
-        invalidateEmployeesCache();
-      }
+        }
       return !!result.success;
     } catch (err) {
       console.error('Failed to remove employee:', err);
@@ -291,8 +223,7 @@
       }
 
       if (result.success) {
-        invalidateEmployeesCache();
-      }
+        }
       return !!result.success;
     } catch (err) {
       console.error('Failed to update employee:', err);
@@ -320,8 +251,7 @@
 
       const result = await response.json();
       if (result.success) {
-        invalidateEmployeesCache();
-        return result;
+          return result;
       }
       return false;
     } catch (error) {
@@ -342,8 +272,7 @@
       }
       const result = await response.json();
       if (result.success) {
-        invalidateEmployeesCache();
-      }
+        }
       return !!result.success;
     } catch (err) {
       console.error('Failed to delete green card:', err);

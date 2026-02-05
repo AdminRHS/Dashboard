@@ -276,7 +276,7 @@
     });
 
     document.querySelectorAll<HTMLElement>('.team-member')
-      .forEach(member => member.addEventListener('click', () => showEmployeeModal(member.dataset as unknown as Record<string, any>)));
+      .forEach(member => member.addEventListener('click', () => navigateToEmployee(member.dataset.name || '')));
   }
 
   function renderModals(): void {

@@ -103,9 +103,9 @@
                     <div class="pedestal-card" style="border-color: ${deptColor}; width: 200px;">
                         ${crown}
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-                                <span class="font-bold text-gray-500 text-sm">${initials}</span>
-                            </div>
+                            ${emp.avatar
+                                ? `<div class="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden border border-gray-200"><img src="${emp.avatar}" alt="${emp.name}" class="w-full h-full object-cover"></div>`
+                                : `<div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0"><span class="font-bold text-gray-500 text-sm">${initials}</span></div>`}
                             <div class="text-left overflow-hidden">
                                 <h4 class="font-bold text-gray-800 text-sm truncate">${emp.name}</h4>
                                 <div class="text-xs truncate font-semibold" style="color: ${deptColor};">${emp.role}</div>
