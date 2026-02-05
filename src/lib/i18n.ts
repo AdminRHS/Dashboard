@@ -7,7 +7,7 @@
   type TranslationMap = Record<string, TranslationEntry>;
 
   const TRANSLATIONS: TranslationMap = {
-    [KEYS.header.title]: { en: 'Yellow Cards', uk: 'Жовті картки', ru: 'Жёлтые карточки', de: 'Gelbe Karten' },
+    [KEYS.header.title]: { en: 'Team Performance', uk: 'Результати команди', ru: 'Результаты команды', de: 'Teamleistung' },
     [KEYS.nav.overview]: { en: 'Overview', uk: 'Огляд', ru: 'Обзор', de: 'Übersicht' },
     [KEYS.nav.yellowCards]: { en: 'Yellow Cards', uk: 'Жовті картки', ru: 'Жёлтые карточки', de: 'Gelbe Karten' },
     [KEYS.nav.yellowCardsShort]: { en: 'Yellow', uk: 'Жовті', ru: 'Жёлтые', de: 'Gelb' },
@@ -221,5 +221,6 @@
   global.formatDateLong = formatDateLong;
   global.translateWithArgs = translateWithArgs;
 })(window);
+
 
 
