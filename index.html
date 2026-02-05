@@ -1382,7 +1382,10 @@
             } else {
                 document.getElementById('adminPinInput').value = '';
                 document.getElementById('adminPinError').classList.add('hidden');
-                showModal('adminPinModal');
+                var m = document.getElementById('adminPinModal');
+                m.style.display = 'flex';
+                m.classList.add('active');
+                document.body.classList.add('modal-open');
                 setTimeout(function() { document.getElementById('adminPinInput').focus(); }, 150);
             }
         };
@@ -1416,4 +1419,5 @@
     </script>
 </body>
 </html>
+
 
