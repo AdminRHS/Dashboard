@@ -30,20 +30,39 @@
     return path;
   }
 
+
+
+  function handleForbidden(response: Response): boolean {
+    if (response.status === 403) {
+      if (typeof (global as any).toggleAdminModal === 'function') {
+        (global as any).toggleAdminModal();
+      }
+      return true;
+    }
+    return false;
+  }
+
+  function getAuthHeaders(): Record<string, string> {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if ((global as any).adminToken) {
+      headers['Authorization'] = `Bearer ${(global as any).adminToken}`;
+    }
+    return headers;
+  }
+
   async function addViolationViaAPI(employeeId: number, violation: Violation): Promise<boolean> {
     try {
       const endpoint = requireConfigEndpoint('addViolation');
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           employeeId,
           violation
         })
       });
 
+      if (handleForbidden(response)) return false;
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -66,15 +85,14 @@
         : JSON.stringify((typeof global.employees !== 'undefined' ? global.employees : []), null, 2);
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           data: payloadData,
           commitMessage: `Update data.json - ${new Date().toISOString()}`
         })
       });
 
+      if (handleForbidden(response)) return false;
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -145,9 +163,10 @@
     try {
       const response = await fetch(buildApiUrl('/delete-violation'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(input)
       });
+      if (handleForbidden(response)) return false;
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -165,9 +184,10 @@
     try {
       const response = await fetch(buildApiUrl('/add-employee'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(employee)
       });
+      if (handleForbidden(response)) return null;
       const result = await response.json();
       if (!response.ok) {
         const message = result?.details || result?.error || `HTTP error! status: ${response.status}`;
@@ -186,9 +206,10 @@
     try {
       const response = await fetch(buildApiUrl('/remove-employee'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ id })
       });
+      if (handleForbidden(response)) return false;
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -211,10 +232,11 @@
 
       const response = await fetch(buildApiUrl('/update-employee'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(payload)
       });
 
+      if (handleForbidden(response)) return false;
       const result = await response.json();
 
       if (!response.ok) {
@@ -235,15 +257,14 @@
     try {
       const response = await fetch(buildApiUrl('/add-green-card'), {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           employeeId,
           greenCard
         })
       });
 
+      if (handleForbidden(response)) return false;
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
         throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
@@ -264,9 +285,10 @@
     try {
       const response = await fetch(buildApiUrl('/delete-green-card'), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(input)
       });
+      if (handleForbidden(response)) return false;
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -291,5 +313,6 @@
   global.addGreenCardViaAPI = addGreenCardViaAPI;
   global.deleteGreenCard = deleteGreenCard;
 })(window);
+
 
 

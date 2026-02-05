@@ -26,6 +26,24 @@ app.use(cors({
   credentials: true
 }));
 
+
+// Admin auth — protects all POST /api/* except /api/verify-admin
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
+if (ADMIN_TOKEN) {
+  console.log('Admin auth: enabled');
+} else {
+  console.log('Admin auth: DISABLED (set ADMIN_TOKEN in .env)');
+}
+
+app.use((req, res, next) => {
+  if (req.method !== 'POST' || !req.path.startsWith('/api/')) return next();
+  if (req.path === '/api/verify-admin') return next();
+  if (!ADMIN_TOKEN) return next();
+  const auth = req.headers['authorization'];
+  if (auth === `Bearer ${ADMIN_TOKEN}`) return next();
+  return res.status(403).json({ error: 'Forbidden' });
+});
+
 // Динамічне завантаження всіх API endpoints з папки api/
 const apiDir = path.join(__dirname, 'api');
 

@@ -112,7 +112,7 @@
           return `<li class="flex items-start gap-3">
                                     <div class="w-3 h-3 mt-1 rounded-sm flex-shrink-0" style="background-color:${violationIndicatorColor}"></div>
                                     <div class="flex-1"><strong>${label} [${v.type}]</strong>: ${v.comment || noCommentText}</div>
-                                    <button class="ml-2 text-red-600 hover:text-red-700 js-delete-violation" data-context="employee" data-violation-id="${(v && Number.isFinite(v.id)) ? v.id : ''}" data-employee-name="${employee.name.replace(/"/g, '&quot;')}" data-date="${iso}" data-type="${v?.type || ''}" data-comment="${(v?.comment || '').replace(/"/g, '&quot;')}" title="Remove card"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                    <button class="ml-2 text-red-600 hover:text-red-700 js-delete-violation admin-only" data-context="employee" data-violation-id="${(v && Number.isFinite(v.id)) ? v.id : ''}" data-employee-name="${employee.name.replace(/"/g, '&quot;')}" data-date="${iso}" data-type="${v?.type || ''}" data-comment="${(v?.comment || '').replace(/"/g, '&quot;')}" title="Remove card"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                 </li>`;
         }).join('')
       }</ul></div>`
@@ -125,7 +125,7 @@
           return `<li class="flex items-start gap-3">
                                     <div class="w-3 h-3 mt-1 rounded-sm flex-shrink-0" style="background-color:#22c55e;"></div>
                                     <div class="flex-1"><strong>${label} [${gc.type}]</strong>: ${gc.comment || noCommentText}</div>
-                                    <button class="ml-2 text-red-600 hover:text-red-700 js-delete-green-card" data-context="employee" data-green-card-id="${(gc && Number.isFinite(gc.id)) ? gc.id : ''}" data-employee-name="${employee.name.replace(/"/g, '&quot;')}" data-date="${iso}" data-type="${gc?.type || ''}" data-comment="${(gc?.comment || '').replace(/"/g, '&quot;')}" title="Remove green card"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                    <button class="ml-2 text-red-600 hover:text-red-700 js-delete-green-card admin-only" data-context="employee" data-green-card-id="${(gc && Number.isFinite(gc.id)) ? gc.id : ''}" data-employee-name="${employee.name.replace(/"/g, '&quot;')}" data-date="${iso}" data-type="${gc?.type || ''}" data-comment="${(gc?.comment || '').replace(/"/g, '&quot;')}" title="Remove green card"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                 </li>`;
         }).join('')
       }</ul></div>`
@@ -191,7 +191,7 @@
                 ${greenCardsList}
                 
                 <div class="flex justify-start gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-                    <button class="action-button-secondary" onclick="openEditEmployeeModal('${data.name}')"><i data-lucide="edit" class="w-4 h-4"></i><span>Edit</span></button>
+                    <button class="action-button-secondary admin-only" onclick="openEditEmployeeModal('${data.name}')"><i data-lucide="edit" class="w-4 h-4"></i><span>Edit</span></button>
                     <button class="action-button" onclick="openGiveCardModalForEmployee('${data.name}')"><i data-lucide="alert-triangle" class="w-4 h-4"></i><span>Give Yellow Card</span></button>
                     <button class="action-button-success" onclick="openGiveGreenCardModalForEmployee('${data.name}')"><i data-lucide="check-circle" class="w-4 h-4"></i><span>Give Green Card</span></button>
                 </div>
@@ -243,7 +243,7 @@
                             <div class="text-gray-700">
                                 <strong>${v.name} (${v.type}):</strong> ${v.comment || noCommentText}
                             </div>
-                            <button class="ml-2 text-red-600 hover:text-red-700 js-delete-violation" data-context="day" data-violation-id="${(v && Number.isFinite(v.id)) ? v.id : ''}" data-employee-name="${(v?.name || '').replace(/"/g, '&quot;')}" data-date="${dateStr}" data-type="${v?.type || ''}" data-comment="${(v?.comment || '').replace(/"/g, '&quot;')}" title="Remove card"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            <button class="ml-2 text-red-600 hover:text-red-700 js-delete-violation admin-only" data-context="day" data-violation-id="${(v && Number.isFinite(v.id)) ? v.id : ''}" data-employee-name="${(v?.name || '').replace(/"/g, '&quot;')}" data-date="${dateStr}" data-type="${v?.type || ''}" data-comment="${(v?.comment || '').replace(/"/g, '&quot;')}" title="Remove card"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </div>
                     `;
       });
@@ -300,7 +300,7 @@
                             <div class="text-gray-700">
                                 <strong>${gc.name} (${gc.type}):</strong> ${gc.comment || noCommentText}
                             </div>
-                            <button class="ml-2 text-red-600 hover:text-red-700 js-delete-green-card" data-context="day" data-green-card-id="${(gc && Number.isFinite(gc.id)) ? gc.id : ''}" data-employee-name="${safeName}" data-date="${dateStr}" data-type="${gc?.type || ''}" data-comment="${safeComment}" title="Remove green card"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            <button class="ml-2 text-red-600 hover:text-red-700 js-delete-green-card admin-only" data-context="day" data-green-card-id="${(gc && Number.isFinite(gc.id)) ? gc.id : ''}" data-employee-name="${safeName}" data-date="${dateStr}" data-type="${gc?.type || ''}" data-comment="${safeComment}" title="Remove green card"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </div>
                     `;
       });
@@ -438,5 +438,6 @@
   global.openGiveCardModal = openGiveCardModal;
   global.openGiveGreenCardModal = openGiveGreenCardModal;
 })(window);
+
 
 

@@ -465,7 +465,9 @@
             position: relative;
         }
 
-    </style>
+            /* Admin-only elements hidden when not in admin mode */
+        body:not(.admin-mode) .admin-only { display: none !important; }
+</style>
     <style>
         /* Detailed Breakdown cards styles -- MODIFIED */
         .detailed-stat-card-v2 { 
@@ -809,6 +811,9 @@
                     <button id="theme-toggle-btn" class="tab-btn px-3 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all" onclick="toggleTheme()">
                         <i data-lucide="moon" class="inline w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2"></i><span id="theme-toggle-text" class="hidden sm:inline">Dark Mode</span><span class="sm:hidden" data-i18n-key="theme.darkShort">Dark</span>
                     </button>
+                    <button id="admin-lock-btn" class="tab-btn px-2 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-full transition-all" onclick="toggleAdminModal()">
+                        <i data-lucide="lock" class="inline w-3 h-3 sm:w-4 sm:h-4"></i><span class="hidden sm:inline ml-1">Admin</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -874,7 +879,7 @@
                 <section class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6 pb-3 border-b border-gray-200">
                         <h2 class="text-xl sm:text-2xl font-bold text-gray-800" data-i18n-key="section.currentMonthStatus">Current Month Status</h2>
-                        <button class="action-button w-full sm:w-auto" onclick="openGiveCardModal()">
+                        <button class="action-button admin-only w-full sm:w-auto" onclick="openGiveCardModal()">
                             <i data-lucide="alert-triangle" class="w-4 h-4"></i>
                             <span data-i18n-key="button.giveYellowCard">Give Yellow Card</span>
                         </button>
@@ -906,7 +911,7 @@
                 <section class="bg-white p-4 sm:p-6 rounded-xl shadow-lg">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6 pb-3 border-b border-gray-200">
                         <h2 class="text-xl sm:text-2xl font-bold text-gray-800" data-i18n-key="section.greenCurrentStatus">Current Month Status</h2>
-                        <button class="action-button-success w-full sm:w-auto" onclick="openGiveGreenCardModal()">
+                        <button class="action-button-success admin-only w-full sm:w-auto" onclick="openGiveGreenCardModal()">
                             <i data-lucide="check-circle" class="w-4 h-4"></i>
                             <span data-i18n-key="button.giveGreenCard">Give Green Card</span>
                         </button>
@@ -929,11 +934,11 @@
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6 pb-3 border-b border-gray-200">
                         <h2 id="team-structure-heading" class="text-xl sm:text-2xl font-bold text-gray-800"><span data-i18n-key="section.teamStructure">Team Structure</span> <span id="team-count-label" class="text-sm text-gray-500"></span></h2>
                         <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
-                            <button class="action-button-success w-full sm:w-auto" onclick="openAddEmployeeModal()">
+                            <button class="action-button-success admin-only w-full sm:w-auto" onclick="openAddEmployeeModal()">
                                 <i data-lucide="user-plus" class="w-4 h-4"></i>
                                 <span data-i18n-key="button.addEmployee">Add Employee</span>
                             </button>
-                            <button class="action-button-delete w-full sm:w-auto" onclick="openRemoveEmployeeModal()">
+                            <button class="action-button-delete admin-only w-full sm:w-auto" onclick="openRemoveEmployeeModal()">
                                 <i data-lucide="user-minus" class="w-4 h-4"></i>
                                 <span data-i18n-key="button.removeEmployee">Remove Employee</span>
                             </button>
@@ -1338,6 +1343,77 @@
         .badge-streak { background-color: #dcfce7; color: #166534; }
     </style>
     <script type="module" src="/src/main.ts"></script>
+
+    <!-- Admin PIN Modal -->
+    <div id="adminPinModal" class="modal">
+        <div class="modal-content" style="max-width:420px; text-align:center;">
+            <button class="close-btn" onclick="closeModal('adminPinModal')"><i data-lucide="x" class="w-6 h-6"></i></button>
+            <div class="mb-6 mt-2">
+                <i data-lucide="shield" class="w-12 h-12 mx-auto text-emerald-500 mb-3"></i>
+                <h2 class="text-xl font-bold text-gray-800">Admin Mode</h2>
+                <p class="text-gray-500 text-sm mt-1">Enter PIN to enable card management</p>
+            </div>
+            <input type="password" id="adminPinInput" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-center text-lg tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="••••" autocomplete="off" onkeydown="if(event.key==='Enter') submitAdminPin()">
+            <div id="adminPinError" class="text-red-500 text-sm text-center mt-2 hidden">Incorrect PIN</div>
+            <button class="action-button-success w-full mt-4" onclick="submitAdminPin()">
+                <i data-lucide="unlock" class="w-4 h-4"></i>
+                <span>Unlock</span>
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+    (function() {
+        var token = sessionStorage.getItem('adminToken');
+        if (token) {
+            document.body.classList.add('admin-mode');
+            window.adminToken = token;
+            document.getElementById('admin-lock-btn').innerHTML = '<i data-lucide="unlock" class="inline w-3 h-3 sm:w-4 sm:h-4"></i><span class="hidden sm:inline ml-1 text-emerald-600">Admin</span>';
+        }
+
+        window.toggleAdminModal = function() {
+            if (document.body.classList.contains('admin-mode')) {
+                sessionStorage.removeItem('adminToken');
+                document.body.classList.remove('admin-mode');
+                delete window.adminToken;
+                document.getElementById('admin-lock-btn').innerHTML = '<i data-lucide="lock" class="inline w-3 h-3 sm:w-4 sm:h-4"></i><span class="hidden sm:inline ml-1">Admin</span>';
+                lucide.createIcons();
+            } else {
+                document.getElementById('adminPinInput').value = '';
+                document.getElementById('adminPinError').classList.add('hidden');
+                showModal('adminPinModal');
+                setTimeout(function() { document.getElementById('adminPinInput').focus(); }, 150);
+            }
+        };
+
+        window.submitAdminPin = async function() {
+            var pin = document.getElementById('adminPinInput').value;
+            if (!pin) return;
+            try {
+                var res = await fetch('/api/verify-admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: pin })
+                });
+                if (res.ok) {
+                    sessionStorage.setItem('adminToken', pin);
+                    window.adminToken = pin;
+                    document.body.classList.add('admin-mode');
+                    document.getElementById('admin-lock-btn').innerHTML = '<i data-lucide="unlock" class="inline w-3 h-3 sm:w-4 sm:h-4"></i><span class="hidden sm:inline ml-1 text-emerald-600">Admin</span>';
+                    lucide.createIcons();
+                    closeModal('adminPinModal');
+                } else {
+                    document.getElementById('adminPinError').classList.remove('hidden');
+                    document.getElementById('adminPinInput').value = '';
+                    document.getElementById('adminPinInput').focus();
+                }
+            } catch (e) {
+                document.getElementById('adminPinError').classList.remove('hidden');
+            }
+        };
+    })();
+    </script>
 </body>
 </html>
 
