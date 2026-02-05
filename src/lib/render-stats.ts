@@ -261,9 +261,9 @@
                     <div class="team-member" data-name="${emp.name}" data-role="${emp.role}" data-dept="${emp.dept}" 
                          data-cards="${emp.violations.length}" data-email="${emp.email || ''}" data-discord-id="${emp.discordId || ''}">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-                                <span class="font-bold text-gray-500 text-lg">${initials}</span>
-                            </div>
+                            ${emp.avatar
+                                ? `<div class="w-12 h-12 rounded-full flex-shrink-0 overflow-hidden border border-gray-200"><img src="${emp.avatar}" alt="${emp.name}" class="w-full h-full object-cover"></div>`
+                                : `<div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0"><span class="font-bold text-gray-500 text-lg">${initials}</span></div>`}
                             <div class="text-left">
                                 <h4 class="font-bold text-gray-800">${emp.name}</h4>
                                 <div class="text-sm text-gray-600">${emp.role}</div>

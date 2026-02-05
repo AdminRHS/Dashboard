@@ -17,6 +17,7 @@ export default async function handler(req, res) {
         e.dept,
         e.email,
         e.discord_id,
+        e.avatar,
         e.join_date,
         COALESCE(
           (
@@ -66,6 +67,7 @@ export default async function handler(req, res) {
       dept: emp.dept,
       email: emp.email,
       discordId: emp.discord_id,
+      avatar: emp.avatar || null,
       joinDate: emp.join_date,
       violations: Array.isArray(emp.violations) ? emp.violations : [],
       greenCards: Array.isArray(emp.green_cards) ? emp.green_cards : []

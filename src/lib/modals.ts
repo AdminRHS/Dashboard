@@ -137,9 +137,9 @@
                 <button class="close-btn" onclick="closeModal('employeeModal')"><i data-lucide="x" class="w-6 h-6"></i></button>
                 
                 <div class="flex flex-col sm:flex-row items-center gap-6 mb-6">
-                    <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span class="text-3xl font-bold text-gray-500">${initials}</span>
-                    </div>
+                    ${data.avatar
+                        ? `<div class="w-24 h-24 rounded-full flex-shrink-0 overflow-hidden border-2 border-gray-200"><img src="${data.avatar}" alt="${data.name}" class="w-full h-full object-cover"></div>`
+                        : `<div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0"><span class="text-3xl font-bold text-gray-500">${initials}</span></div>`}
                     <div class="flex-grow text-center sm:text-left">
                         <h2 class="text-2xl font-bold text-gray-800">${data.name}</h2>
                         <p class="font-semibold" style="color: ${finalDeptColor};">${data.role}</p>
@@ -331,6 +331,17 @@
                 <label class="flex items-center gap-2"><i data-lucide="building-2" class="w-4 h-4"></i> Department: <span class="text-red-500">*</span></label><input type="text" id="editEmpDept" value="${emp.dept}">
                 <label class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4"></i> Email:</label><input type="email" id="editEmpEmail" value="${emp.email || ''}">
                 <label class="flex items-center gap-2"><i data-lucide="at-sign" class="w-4 h-4"></i> Discord:</label><input type="text" id="editEmpDiscord" value="${emp.discordId || ''}">
+                <label class="flex items-center gap-2 mt-2"><i data-lucide="image" class="w-4 h-4"></i> Avatar:</label>
+                <div class="flex items-center gap-4 mt-1">
+                    <div id="avatarPreviewEdit" class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center flex-shrink-0">
+                        ${emp.avatar ? `<img src="${emp.avatar}" alt="${emp.name}" class="w-full h-full object-cover">` : `<span class="text-gray-400 text-xs text-center px-1">None</span>`}
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <input type="file" id="editEmpAvatarFile" accept="image/*" class="text-sm" onchange="handleAvatarUpload(this)">
+                        ${emp.avatar ? `<button type="button" class="text-red-500 text-sm hover:text-red-700" onclick="clearAvatar()">Remove</button>` : ''}
+                    </div>
+                </div>
+                <input type="hidden" id="editEmpAvatar" value="${emp.avatar || ''}">
                 <button class="action-button-success mt-2" onclick="saveEmployeeChanges(this)"><i data-lucide="save" class="w-4 h-4"></i><span>Save Changes</span></button>`;
     closeModal('employeeModal');
     openModal('editEmployeeModal');

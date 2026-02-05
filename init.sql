@@ -9,9 +9,14 @@ CREATE TABLE IF NOT EXISTS employees (
     dept VARCHAR(100),
     email VARCHAR(255),
     discord_id VARCHAR(100),
+    avatar TEXT,
     join_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Migration: add avatar column if missing (idempotent, for existing DBs)
+-- Run once after deploy if table already exists
+-- ALTER TABLE employees ADD COLUMN IF NOT EXISTS avatar TEXT;
 
 -- Таблиця порушень (жовті картки)
 CREATE TABLE IF NOT EXISTS violations (

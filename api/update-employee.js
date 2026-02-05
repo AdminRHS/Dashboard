@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { id, name, role, dept, email, discordId, joinDate } = req.body || {};
+    const { id, name, role, dept, email, discordId, joinDate, avatar } = req.body || {};
 
     // Check if id is valid (can be 0, but must be a number)
     const employeeId = typeof id === 'string' ? parseInt(id, 10) : id;
@@ -28,6 +28,7 @@ export default async function handler(req, res) {
           dept = ${dept || ''},
           email = ${email || ''},
           discord_id = ${discordId || ''},
+          avatar = ${avatar !== undefined ? (avatar || null) : sql`avatar`},
           join_date = ${normalizedJoinDate}
       WHERE id = ${employeeId}
       RETURNING id
@@ -43,5 +44,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Internal server error' });
   }
 }
-
-

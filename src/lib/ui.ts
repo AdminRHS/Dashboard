@@ -233,7 +233,8 @@
         dept: employee.dept,
         cards: employee.violations.length,
         email: employee.email,
-        discordId: employee.discordId
+        discordId: employee.discordId,
+        avatar: employee.avatar
       };
       showEmployeeModal(modalData);
     }

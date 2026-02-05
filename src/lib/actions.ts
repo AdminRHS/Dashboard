@@ -229,6 +229,7 @@
     const newDept = (document.getElementById('editEmpDept') as HTMLInputElement).value.trim();
     const newEmail = (document.getElementById('editEmpEmail') as HTMLInputElement).value.trim();
     const newDiscordId = (document.getElementById('editEmpDiscord') as HTMLInputElement).value.trim();
+    const newAvatar = (document.getElementById('editEmpAvatar') as HTMLInputElement).value;
 
     if (!newName || !newRole || !newDept) { alert('Please fill in all required fields.'); return; }
 
@@ -252,7 +253,8 @@
       role: newRole,
       dept: newDept,
       email: newEmail,
-      discordId: newDiscordId
+      discordId: newDiscordId,
+      avatar: newAvatar
     };
 
     try {
@@ -263,6 +265,7 @@
         emp.dept = newDept;
         emp.email = newEmail;
         emp.discordId = newDiscordId;
+        emp.avatar = newAvatar;
         flagEmployeesDirty();
         requestRender({
           stats: true,
@@ -465,6 +468,31 @@
     }
   });
 
+  function handleAvatarUpload(input: HTMLInputElement): void {
+    const file = input.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      const preview = document.getElementById('avatarPreviewEdit');
+      if (preview) preview.innerHTML = `<img src="${dataUrl}" alt="Avatar" class="w-full h-full object-cover">`;
+      const hidden = document.getElementById('editEmpAvatar') as HTMLInputElement;
+      if (hidden) hidden.value = dataUrl;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearAvatar(): void {
+    const preview = document.getElementById('avatarPreviewEdit');
+    if (preview) preview.innerHTML = '<span class="text-gray-400 text-xs text-center px-1">None</span>';
+    const hidden = document.getElementById('editEmpAvatar') as HTMLInputElement;
+    if (hidden) hidden.value = '';
+    const fileInput = document.getElementById('editEmpAvatarFile') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
+  }
+
+  global.handleAvatarUpload = handleAvatarUpload;
+  global.clearAvatar = clearAvatar;
   global.addEmployee = addEmployee;
   global.removeEmployee = removeEmployee;
   global.submitYellowCard = submitYellowCard;

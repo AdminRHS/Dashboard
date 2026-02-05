@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { name, role, dept, email, discordId, joinDate } = req.body || {};
+    const { name, role, dept, email, discordId, joinDate, avatar } = req.body || {};
 
     if (!name) {
       return res.status(400).json({ error: 'Missing required field: name' });
@@ -17,16 +17,17 @@ export default async function handler(req, res) {
     const normalizedJoinDate = joinDate ? new Date(joinDate).toISOString().split('T')[0] : null;
 
     const result = await sql`
-      INSERT INTO employees (name, role, dept, email, discord_id, join_date)
+      INSERT INTO employees (name, role, dept, email, discord_id, join_date, avatar)
       VALUES (
         ${name},
         ${role || ''},
         ${dept || ''},
         ${email || ''},
         ${discordId || ''},
-        ${normalizedJoinDate}
+        ${normalizedJoinDate},
+        ${avatar || null}
       )
-      RETURNING id, name, role, dept, email, discord_id, join_date
+      RETURNING id, name, role, dept, email, discord_id, join_date, avatar
     `;
 
     const row = result[0];
@@ -41,6 +42,7 @@ export default async function handler(req, res) {
       dept: row.dept,
       email: row.email,
       discordId: row.discord_id,
+      avatar: row.avatar || null,
       joinDate: row.join_date,
       violations: []
     };
@@ -54,5 +56,3 @@ export default async function handler(req, res) {
     });
   }
 }
-
-
