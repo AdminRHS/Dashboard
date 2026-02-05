@@ -293,14 +293,8 @@
   }
 
   function openDiscordChat(discordId: string | undefined, name: string): void {
-    if (name === 'Artemchuk Nikolay') {
-      const discordUserId = '910144676881903646';
-      window.open(`https://discord.com/users/${discordUserId}`, '_blank');
-    } else if (discordId) {
-      const discordButton = document.querySelector(`.info-block[onclick*="openDiscordChat('${discordId}'"]`) as HTMLElement | null;
-      if (discordButton) {
-        copyToClipboard(discordId, discordButton);
-      }
+    if (discordId) {
+      window.open(`https://discord.com/users/${discordId}`, '_blank');
     }
   }
 
