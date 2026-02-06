@@ -192,8 +192,8 @@
                 
                 <div class="flex justify-start gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                     <button class="action-button-secondary admin-only" onclick="openEditEmployeeModal('${data.name}')"><i data-lucide="edit" class="w-4 h-4"></i><span>Edit</span></button>
-                    <button class="action-button" onclick="openGiveCardModalForEmployee('${data.name}')"><i data-lucide="alert-triangle" class="w-4 h-4"></i><span>Give Yellow Card</span></button>
-                    <button class="action-button-success" onclick="openGiveGreenCardModalForEmployee('${data.name}')"><i data-lucide="check-circle" class="w-4 h-4"></i><span>Give Green Card</span></button>
+                    <button class="action-button admin-only" onclick="openGiveCardModalForEmployee('${data.name}')"><i data-lucide="alert-triangle" class="w-4 h-4"></i><span>Give Yellow Card</span></button>
+                    <button class="action-button-success admin-only" onclick="openGiveGreenCardModalForEmployee('${data.name}')"><i data-lucide="check-circle" class="w-4 h-4"></i><span>Give Green Card</span></button>
                 </div>
             `;
     openModal('employeeModal');
